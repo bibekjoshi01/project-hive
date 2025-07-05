@@ -1,12 +1,13 @@
-import { Button } from '@/components/ui/button'
-import React from 'react'
+import React from 'react';
+// Components
+import HeroSection from './components/HeroSection';
+import Categories from './components/Categories';
 
-const page = () => {
+export default function page() {
   return (
-    <div>Hello sir how are you
-      <Button className='bg-red-500' > Project Hive </Button>
-    </div>
-  )
+    <>
+      <HeroSection />
+      <Categories />
+    </>
+  );
 }
-
-export default page
