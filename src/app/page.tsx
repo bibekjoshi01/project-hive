@@ -1,7 +1,7 @@
 import React from 'react';
 // Components
-import HeroSection from './components/HeroSection';
-import Categories from './components/Categories';
+import HeroSection from './(home)/HeroSection';
+import Categories from './(home)/Categories';
 
 export default function page() {
   return (

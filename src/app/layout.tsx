@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import WebsiteLayout from './components/Layout';
+import WebsiteLayout from '../components/Layout';
 import { Montserrat, Poppins } from 'next/font/google';
 
 export const montserrat = Montserrat({
