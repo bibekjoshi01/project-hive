@@ -33,7 +33,7 @@ const HeroSection = () => {
             className='font-poppins px-8 py-6 text-lg font-medium'
             asChild
           >
-            <Link href='/projects'>Browse Projects</Link>
+            <Link href='/browse'>Browse Projects</Link>
           </Button>
           <Button
             variant='outline'
