@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import WebsiteLayout from '../components/Layout';
 import { Montserrat, Poppins } from 'next/font/google';
+import StoreProvider from '@/lib/StoreProvider';
 
 export const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -14,7 +15,6 @@ const poppins = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
 });
-
 
 export const metadata: Metadata = {
   title: 'ProjectHive',
@@ -29,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${montserrat.variable} ${poppins.variable} font-sans`}>
-        <WebsiteLayout>{children}</WebsiteLayout>
+        <StoreProvider>
+          <WebsiteLayout>{children}</WebsiteLayout>
+        </StoreProvider>
       </body>
     </html>
   );

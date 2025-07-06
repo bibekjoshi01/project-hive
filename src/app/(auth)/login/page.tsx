@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Mail, ArrowRight } from 'lucide-react';
-import GoogleLogo from '@/icons/GoogleLogo';
-import GithubLogo from '@/icons/GithubLogo';
+import GoogleLogo from '@/assets/icons/GoogleLogo';
+import GithubLogo from '@/assets/icons/GithubLogo';
 import OtpVerification from './OTPVerification';
 
 export default function LoginPage() {
