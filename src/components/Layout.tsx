@@ -15,10 +15,6 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
           </Link>
 
           <nav className='hidden items-center space-x-4 shadow-none md:flex'>
-            <Button asChild variant='outline' className='px-6'>
-              <Link href='/contact'>Contact</Link>
-            </Button>
-
             <Button asChild variant='default' className='px-6'>
               <Link href='/login'>Login</Link>
             </Button>
@@ -50,6 +46,12 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
                 className='text-sm text-gray-400 transition-colors hover:text-white'
               >
                 Terms of Service
+              </Link>
+              <Link
+                href='/terms'
+                className='text-sm text-gray-400 transition-colors hover:text-white'
+              >
+                Contact Us
               </Link>
             </div>
           </div>

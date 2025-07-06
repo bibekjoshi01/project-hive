@@ -6,7 +6,7 @@ const HeroSection = () => {
   return (
     <section className='relative overflow-hidden bg-white py-12 md:py-20'>
       {/* Dotted Grid Background */}
-      <div className='absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50'>
+      <div className='absolute inset-0'>
         <div
           className='absolute inset-0 opacity-30'
           style={{
@@ -14,10 +14,12 @@ const HeroSection = () => {
             backgroundSize: '24px 24px',
           }}
         />
+        {/* gradient fade */}
+        <div className='absolute right-0 bottom-0 left-0 h-24 bg-gradient-to-b from-transparent to-gray-50' />
       </div>
 
-      <div className='relative container mx-auto px-4 text-center lg:px-6'>
-        <h1 className='mb-6 text-4xl font-bold text-gray-900 md:text-6xl'>
+      <div className='relative container mx-auto px-4 py-16 text-center lg:px-6'>
+        <h1 className='mb-6 text-4xl font-extrabold text-gray-900 md:text-6xl'>
           Explore Our College Project Archive
         </h1>
         <p className='mx-auto mt-12 mb-12 max-w-5xl text-xl font-medium text-gray-600'>
@@ -26,13 +28,17 @@ const HeroSection = () => {
           achievements and inspire future generations.
         </p>
         <div className='flex flex-col justify-center gap-4 sm:flex-row'>
-          <Button size='lg' className='px-8 py-6 text-lg' asChild>
+          <Button
+            size='lg'
+            className='font-poppins px-8 py-6 text-lg font-medium'
+            asChild
+          >
             <Link href='/projects'>Browse Projects</Link>
           </Button>
           <Button
             variant='outline'
             size='lg'
-            className='px-8 py-6 text-lg'
+            className='font-poppins px-8 py-6 text-lg font-medium'
             asChild
           >
             <Link href='/submit'>Submit Project</Link>
