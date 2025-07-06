@@ -36,19 +36,19 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
             </p>
             <div className='mt-4 flex space-x-6 md:mt-0'>
               <Link
-                href='/privacy'
+                href='/privacy-policies'
                 className='text-sm text-gray-400 transition-colors hover:text-white'
               >
                 Privacy Policy
               </Link>
               <Link
-                href='/terms'
+                href='/terms-and-conditions'
                 className='text-sm text-gray-400 transition-colors hover:text-white'
               >
                 Terms of Service
               </Link>
               <Link
-                href='/terms'
+                href='/contact-us'
                 className='text-sm text-gray-400 transition-colors hover:text-white'
               >
                 Contact Us
