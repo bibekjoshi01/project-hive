@@ -1,3 +1,5 @@
+'use client';
+
 import { Calendar, Eye, Star, User } from 'lucide-react';
 import type React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
