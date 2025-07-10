@@ -1,0 +1,221 @@
+'use client';
+
+import type React from 'react';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Search, Filter, SortAsc, SortDesc, X } from 'lucide-react';
+import { batches, levels, categories, departments, sortOptions } from './data';
+import { Button } from '@/components/ui/button';
+import type { FilterState } from './types';
+
+interface SearchAndFiltersProps {
+  filters: FilterState;
+  showFilters: boolean;
+  handleFilterChange: (key: keyof FilterState, value: string) => void;
+  setShowFilters: React.Dispatch<React.SetStateAction<boolean>>;
+  activeFiltersCount: number;
+  toggleSortOrder: () => void;
+  clearFilters: () => void;
+}
+
+const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
+  filters,
+  showFilters,
+  handleFilterChange,
+  setShowFilters,
+  activeFiltersCount,
+  toggleSortOrder,
+  clearFilters,
+}) => {
+  return (
+    <>
+      {/* Search Bar and Controls Row */}
+      <div className='mb-6'>
+        <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6'>
+          {/* Search Bar */}
+          <div className='relative flex-1'>
+            <Search className='absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400' />
+            <Input
+              type='text'
+              placeholder='Search projects by title, description, author, or keywords...'
+              value={filters.search}
+              onChange={(e) => handleFilterChange('search', e.target.value)}
+              className='h-12 rounded-lg border-2 border-gray-200 pr-4 pl-12 text-base focus:border-black focus:shadow-none focus:ring-0 focus:outline-none lg:focus:ring-0'
+            />
+          </div>
+
+          {/* Controls */}
+          <div className='flex h-12 flex-wrap items-center gap-3'>
+            {/* Filter Toggle */}
+            <Button
+              variant='outline'
+              onClick={() => setShowFilters(!showFilters)}
+              className='flex h-12 items-center gap-2 rounded-lg border-2 border-gray-200 px-4 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+            >
+              <Filter className='h-4 w-4' />
+              Filters
+              {activeFiltersCount > 0 && (
+                <Badge
+                  variant='default'
+                  className='ml-1 h-5 w-5 rounded-full p-0 text-xs'
+                >
+                  {activeFiltersCount}
+                </Badge>
+              )}
+            </Button>
+
+            {/* Sort Controls */}
+            <div className='flex items-center gap-2'>
+              <span className='hidden text-sm text-gray-600 sm:inline'>
+                Sort:
+              </span>
+              <Select
+                value={filters.sortBy}
+                onValueChange={(value) => handleFilterChange('sortBy', value)}
+              >
+                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-gray-800 focus:shadow-none focus:ring-0 focus:outline-none'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={toggleSortOrder}
+                className='h-12 w-12 rounded-lg border-2 border-gray-200 bg-transparent p-0 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+              >
+                {filters.sortOrder === 'asc' ? (
+                  <SortAsc className='h-4 w-4' />
+                ) : (
+                  <SortDesc className='h-4 w-4' />
+                )}
+              </Button>
+            </div>
+
+            {/* Clear Filters */}
+            {activeFiltersCount > 0 && (
+              <Button
+                variant='ghost'
+                onClick={clearFilters}
+                className='h-12 rounded-lg border-2 border-transparent text-gray-500 hover:border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+              >
+                <X className='mr-1 h-4 w-4' />
+                Clear All
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Filters Panel */}
+      {showFilters && (
+        <div className='mb-6 rounded-lg border-2 border-gray-200 bg-gray-50/50 p-6'>
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+            {/* Batch Filter */}
+            <div className='w-full'>
+              <Select
+                value={filters.batch}
+                onValueChange={(value) =>
+                  handleFilterChange('batch', value === 'all' ? '' : value)
+                }
+              >
+                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                  <SelectValue placeholder='All Batches' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='all'>All Batches</SelectItem>
+                  {batches.map((batch) => (
+                    <SelectItem key={batch} value={batch}>
+                      {batch}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Department Filter */}
+            <div className='w-full'>
+              <Select
+                value={filters.department}
+                onValueChange={(value) =>
+                  handleFilterChange('department', value === 'all' ? '' : value)
+                }
+              >
+                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                  <SelectValue placeholder='All Departments' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='all'>All Departments</SelectItem>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept} value={dept}>
+                      {dept}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Category Filter */}
+            <div className='w-full'>
+              <Select
+                value={filters.category}
+                onValueChange={(value) =>
+                  handleFilterChange('category', value === 'all' ? '' : value)
+                }
+              >
+                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                  <SelectValue placeholder='All Categories' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='all'>All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Level Filter */}
+            <div className='w-full'>
+              <Select
+                value={filters.level}
+                onValueChange={(value) =>
+                  handleFilterChange('level', value === 'all' ? '' : value)
+                }
+              >
+                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                  <SelectValue placeholder='All Levels' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value='all'>All Levels</SelectItem>
+                  {levels.map((level) => (
+                    <SelectItem key={level} value={level}>
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default SearchAndFilters;

@@ -1,28 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Search, Filter, SortAsc, SortDesc, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
+import { projects } from './data';
+import type { FilterState } from './types';
+import NoResultsFound from './NoResultsFound';
+import ProjectCard from './ProjectCard';
+import SearchAndFilters from './SearchAndFilters';
 
-interface FilterState {
-  search: string;
-  batch: string;
-  department: string;
-  category: string;
-  level: string;
-  sortBy: string;
-  sortOrder: 'asc' | 'desc';
-}
+export default function BrowseProjects() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-export default function SearchAndFilters() {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     batch: '',
@@ -34,60 +26,71 @@ export default function SearchAndFilters() {
   });
 
   const [showFilters, setShowFilters] = useState(false);
+  const [visibleProjects, setVisibleProjects] = useState(10);
 
-  const batches = [
-    '2024',
-    '2023',
-    '2022',
-    '2021',
-    '2020',
-    '2019',
-    '2018',
-    '2017',
-  ];
+  // Initialize filters from URL params on component mount
+  useEffect(() => {
+    const rawSortOrder = searchParams.get('sortOrder');
+    const validSortOrder =
+      rawSortOrder === 'asc' || rawSortOrder === 'desc' ? rawSortOrder : 'desc';
 
-  const departments = [
-    'Computer Science',
-    'Electrical Engineering',
-    'Mechanical Engineering',
-    'Civil Engineering',
-    'Business Administration',
-    'Design',
-    'Mathematics',
-    'Physics',
-    'Chemistry',
-    'Biology',
-  ];
+    const urlFilters: FilterState = {
+      search: searchParams.get('search') || '',
+      batch: searchParams.get('batch') || '',
+      department: searchParams.get('department') || '',
+      category: searchParams.get('category') || '',
+      level: searchParams.get('level') || '',
+      sortBy: searchParams.get('sortBy') || 'date',
+      sortOrder: validSortOrder, 
+    };
 
-  const categories = [
-    'Web Development',
-    'Mobile App',
-    'Machine Learning',
-    'Data Science',
-    'IoT',
-    'Robotics',
-    'Research Paper',
-    'Business Plan',
-    'Design Project',
-    'Hardware Project',
-  ];
+    setFilters(urlFilters);
 
-  const levels = ['Undergraduate', 'Graduate', 'PhD', 'Diploma'];
+    // Show filters panel if any filters are active
+    const hasActiveFilters = Object.values(urlFilters).some(
+      (value) => value !== '' && value !== 'date' && value !== 'desc',
+    );
+    if (hasActiveFilters) {
+      setShowFilters(true);
+    }
+  }, [searchParams]);
 
-  const sortOptions = [
-    { value: 'date', label: 'Date Created' },
-    { value: 'title', label: 'Project Title' },
-    { value: 'author', label: 'Author Name' },
-    { value: 'department', label: 'Department' },
-    { value: 'rating', label: 'Rating' },
-  ];
+  // Update URL when filters change
+  const updateURL = useCallback(
+    (newFilters: FilterState) => {
+      const params = new URLSearchParams();
+
+      // Only add non-empty values to URL
+      Object.entries(newFilters).forEach(([key, value]) => {
+        if (
+          value &&
+          value !== '' &&
+          !(key === 'sortBy' && value === 'date') &&
+          !(key === 'sortOrder' && value === 'desc')
+        ) {
+          params.set(key, value);
+        }
+      });
+
+      const queryString = params.toString();
+      const newURL = queryString ? `?${queryString}` : window.location.pathname;
+
+      router.replace(newURL, { scroll: false });
+    },
+    [router],
+  );
 
   const handleFilterChange = (key: keyof FilterState, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    updateURL(newFilters);
+
+    // Reset visible projects when filters change
+    setVisibleProjects(10);
   };
 
   const clearFilters = () => {
-    setFilters({
+    const defaultFilters: FilterState = {
       search: '',
       batch: '',
       department: '',
@@ -95,262 +98,199 @@ export default function SearchAndFilters() {
       level: '',
       sortBy: 'date',
       sortOrder: 'desc',
-    });
+    };
+    setFilters(defaultFilters);
+    updateURL(defaultFilters);
+    setVisibleProjects(10);
   };
 
   const toggleSortOrder = () => {
-    setFilters((prev) => ({
-      ...prev,
-      sortOrder: prev.sortOrder === 'asc' ? 'desc' : 'asc',
-    }));
+    const newSortOrder = filters.sortOrder === 'asc' ? 'desc' : 'asc';
+    const newFilters = { ...filters, sortOrder: newSortOrder };
+    setFilters(newFilters);
+    updateURL(newFilters);
   };
 
   const activeFiltersCount = Object.values(filters).filter(
     (value) => value !== '' && value !== 'date' && value !== 'desc',
   ).length;
 
+  // Filter and sort projects
+  const filteredProjects = projects
+    .filter((project) => {
+      if (
+        filters.search &&
+        !project.title.toLowerCase().includes(filters.search.toLowerCase()) &&
+        !project.description
+          .toLowerCase()
+          .includes(filters.search.toLowerCase()) &&
+        !project.author.toLowerCase().includes(filters.search.toLowerCase()) &&
+        !project.tags.some((tag) =>
+          tag.toLowerCase().includes(filters.search.toLowerCase()),
+        )
+      ) {
+        return false;
+      }
+      if (filters.batch && project.batch !== filters.batch) return false;
+      if (filters.department && project.department !== filters.department)
+        return false;
+      if (filters.category && project.category !== filters.category)
+        return false;
+      if (filters.level && project.level !== filters.level) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      let aValue, bValue;
+      switch (filters.sortBy) {
+        case 'title':
+          aValue = a.title.toLowerCase();
+          bValue = b.title.toLowerCase();
+          break;
+        case 'author':
+          aValue = a.author.toLowerCase();
+          bValue = b.author.toLowerCase();
+          break;
+        case 'department':
+          aValue = a.department.toLowerCase();
+          bValue = b.department.toLowerCase();
+          break;
+        case 'rating':
+          aValue = a.rating;
+          bValue = b.rating;
+          break;
+        case 'views':
+          aValue = a.views;
+          bValue = b.views;
+          break;
+        default:
+          aValue = new Date(a.date).getTime();
+          bValue = new Date(b.date).getTime();
+      }
+
+      if (filters.sortOrder === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      } else {
+        return aValue < bValue ? 1 : -1;
+      }
+    });
+
+  const showMoreProjects = () => {
+    setVisibleProjects((prev) => Math.min(prev + 10, filteredProjects.length));
+  };
+
+  const handleRemoveFilter = (key: keyof FilterState) => {
+    const newFilters = {
+      ...filters,
+      [key]: key === 'sortBy' ? 'date' : key === 'sortOrder' ? 'desc' : '',
+    };
+    setFilters(newFilters);
+    updateURL(newFilters);
+    setVisibleProjects(10);
+  };
+
   return (
-    <div className='mx-auto mt-12 max-w-6xl'>
-      {/* Main Search Bar */}
-      <div className='relative mb-8'>
-        <div className='relative'>
-          <Search className='absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 transform text-gray-400' />
-          <Input
-            type='text'
-            placeholder='Search projects by title, description, author, or keywords...'
-            value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
-            className='rounded-xl border-2 border-gray-200 py-4 pr-4 pl-12 text-lg focus:border-blue-500'
-          />
-        </div>
-      </div>
-
-      {/* Filter Toggle Button */}
-      <div className='mb-6 flex items-center justify-between'>
-        <Button
-          variant='outline'
-          onClick={() => setShowFilters(!showFilters)}
-          className='flex items-center gap-2'
-        >
-          <Filter className='h-4 w-4' />
-          Filters
-          {activeFiltersCount > 0 && (
-            <span className='ml-1 rounded-full bg-blue-500 px-2 py-1 text-xs text-white'>
-              {activeFiltersCount}
-            </span>
-          )}
-        </Button>
-
-        <div className='flex items-center gap-4'>
-          {activeFiltersCount > 0 && (
-            <Button
-              variant='ghost'
-              onClick={clearFilters}
-              className='text-gray-500'
-            >
-              <X className='mr-1 h-4 w-4' />
-              Clear All
-            </Button>
-          )}
-
-          <div className='flex items-center gap-2'>
-            <span className='text-sm text-gray-600'>Sort by:</span>
-            <Select
-              value={filters.sortBy}
-              onValueChange={(value) => handleFilterChange('sortBy', value)}
-            >
-              <SelectTrigger className='w-40'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sortOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={toggleSortOrder}
-              className='p-2'
-            >
-              {filters.sortOrder === 'asc' ? (
-                <SortAsc className='h-4 w-4' />
-              ) : (
-                <SortDesc className='h-4 w-4' />
-              )}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters Panel */}
-      {showFilters && (
-        <div className='mb-8 rounded-xl border bg-gray-50 p-6'>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
-            {/* Batch Filter */}
-            <div>
-              <label className='mb-2 block text-sm font-medium text-gray-700'>
-                Batch Year
-              </label>
-              <Select
-                value={filters.batch}
-                onValueChange={(value) => handleFilterChange('batch', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder='Select batch' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>All Batches</SelectItem>
-                  {batches.map((batch) => (
-                    <SelectItem key={batch} value={batch}>
-                      {batch}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Department Filter */}
-            <div>
-              <label className='mb-2 block text-sm font-medium text-gray-700'>
-                Department
-              </label>
-              <Select
-                value={filters.department}
-                onValueChange={(value) =>
-                  handleFilterChange('department', value)
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder='Select department' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>All Departments</SelectItem>
-                  {departments.map((dept) => (
-                    <SelectItem key={dept} value={dept}>
-                      {dept}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Category Filter */}
-            <div>
-              <label className='mb-2 block text-sm font-medium text-gray-700'>
-                Category
-              </label>
-              <Select
-                value={filters.category}
-                onValueChange={(value) => handleFilterChange('category', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder='Select category' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Level Filter */}
-            <div>
-              <label className='mb-2 block text-sm font-medium text-gray-700'>
-                Academic Level
-              </label>
-              <Select
-                value={filters.level}
-                onValueChange={(value) => handleFilterChange('level', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder='Select level' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value='all'>All Levels</SelectItem>
-                  {levels.map((level) => (
-                    <SelectItem key={level} value={level}>
-                      {level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      )}
+    <div className='mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8'>
+      <SearchAndFilters
+        filters={filters}
+        showFilters={showFilters}
+        handleFilterChange={handleFilterChange}
+        setShowFilters={setShowFilters}
+        activeFiltersCount={activeFiltersCount}
+        toggleSortOrder={toggleSortOrder}
+        clearFilters={clearFilters}
+      />
 
       {/* Active Filters Display */}
       {activeFiltersCount > 0 && (
-        <div className='mb-6 flex flex-wrap gap-2'>
+        <div className='mb-6 flex flex-wrap items-center gap-2'>
           <span className='text-sm text-gray-600'>Active filters:</span>
           {filters.search && (
-            <span className='flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800'>
+            <Badge variant='secondary' className='flex items-center gap-1'>
               Search: {filters.search}
               <X
                 className='h-3 w-3 cursor-pointer'
-                onClick={() => handleFilterChange('search', '')}
+                onClick={() => handleRemoveFilter('search')}
               />
-            </span>
+            </Badge>
           )}
           {filters.batch && (
-            <span className='flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-sm text-green-800'>
+            <Badge variant='secondary' className='flex items-center gap-1'>
               Batch: {filters.batch}
               <X
                 className='h-3 w-3 cursor-pointer'
-                onClick={() => handleFilterChange('batch', '')}
+                onClick={() => handleRemoveFilter('batch')}
               />
-            </span>
+            </Badge>
           )}
           {filters.department && (
-            <span className='flex items-center gap-1 rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-800'>
+            <Badge variant='secondary' className='flex items-center gap-1'>
               Dept: {filters.department}
               <X
                 className='h-3 w-3 cursor-pointer'
-                onClick={() => handleFilterChange('department', '')}
+                onClick={() => handleRemoveFilter('department')}
               />
-            </span>
+            </Badge>
           )}
           {filters.category && (
-            <span className='flex items-center gap-1 rounded-full bg-orange-100 px-3 py-1 text-sm text-orange-800'>
+            <Badge variant='secondary' className='flex items-center gap-1'>
               Category: {filters.category}
               <X
                 className='h-3 w-3 cursor-pointer'
-                onClick={() => handleFilterChange('category', '')}
+                onClick={() => handleRemoveFilter('category')}
               />
-            </span>
+            </Badge>
           )}
           {filters.level && (
-            <span className='flex items-center gap-1 rounded-full bg-pink-100 px-3 py-1 text-sm text-pink-800'>
+            <Badge variant='secondary' className='flex items-center gap-1'>
               Level: {filters.level}
               <X
                 className='h-3 w-3 cursor-pointer'
-                onClick={() => handleFilterChange('level', '')}
+                onClick={() => handleRemoveFilter('level')}
               />
-            </span>
+            </Badge>
           )}
         </div>
       )}
 
-      {/* Search Results Summary */}
-      <div className='rounded-lg bg-gray-50 py-8 text-center'>
+      {/* Results Summary */}
+      <div className='mb-6 flex items-center justify-between'>
         <p className='text-gray-600'>
-          Found{' '}
-          <span className='font-semibold text-gray-900'>247 projects</span>{' '}
-          matching your criteria
+          Found&nbsp;
+          <span className='font-semibold text-gray-900'>
+            {filteredProjects.length}
+          </span>
+          &nbsp;projects matching your criteria
         </p>
-        <Button className='mt-4' size='lg'>
-          View Results
-        </Button>
       </div>
+
+      {/* Project Cards Grid */}
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+        {filteredProjects.slice(0, visibleProjects).map((project, key) => (
+          <ProjectCard project={project} key={key} />
+        ))}
+      </div>
+
+      {/* Show More Button */}
+      {visibleProjects < filteredProjects.length && (
+        <div className='mt-8 text-center'>
+          <Button
+            onClick={showMoreProjects}
+            variant='outline'
+            size='lg'
+            className='my-8 cursor-pointer'
+          >
+            Show More Projects
+          </Button>
+          <p className='mt-2 text-sm text-gray-500'>
+            Showing {visibleProjects} of {filteredProjects.length} projects
+          </p>
+        </div>
+      )}
+
+      {/* No Results */}
+      {filteredProjects?.length === 0 && (
+        <NoResultsFound clearFilters={clearFilters} />
+      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main content */}
-      <main className='flex-1 bg-gray-50'>{children}</main>
+      <main className='flex-'>{children}</main>
 
       {/* Footer */}
       <footer className='bg-gray-900 text-white'>
