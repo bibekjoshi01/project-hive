@@ -1,0 +1,91 @@
+import { z } from 'zod';
+
+export const teamMemberSchema = z.object({
+  id: z.string(),
+  fullName: z.string().min(1, 'Full name is required'),
+  rollNo: z.string().min(1, 'Roll number is required'),
+  photo: z
+    .custom<File | null>()
+    .refine((file) => !file || file.size <= 2_000_000, 'Max 2MB')
+    .refine(
+      (file) =>
+        !file || ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
+      'Only JPG, PNG, or WebP',
+    )
+    .optional(),
+});
+
+export const projectFileSchema = z.object({
+  id: z.string(),
+
+  file: z
+    .custom<File | null>()
+    .refine((file) => file === null || file instanceof File, 'File is required')
+    .refine(
+      (file) => file === null || file.size <= 5_000_000,
+      'Max file size is 5 MB',
+    ),
+  type: z.enum(['Report', 'Proposal', 'Other Info']).optional(),
+});
+
+export const basicInfoSchema = z.object({
+  title: z.string().min(3, 'Title is required'),
+  abstract: z
+    .string()
+    .refine((val) => val.trim().split(/\s+/).filter(Boolean).length >= 50, {
+      message: 'Minimum 50 words are required.',
+    })
+    .refine((val) => val.trim().split(/\s+/).filter(Boolean).length <= 100, {
+      message: 'Maximum 100 words are required.',
+    }),
+  batch: z.string().min(1, 'Batch is required'),
+  department: z.string().min(1, 'Department is required'),
+  level: z.string().min(1, 'Level is required'),
+  category: z.string().min(1, 'Category is required'),
+  supervisor: z.string().optional(),
+  teamMembers: z
+    .array(teamMemberSchema)
+    .min(1, 'At least one team member is required'),
+});
+
+export const projectDetailsSchema = z.object({
+  description: z
+    .string()
+    .refine((val) => val.trim().split(/\s+/).filter(Boolean).length >= 200, {
+      message: 'Minimum 200 words are required.',
+    }),
+});
+
+export const technicalDetailsSchema = z.object({
+  technologies: z.string().min(1, 'At least one technology'),
+  githubUrl: z.string().url('Enter a valid GitHub URL'),
+  documentationUrl: z
+    .string()
+    .url('Enter a valid Documentation URL')
+    .optional()
+    .or(z.literal('')),
+  files: z.array(projectFileSchema).optional(),
+});
+
+export const additionalSchema = z.object({
+  isPublic: z.boolean(),
+  allowDownloads: z.boolean(),
+});
+
+export const formSchema = basicInfoSchema
+  .merge(projectDetailsSchema)
+  .merge(technicalDetailsSchema)
+  .merge(additionalSchema);
+
+export type TeamMember = z.infer<typeof teamMemberSchema>;
+export type ProjectFormData = z.infer<typeof formSchema>;
+export type ProjectFile = z.infer<typeof projectFileSchema>;
+
+export const STEPS = [
+  { id: 1, title: 'Basic Information' },
+  { id: 2, title: 'Project Details' },
+  { id: 3, title: 'Technical Details' },
+  { id: 4, title: 'Review & Submit' },
+] as const;
+
+export const FILE_TYPES = ['Report', 'Proposal', 'Other Info'];

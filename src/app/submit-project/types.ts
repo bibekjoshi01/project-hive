@@ -5,6 +5,12 @@ export interface TeamMember {
   photo: File | null;
 }
 
+export interface IFile {
+  id: string;
+  type: string;
+  file: string | null | File;
+}
+
 export interface ProjectFormData {
   // Basic Info
   title: string;
@@ -28,7 +34,7 @@ export interface ProjectFormData {
   githubUrl: string;
   liveUrl: string;
   documentationUrl: string;
-  files: File[];
+  files: IFile[];
 
   // Additional
   isPublic: boolean;

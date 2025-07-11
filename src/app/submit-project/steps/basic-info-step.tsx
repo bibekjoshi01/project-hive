@@ -1,7 +1,6 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -10,99 +9,87 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { batches, departments, levels, categories } from '../../browse/data';
-import type { ProjectFormData, TeamMember } from '../types';
+import type { ProjectFormData } from '../types';
 import { Button } from '@/components/ui/button';
 import { Camera, Plus, Upload, X } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import Image from 'next/image';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
-interface BasicInfoStepProps {
-  formData: ProjectFormData;
-  updateFormData: (data: Partial<ProjectFormData>) => void;
-}
+export default function BasicInfoStep() {
+  const {
+    register,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<ProjectFormData>();
 
-export default function BasicInfoStep({
-  formData,
-  updateFormData,
-}: BasicInfoStepProps) {
-  const addTeamMember = () => {
-    const newMember: TeamMember = {
-      id: Date.now().toString(),
-      fullName: '',
-      rollNo: '',
-      photo: null,
-    };
-    updateFormData({ teamMembers: [...formData.teamMembers, newMember] });
-  };
+  console.log(errors, 'err');
+  console.log(watch(), 'values');
 
-  const removeTeamMember = (id: string) => {
-    const newTeamMembers = formData.teamMembers.filter(
-      (member) => member.id !== id,
-    );
-    updateFormData({ teamMembers: newTeamMembers });
-  };
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'teamMembers',
+  });
 
-  const updateTeamMember = (
-    id: string,
-    field: keyof TeamMember,
-    value: string | File | null,
-  ) => {
-    const newTeamMembers = formData.teamMembers.map((member) =>
-      member.id === id ? { ...member, [field]: value } : member,
-    );
-    updateFormData({ teamMembers: newTeamMembers });
-  };
-
-  const handlePhotoUpload = (
-    id: string,
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      updateTeamMember(id, 'photo', file);
-    }
-  };
-
-  const wordCount = formData.abstract
+  const watchedAbstract = watch('abstract', '');
+  const wordCount = watchedAbstract
     .trim()
     .split(/\s+/)
     .filter((word) => word.length > 0).length;
 
+  const addTeamMember = () => {
+    append({
+      id: Date.now().toString(),
+      fullName: '',
+      rollNo: '',
+      photo: null,
+    });
+  };
+
+  const handlePhotoUpload = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setValue(`teamMembers.${index}.photo`, file);
+    }
+  };
+
   return (
     <div className='space-y-8'>
-      <div>
-        <h2 className='mb-4 text-xl font-semibold'>Basic Information</h2>
-        <p className='mb-6 text-gray-600'>
-          Let&lsquo;s start with the basic details about your project.
-        </p>
-      </div>
+      <h2 className='mb-8 text-xl font-semibold'>Basic Information</h2>
 
       {/* Project Title - Full Width */}
       <div className='space-y-2'>
-        <Label htmlFor='title'>Project Title *</Label>
         <Input
           id='title'
           placeholder='Enter your project title'
-          value={formData.title}
-          onChange={(e) => updateFormData({ title: e.target.value })}
           className='h-12 text-lg'
+          {...register('title')}
         />
+
+        {errors.title && (
+          <p className='text-xs text-red-400'>{errors.title.message}</p>
+        )}
       </div>
 
       {/* Abstract - Full Width */}
       <div className='space-y-2'>
-        <Label htmlFor='abstract'>Project Abstract *</Label>
         <Textarea
           id='abstract'
           placeholder='Provide a brief description of your project.'
-          value={formData.abstract}
-          onChange={(e) => updateFormData({ abstract: e.target.value })}
           className='min-h-[120px] resize-none'
-          maxLength={300}
+          maxLength={1000}
+          {...register('abstract')}
         />
         <div className='flex justify-between text-sm text-gray-500'>
+          {errors.abstract && (
+            <p className='text-xs text-red-400'>{errors.abstract.message}</p>
+          )}
           <span className={wordCount > 300 ? 'text-red-500' : ''}>
-            {wordCount}/300 words
+            {wordCount}/100 words
           </span>
         </div>
       </div>
@@ -110,12 +97,16 @@ export default function BasicInfoStep({
       {/* Project Details Grid */}
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <div className='space-y-2'>
-          <Label htmlFor='batch'>Batch Year *</Label>
           <Select
-            value={formData.batch}
-            onValueChange={(value) => updateFormData({ batch: value })}
+            value={watch('batch') || ''}
+            onValueChange={(value) =>
+              setValue('batch', value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
           >
-            <SelectTrigger className='h-12 w-full'>
+            <SelectTrigger className='h-12 w-full focus:border-gray-400'>
               <SelectValue placeholder='Select batch year' />
             </SelectTrigger>
             <SelectContent>
@@ -126,15 +117,22 @@ export default function BasicInfoStep({
               ))}
             </SelectContent>
           </Select>
+          {errors.batch && (
+            <p className='text-xs text-red-400'>{errors.batch.message}</p>
+          )}
         </div>
 
         <div className='space-y-2'>
-          <Label htmlFor='category'>Project Category *</Label>
           <Select
-            value={formData.category}
-            onValueChange={(value) => updateFormData({ category: value })}
+            value={watch('category') || ''}
+            onValueChange={(value) =>
+              setValue('category', value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
           >
-            <SelectTrigger className='h-12 w-full'>
+            <SelectTrigger className='h-12 w-full focus:border-gray-400'>
               <SelectValue placeholder='Select project category' />
             </SelectTrigger>
             <SelectContent>
@@ -145,15 +143,22 @@ export default function BasicInfoStep({
               ))}
             </SelectContent>
           </Select>
+          {errors.category && (
+            <p className='text-xs text-red-400'>{errors.category.message}</p>
+          )}
         </div>
 
         <div className='space-y-2'>
-          <Label htmlFor='department'>Department *</Label>
           <Select
-            value={formData.department}
-            onValueChange={(value) => updateFormData({ department: value })}
+            value={watch('department') || ''}
+            onValueChange={(value) =>
+              setValue('department', value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
           >
-            <SelectTrigger className='h-12 w-full'>
+            <SelectTrigger className='h-12 w-full focus:border-gray-400'>
               <SelectValue placeholder='Select department' />
             </SelectTrigger>
             <SelectContent>
@@ -164,15 +169,22 @@ export default function BasicInfoStep({
               ))}
             </SelectContent>
           </Select>
+          {errors.department && (
+            <p className='text-xs text-red-400'>{errors.department.message}</p>
+          )}
         </div>
 
         <div className='space-y-2'>
-          <Label htmlFor='level'>Academic Level *</Label>
           <Select
-            value={formData.level}
-            onValueChange={(value) => updateFormData({ level: value })}
+            value={watch('level') || ''}
+            onValueChange={(value) =>
+              setValue('level', value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
           >
-            <SelectTrigger className='h-12 w-full'>
+            <SelectTrigger className='h-12 w-full focus:border-gray-400'>
               <SelectValue placeholder='Select academic level' />
             </SelectTrigger>
             <SelectContent>
@@ -183,6 +195,9 @@ export default function BasicInfoStep({
               ))}
             </SelectContent>
           </Select>
+          {errors.level && (
+            <p className='text-xs text-red-400'>{errors.level.message}</p>
+          )}
         </div>
       </div>
 
@@ -193,14 +208,15 @@ export default function BasicInfoStep({
         </div>
 
         <div className='space-y-2'>
-          <Label htmlFor='supervisor'>Supervisor Full Name (Optional)</Label>
           <Input
             id='supervisor'
             placeholder="Enter supervisor's full name"
-            value={formData.supervisor}
-            onChange={(e) => updateFormData({ supervisor: e.target.value })}
             className='h-12'
+            {...register('supervisor')}
           />
+          {errors.supervisor && (
+            <p className='text-xs text-red-400'>{errors.supervisor.message}</p>
+          )}
         </div>
       </div>
 
@@ -212,7 +228,7 @@ export default function BasicInfoStep({
           </div>
         </div>
 
-        {formData.teamMembers.length === 0 ? (
+        {fields.length === 0 ? (
           <div className='rounded-lg border-2 border-dashed border-gray-300 py-8 text-center'>
             <p className='mb-4 text-gray-500'>No team members added yet</p>
             <Button type='button' onClick={addTeamMember} variant='outline'>
@@ -222,47 +238,49 @@ export default function BasicInfoStep({
           </div>
         ) : (
           <div className='space-y-4'>
-            {formData.teamMembers.map((member, index) => (
+            {fields.map((member, index) => (
               <div key={member.id} className='rounded-lg border bg-gray-50 p-4'>
                 <div className='flex items-center gap-4'>
                   {/* Photo Upload */}
                   <div className='group relative'>
-                    {member.photo ? (
-                      <div className='relative'>
-                        <Image
-                          src={
-                            URL.createObjectURL(member.photo) ||
-                            '/placeholder.svg'
-                          }
-                          width={200}
-                          height={200}
-                          alt='Team member'
-                          className='h-16 w-16 rounded-full border-2 border-gray-300 object-cover'
-                        />
-                        <div className='bg-opacity-50 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100'>
-                          <Camera className='h-5 w-5 text-white' />
+                    {(() => {
+                      const photo = watch(
+                        `teamMembers.${index}.photo`,
+                      ) as File | null;
+                      return photo ? (
+                        <div className='relative'>
+                          <img
+                            src={
+                              URL.createObjectURL(photo) || '/placeholder.svg'
+                            }
+                            alt='Team member'
+                            className='h-16 w-16 rounded-full border-2 border-gray-300 object-cover'
+                          />
+                          <div className='bg-opacity-50 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100'>
+                            <Camera className='h-5 w-5 text-white' />
+                          </div>
+                          <Button
+                            type='button'
+                            variant='outline'
+                            size='sm'
+                            onClick={() =>
+                              setValue(`teamMembers.${index}.photo`, null)
+                            }
+                            className='absolute -top-1 -right-1 h-5 w-5 rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600'
+                          >
+                            <X className='h-3 w-3' />
+                          </Button>
                         </div>
-                        <Button
-                          type='button'
-                          variant='outline'
-                          size='sm'
-                          onClick={() =>
-                            updateTeamMember(member.id, 'photo', null)
-                          }
-                          className='absolute -top-1 -right-1 h-5 w-5 rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600'
-                        >
-                          <X className='h-3 w-3' />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 bg-gray-100 transition-colors group-hover:border-gray-400 group-hover:bg-gray-200'>
-                        <Upload className='h-5 w-5 text-gray-400 group-hover:text-gray-600' />
-                      </div>
-                    )}
+                      ) : (
+                        <div className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 bg-gray-100 transition-colors group-hover:border-gray-400 group-hover:bg-gray-200'>
+                          <Upload className='h-5 w-5 text-gray-400 group-hover:text-gray-600' />
+                        </div>
+                      );
+                    })()}
                     <input
                       type='file'
                       accept='image/*'
-                      onChange={(e) => handlePhotoUpload(member.id, e)}
+                      onChange={(e) => handlePhotoUpload(index, e)}
                       className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
                     />
                   </div>
@@ -271,44 +289,52 @@ export default function BasicInfoStep({
                   <div className='flex-1'>
                     <Input
                       placeholder='Full Name *'
-                      value={member.fullName}
-                      onChange={(e) =>
-                        updateTeamMember(member.id, 'fullName', e.target.value)
-                      }
                       className='h-12'
+                      {...register(`teamMembers.${index}.fullName`)}
                     />
+                    {errors.teamMembers?.[index]?.fullName && (
+                      <p className='mt-1 text-xs text-red-400'>
+                        {errors.teamMembers[index]?.fullName?.message}
+                      </p>
+                    )}
                   </div>
 
                   {/* Campus Roll No */}
                   <div className='flex-1'>
                     <Input
                       placeholder='Campus Roll No *'
-                      value={member.rollNo}
-                      onChange={(e) =>
-                        updateTeamMember(member.id, 'rollNo', e.target.value)
-                      }
                       className='h-12'
+                      {...register(`teamMembers.${index}.rollNo`)}
                     />
+                    {errors.teamMembers?.[index]?.rollNo && (
+                      <p className='mt-1 text-xs text-red-400'>
+                        {errors.teamMembers[index]?.rollNo?.message}
+                      </p>
+                    )}
                   </div>
-
                   {/* Remove Button */}
                   <Button
                     type='button'
                     variant='outline'
                     size='sm'
-                    onClick={() => removeTeamMember(member.id)}
-                    className='h-12 w-12 p-0 text-red-600 hover:bg-red-50 hover:text-red-700'
+                    onClick={() => remove(index)}
+                    className='h-12 w-12 cursor-pointer p-0 text-red-600 hover:bg-red-50 hover:text-red-700'
                   >
                     <X className='h-4 w-4' />
                   </Button>
                 </div>
               </div>
             ))}
+            {errors.teamMembers && (
+              <p className='text-sm text-red-500'>
+                {errors.teamMembers.message}
+              </p>
+            )}
             <div className='flex justify-end'>
               <Button
                 type='button'
                 onClick={addTeamMember}
-                className='flex items-center gap-2'
+                className='flex cursor-pointer items-center gap-2'
               >
                 <Plus className='h-4 w-4' />
                 Add Member
