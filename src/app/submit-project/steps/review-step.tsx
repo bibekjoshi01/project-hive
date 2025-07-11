@@ -35,12 +35,8 @@ export default function ReviewStep({ formData }: ReviewStepProps) {
                 <p className='font-medium'>{formData.title}</p>
               </div>
               <div>
-                <p className='text-sm text-gray-500'>Author</p>
-                <p className='font-medium'>{formData.author}</p>
-              </div>
-              <div>
-                <p className='text-sm text-gray-500'>Email</p>
-                <p className='font-medium'>{formData.email}</p>
+                <p className='text-sm text-gray-500'>Supervisor</p>
+                <p className='font-medium'>{formData.supervisor}</p>
               </div>
               <div>
                 <p className='text-sm text-gray-500'>Batch</p>
