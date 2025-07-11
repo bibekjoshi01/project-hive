@@ -42,12 +42,13 @@ export default function SubmitProjectForm() {
   const [formData, setFormData] = useState<ProjectFormData>({
     // Basic Info
     title: '',
-    author: '',
-    email: '',
+    abstract: '',
     batch: '',
     department: '',
     level: '',
     category: '',
+    supervisor: '',
+    teamMembers: [],
 
     // Project Details
     description: '',
@@ -122,12 +123,13 @@ export default function SubmitProjectForm() {
                 setCurrentStep(1);
                 setFormData({
                   title: '',
-                  author: '',
-                  email: '',
+                  abstract: '',
                   batch: '',
                   department: '',
                   level: '',
                   category: '',
+                  supervisor: '',
+                  teamMembers: [],
                   description: '',
                   objectives: '',
                   features: [''],

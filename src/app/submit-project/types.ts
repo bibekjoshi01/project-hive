@@ -1,12 +1,20 @@
+export interface TeamMember {
+  id: string;
+  fullName: string;
+  rollNo: string;
+  photo: File | null;
+}
+
 export interface ProjectFormData {
   // Basic Info
   title: string;
-  author: string;
-  email: string;
+  abstract: string;
   batch: string;
   department: string;
   level: string;
   category: string;
+  supervisor: string;
+  teamMembers: TeamMember[];
 
   // Project Details
   description: string;
