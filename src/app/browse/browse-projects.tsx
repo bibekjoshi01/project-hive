@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 import { projects } from './data';
 import type { FilterState } from './types';
-import NoResultsFound from './NoResultsFound';
-import ProjectCard from './ProjectCard';
-import SearchAndFilters from './SearchAndFilters';
+import NoResultsFound from './no-results-found';
+import ProjectCard from './project-card';
+import SearchAndFilters from './search-and-filters';
 
 export default function BrowseProjects() {
   const router = useRouter();

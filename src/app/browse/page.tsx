@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 // Components
-import BrowseProjects from './BrowseProjects';
+import BrowseProjects from './browse-projects';
 
 export default function page() {
   return (

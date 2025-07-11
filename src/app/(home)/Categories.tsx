@@ -64,7 +64,7 @@ const Categories = () => {
             return (
               <a
                 key={index}
-                href={`/category/${category.title.toLowerCase().replace(/\s+/g, '-')}`}
+                href={`/browse/?category=${category.title.replace(/\s+/g, '+')}`}
                 className='group flex flex-col justify-between rounded-2xl bg-white p-8 shadow-sm transition-transform hover:-translate-y-2 hover:shadow-lg'
               >
                 <div className='bg-primary/10 text-primary group-hover:bg-primary mb-4 flex h-12 w-12 items-center justify-center rounded-full transition-colors group-hover:text-white'>

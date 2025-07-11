@@ -28,7 +28,7 @@ export const projects: Project[] = [
     author: 'Sarah Johnson',
     department: 'Electrical Engineering',
     batch: '2024',
-    category: 'IoT',
+    category: 'Computer Graphics',
     level: 'Graduate',
     rating: 4.6,
     slug: 'web-development',
@@ -237,7 +237,7 @@ export const departments = [
   'Biology',
 ];
 export const categories = [
-  'Web Development',
+  'Computer Graphics',
   'Mobile App',
   'Machine Learning',
   'Data Science',

@@ -41,7 +41,7 @@ const HeroSection = () => {
             className='font-poppins px-8 py-6 text-lg font-medium'
             asChild
           >
-            <Link href='/submit'>Submit Project</Link>
+            <Link href='/submit-project'>Submit Project</Link>
           </Button>
         </div>
       </div>
