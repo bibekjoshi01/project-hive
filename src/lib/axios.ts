@@ -6,7 +6,7 @@ const noAuthRoutes: string[] = []
 const showErrorToast = console.log;
 
 // Constructing the base URL dynamically using environment variables.
-export const baseURL = ``;
+export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 // Main Axios instance
 export const axiosInstance = axios.create({

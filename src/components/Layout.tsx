@@ -1,9 +1,15 @@
+'use client';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAppSelector } from '@/lib/hooks';
+import Image from 'next/image';
+import { authState } from '@/app/(auth)/redux/selector';
 
 export default function WebsiteLayout({ children }: { children: ReactNode }) {
+  const { isAuthenticated, fullName, photo } = useAppSelector(authState);
+
   return (
     <div className='flex min-h-screen w-full flex-col bg-white text-gray-900'>
       {/* Header */}
@@ -15,9 +21,24 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
           </Link>
 
           <nav className='hidden items-center space-x-4 shadow-none md:flex'>
-            <Button asChild variant='default' className='px-6'>
-              <Link href='/login'>Login</Link>
-            </Button>
+            {isAuthenticated ? (
+              <div className='flex items-center gap-3'>
+                {photo && (
+                  <Image
+                    src={photo}
+                    alt='Profile'
+                    width={32}
+                    height={32}
+                    className='rounded-full object-cover'
+                  />
+                )}
+                <span className='font-medium text-gray-800'>{fullName}</span>
+              </div>
+            ) : (
+              <Button asChild variant='default' className='px-6'>
+                <Link href='/login'>Login</Link>
+              </Button>
+            )}
           </nav>
         </div>
       </header>

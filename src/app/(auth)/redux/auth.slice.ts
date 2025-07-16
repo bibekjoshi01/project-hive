@@ -3,19 +3,16 @@ import Cookies from 'js-cookie';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { IAuthState } from './types';
+import {
+  PUBLIC_ACCESS_TOKEN,
+  PUBLIC_REFRESH_TOKEN,
+} from '@/constants/public/tokens';
 
 const initialState: IAuthState = {
   fullName: '',
-  email: '',
-  phoneNo: '',
-  isEmailVerified: false,
-  isPhoneVerified: false,
-  roles: [],
+  role: '',
   photo: '',
-  isSuperuser: false,
   isAuthenticated: false,
-  authVerificationEmailSent: false,
-  forgetPasswordEmailSent: false,
 };
 
 export const authSlice = createSlice({
@@ -24,53 +21,37 @@ export const authSlice = createSlice({
   reducers: {
     loginSuccess: (state, action: PayloadAction<IAuthState>) => {
       const {
-        payload: {
-          fullName,
-          email,
-          photo,
-          phoneNo,
-          tokens,
-          isEmailVerified,
-          isPhoneVerified,
-          isSuperuser,
-          roles,
-        },
+        payload: { fullName, photo, accessToken, refreshToken, role },
       } = action;
 
+      console.log("action.py", action.payload);
+
       state.fullName = fullName;
-      state.email = email;
       state.photo = photo;
-      state.phoneNo = phoneNo;
-      state.isEmailVerified = isEmailVerified;
-      state.isPhoneVerified = isPhoneVerified;
-      state.isSuperuser = isSuperuser;
-      state.roles = roles;
+      state.role = role;
       state.isAuthenticated = true;
       // Save access and refresh tokens in the cookies
-      Cookies.set('access', tokens?.access as string, {
+      Cookies.set(PUBLIC_ACCESS_TOKEN, accessToken as string, {
         path: '/',
         secure: true,
         sameSite: 'Lax',
       });
-      Cookies.set('refresh', tokens?.refresh as string, {
+      Cookies.set(PUBLIC_REFRESH_TOKEN, refreshToken as string, {
         path: '/',
         secure: true,
         sameSite: 'Lax',
       });
-      Cookies.set('logout', 'false');
     },
     logoutSuccess: (state) => {
-      Cookies.remove('access', { path: '/' });
-      Cookies.remove('refresh', { path: '/' });
-      Cookies.set('logout', 'true');
+      Cookies.remove(PUBLIC_ACCESS_TOKEN, { path: '/' });
+      Cookies.remove(PUBLIC_REFRESH_TOKEN, { path: '/' });
       // Reset the state to initialState
       return initialState;
     },
     checkAuthStatus: (state) => {
-      const accessToken = Cookies.get('access');
-      const logoutFlag = Cookies.get('logout');
+      const accessToken = Cookies.get(PUBLIC_ACCESS_TOKEN);
 
-      if (!accessToken || logoutFlag === 'true') {
+      if (!accessToken) {
         // No valid token, reset authentication state
         return initialState;
       }

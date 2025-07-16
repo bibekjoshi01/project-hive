@@ -11,12 +11,15 @@ import { Mail, ArrowRight } from 'lucide-react';
 import GoogleLogo from '@/assets/icons/GoogleLogo';
 import GithubLogo from '@/assets/icons/GithubLogo';
 import OtpVerification from './OTPVerification';
+import { useLoginMutation } from '../redux/auth.api';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [optStage, setIsOtpStage] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
   });
+  const [login, { isLoading: loadingLogin }] = useLoginMutation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,9 +28,14 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    console.log('Login attempt:', formData);
+    try {
+      const res = await login({ values: formData }).unwrap();
+      // Proceed to OTP Verification Step
+      setIsOtpStage(true);
+    } catch (err: any) {
+      console.error('Login failed:', err?.data || err?.message);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -43,7 +51,7 @@ export default function LoginPage() {
   return (
     <div className='flex min-h-screen items-center justify-center bg-white'>
       <div className='w-full max-w-lg'>
-        {isLoading ? (
+        {optStage ? (
           <OtpVerification email={formData?.email} />
         ) : (
           <Card className='border-none px-6 py-12 shadow-none'>
@@ -73,12 +81,12 @@ export default function LoginPage() {
                 <Button
                   type='submit'
                   className='flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-black py-3 text-base font-medium text-white transition-all duration-200 hover:bg-gray-800'
-                  disabled={isLoading}
+                  disabled={loadingLogin}
                 >
-                  {isLoading ? 'Signing in...' : 'Continue with Email'}
+                  {loadingLogin ? 'Signing in...' : 'Continue with Email'}
                   <ArrowRight
                     size={'20px'}
-                    style={{ display: `${isLoading && 'none'}` }}
+                    style={{ display: `${loadingLogin && 'none'}` }}
                   />
                 </Button>
               </form>

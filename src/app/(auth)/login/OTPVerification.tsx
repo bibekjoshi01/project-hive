@@ -1,5 +1,11 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import React, { useRef, useState } from 'react';
+import { useVerifyOtpMutation } from '../redux/auth.api';
+import { loginSuccess } from '../redux/auth.slice';
+import { useSnackbar } from 'notistack';
+import { useAppDispatch } from '@/lib/hooks';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 interface IOtpVerificationProps {
   email: string;
@@ -8,6 +14,9 @@ interface IOtpVerificationProps {
 const OtpVerification = ({ email }: IOtpVerificationProps) => {
   const [otp, setOtp] = useState(Array(6).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -46,7 +55,25 @@ const OtpVerification = ({ email }: IOtpVerificationProps) => {
     }
   };
 
-  const handleSubmit = () => {};
+  const [verifyOtp, { isLoading: verifying }] = useVerifyOtpMutation();
+
+  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const otpString = otp.join('');
+      if (otpString.length < 6) {
+        enqueueSnackbar('Please enter all 6 digits', { variant: 'warning' });
+        return;
+      }
+      const response = await verifyOtp({ email, otp: otpString }).unwrap();
+      dispatch(loginSuccess(response));
+      enqueueSnackbar('Login successful!', { variant: 'success' });
+      router.push('/');
+    } catch (err: any) {
+      enqueueSnackbar(err?.data?.detail || 'Invalid OTP', { variant: 'error' });
+    }
+  };
 
   return (
     <div className='flex min-h-screen flex-col items-center justify-center bg-white p-6'>
@@ -59,7 +86,7 @@ const OtpVerification = ({ email }: IOtpVerificationProps) => {
         </p>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleOtpSubmit}
           className='flex flex-col items-center justify-center space-y-6'
         >
           <div className='flex space-x-2' onPaste={handlePaste}>
@@ -79,22 +106,23 @@ const OtpVerification = ({ email }: IOtpVerificationProps) => {
             ))}
           </div>
 
-          <button
+          <Button
             type='submit'
-            className='flex w-full cursor-pointer justify-center items-center gap-2 rounded-md bg-black py-3 text-base font-medium text-white transition-all duration-200 hover:bg-gray-800'
+            className='flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-black py-6 text-base font-medium text-white transition-all duration-200 hover:bg-gray-800'
+            disabled={verifying}
           >
-            Verify Code
+            {verifying ? 'Verifying' : 'Verify Code'}
             <ArrowRight size={'20px'} />
-          </button>
+          </Button>
         </form>
-        <div className='mt-6 flex justify-center'>
+        {/* <div className='mt-6 flex justify-center'>
           <button
             type='button'
             className='flex cursor-pointer items-center gap-1 text-base text-blue-600 hover:underline'
           >
             <ArrowLeft /> Back
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
