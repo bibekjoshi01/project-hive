@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Camera, Plus, Upload, X } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useFormContext } from 'react-hook-form';
+import Image from 'next/image';
 
 export default function BasicInfoStep() {
   const {
@@ -249,7 +250,9 @@ export default function BasicInfoStep() {
                       ) as File | null;
                       return photo ? (
                         <div className='relative'>
-                          <img
+                          <Image
+                            width={200}
+                            height={200}
                             src={
                               URL.createObjectURL(photo) || '/placeholder.svg'
                             }

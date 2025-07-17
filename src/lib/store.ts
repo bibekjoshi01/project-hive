@@ -21,7 +21,8 @@ const persistConfig = {
 };
 
 const combinedMiddleware = (
-  getDefaultMiddleware: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-line @typescript-eslint/no-explicit-any
+  getDefaultMiddleware: any, 
 ) => {
   return getDefaultMiddleware({
     serializableCheck: {

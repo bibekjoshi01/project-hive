@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Camera, Save, Edit } from 'lucide-react';
-import { batches, departments, levels } from '../browse/data';
+import { batches, departments, levels } from '../../browse/data';
 
 export default function MyInformation() {
   const [isEditing, setIsEditing] = useState(false);

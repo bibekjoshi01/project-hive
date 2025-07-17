@@ -1,21 +1,24 @@
-import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import Cookies from 'js-cookie';
+import { showErrorToast } from '@/utils/notifier';
 
-const noAuthRoutes: string[] = []
-
-const showErrorToast = console.log;
+const noAuthRoutes: string[] = [];
 
 // Constructing the base URL dynamically using environment variables.
 export const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 // Main Axios instance
 export const axiosInstance = axios.create({
-  baseURL
+  baseURL,
 });
 
 // Separate instance for refreshing tokens
 const refreshInstance = axios.create({
-  baseURL
+  baseURL,
 });
 
 // Flag to track ongoing token refresh process
@@ -56,7 +59,9 @@ axiosInstance.interceptors.request.use(
     const accessToken = Cookies.get('access');
 
     // Check if the route is exempt from authentication
-    const isExemptRoute = noAuthRoutes.some((path) => config?.url?.endsWith(path));
+    const isExemptRoute = noAuthRoutes.some((path) =>
+      config?.url?.endsWith(path),
+    );
 
     if (accessToken && !isExemptRoute) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -71,7 +76,7 @@ axiosInstance.interceptors.request.use(
 
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 /**
@@ -83,7 +88,9 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const errorConfig = error?.config as AxiosRequestConfig & { _retry?: boolean };
+    const errorConfig = error?.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
     if (axios.isCancel(error)) {
       showErrorToast(`Request canceled: ${error.message}`);
@@ -94,7 +101,10 @@ axiosInstance.interceptors.response.use(
     }
     // Handle 401 Unauthorized errors
     else if (error.response?.status === 401) {
-      if (error.response.data?.code === 'token_not_valid' && !errorConfig._retry) {
+      if (
+        error.response.data?.code === 'token_not_valid' &&
+        !errorConfig._retry
+      ) {
         errorConfig._retry = true;
 
         const refreshToken = Cookies.get('refresh');
@@ -110,13 +120,15 @@ axiosInstance.interceptors.response.use(
           isTokenRefreshInProgress = true;
 
           try {
-            const response = await refreshInstance.post('/auth/refresh/', { refresh: refreshToken });
+            const response = await refreshInstance.post('/auth/refresh/', {
+              refresh: refreshToken,
+            });
             if (response?.status === 200) {
               const newToken = response.data.access;
               Cookies.set('access', newToken, {
                 secure: true,
                 path: '/',
-                sameSite: 'Lax'
+                sameSite: 'Lax',
               });
 
               notifyTokenRefreshed(newToken);
@@ -159,5 +171,5 @@ axiosInstance.interceptors.response.use(
     }
 
     throw error;
-  }
+  },
 );

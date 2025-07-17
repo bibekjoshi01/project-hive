@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, FolderOpen, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { logoutSuccess } from '../redux/auth.slice';
+import { useAppDispatch } from '@/lib/hooks';
+import { useRouter } from 'next/navigation';
+import { useSnackbar } from 'notistack';
 
 interface ProfileSidebarProps {
   activeTab: string;
@@ -15,11 +19,13 @@ export default function ProfileSidebar({
   activeTab,
   setActiveTab,
 }: ProfileSidebarProps) {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const handleLogout = () => {
-    // Implement logout logic here
-    console.log('Logging out...');
-    // Redirect to login page or clear auth state
-    window.location.href = '/login';
+    dispatch(logoutSuccess());
+    router.push('/login');
+    window.location.reload();
   };
 
   const menuItems = [
