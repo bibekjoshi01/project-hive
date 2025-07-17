@@ -1,14 +1,25 @@
 'use client';
-import { ReactNode } from 'react';
+
+import { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppSelector } from '@/lib/hooks';
 import Image from 'next/image';
 import { authState } from '@/app/(auth)/redux/selector';
+import ProfileImage from '@/assets/images/logo.png';
+import { useRouter } from 'next/navigation'; // ✅ Correct import
 
 export default function WebsiteLayout({ children }: { children: ReactNode }) {
+  const [isClient, setIsClient] = useState(false);
   const { isAuthenticated, fullName, photo } = useAppSelector(authState);
+  const router = useRouter(); // ✅ Hook always called, never conditionally
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null; // ✅ Still safe, but hook was already called
 
   return (
     <div className='flex min-h-screen w-full flex-col bg-white text-gray-900'>
@@ -22,18 +33,19 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
 
           <nav className='hidden items-center space-x-4 shadow-none md:flex'>
             {isAuthenticated ? (
-              <div className='flex items-center gap-3'>
-                {photo && (
-                  <Image
-                    src={photo}
-                    alt='Profile'
-                    width={32}
-                    height={32}
-                    className='rounded-full object-cover'
-                  />
-                )}
-                <span className='font-medium text-gray-800'>{fullName}</span>
-              </div>
+              <>
+                <span className='font-medium text-gray-800'>
+                  {fullName?.trim() || 'Hello!'}
+                </span>
+                <Image
+                  src={photo || ProfileImage}
+                  alt='Profile'
+                  width={40}
+                  height={40}
+                  onClick={() => router.push('/profile')}
+                  className='cursor-pointer rounded-full border border-gray-300 object-cover'
+                />
+              </>
             ) : (
               <Button asChild variant='default' className='px-6'>
                 <Link href='/login'>Login</Link>
@@ -44,12 +56,11 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main content */}
-      <main className='flex-'>{children}</main>
+      <main>{children}</main>
 
       {/* Footer */}
       <footer className='bg-gray-900 text-white'>
         <div className='container mx-auto px-4 py-12 lg:px-6'>
-          {/* Bottom Bar */}
           <div className='flex flex-col items-center justify-between border-t border-gray-800 pt-8 md:flex-row'>
             <p className='text-sm text-gray-400'>
               © {new Date().getFullYear()} College Project Archive. All rights
