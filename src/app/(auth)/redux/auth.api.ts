@@ -21,7 +21,15 @@ export const authAPISlice = rootAPI.injectEndpoints({
         data,
       }),
     }),
+    OAuth: builder.mutation({
+      query: (data) => ({
+        url: `${authAPI}/oauth`,
+        method: 'POST',
+        data,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useVerifyOtpMutation } = authAPISlice;
+export const { useLoginMutation, useVerifyOtpMutation, useOAuthMutation } =
+  authAPISlice;

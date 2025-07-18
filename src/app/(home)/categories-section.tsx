@@ -1,80 +1,58 @@
+'use client';
+import { useGetCategoriesQuery } from './redux/home.api';
+
 import {
   Code,
   Monitor,
   Database,
   Cpu,
-  Palette,
   BookOpen,
   GraduationCap,
+  type LucideIcon,
 } from 'lucide-react';
 
-const categories = [
-  {
-    title: 'C Programming',
-    count: '150 Projects',
-    icon: Code,
-  },
-  {
-    title: 'Computer Graphics',
-    count: '120 Projects',
-    icon: Monitor,
-  },
-  {
-    title: 'OOP (C++)',
-    count: '80 Projects',
-    icon: Code,
-  },
-  {
-    title: 'DBMS',
-    count: '80 Projects',
-    icon: Database,
-  },
-  {
-    title: 'Embedded System',
-    count: '80 Projects',
-    icon: Cpu,
-  },
-  {
-    title: 'Design',
-    count: '80 Projects',
-    icon: Palette,
-  },
-  {
-    title: 'Minor',
-    count: '90 Projects',
-    icon: BookOpen,
-  },
-  {
-    title: 'Major',
-    count: '90 Projects',
-    icon: GraduationCap,
-  },
-];
+const iconMap: Record<string, LucideIcon> = {
+  C: Code,
+  'C++': Code,
+  DSA: Code,
+  DBMS: Database,
+  'Computer Graphics': Monitor,
+  'Computer Networks': Cpu,
+  Minor: BookOpen,
+  Major: GraduationCap,
+};
 
 const Categories = () => {
+  const { data, error, isLoading } = useGetCategoriesQuery();
+
+  if (isLoading) return <div>Loading categories...</div>;
+  if (error || !data) return <div>Error loading categories.</div>;
+
   return (
     <section className='bg-gray-50 py-16'>
-      <div className='container mx-auto px-4 lg:px-6 py-12'>
+      <div className='container mx-auto px-4 py-12 lg:px-6'>
         <h2 className='mb-16 text-center text-4xl font-bold text-gray-900'>
           Explore Projects by Category
         </h2>
         <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
-          {categories.map((category, index) => {
-            const IconComponent = category.icon;
+          {data.results.map((category: CategoryResponse) => {
+            const IconComponent = iconMap[category.name] || Code; // fallback
             return (
               <a
-                key={index}
-                href={`/browse/?category=${category.title.replace(/\s+/g, '+')}`}
+                key={category.id}
+                href={`/browse/?category=${encodeURIComponent(category.id)}`}
                 className='group flex flex-col justify-between rounded-2xl bg-white p-8 shadow-sm transition-transform hover:-translate-y-2 hover:shadow-lg'
               >
                 <div className='bg-primary/10 text-primary group-hover:bg-primary mb-4 flex h-12 w-12 items-center justify-center rounded-full transition-colors group-hover:text-white'>
-                  <IconComponent className='h-6 w-6'/>
+                  <IconComponent className='h-6 w-6' />
                 </div>
                 <div>
                   <h3 className='group-hover:text-primary mb-1 text-xl font-semibold text-gray-900 transition-colors'>
-                    {category.title}
+                    {category.name}
                   </h3>
-                  <p className='text-sm text-gray-600'>{category.count}</p>
+                  <p className='text-sm text-gray-600'>
+                    {category.projectCount} Projects
+                  </p>
                 </div>
               </a>
             );

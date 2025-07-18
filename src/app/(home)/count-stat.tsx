@@ -3,6 +3,7 @@
 import type React from 'react';
 
 import { useEffect, useState } from 'react';
+import { useGetStatsQuery } from './redux/home.api';
 
 interface CounterItemProps {
   count: number;
@@ -10,11 +11,7 @@ interface CounterItemProps {
   suffix?: string;
 }
 
-const CounterItem = ({
-  count,
-  label,
-  suffix = '+',
-}: CounterItemProps) => {
+const CounterItem = ({ count, label, suffix = '+' }: CounterItemProps) => {
   const [currentCount, setCurrentCount] = useState(0);
 
   useEffect(() => {
@@ -49,23 +46,22 @@ const CounterItem = ({
 };
 
 const CounterSection = () => {
+  const { data, error, isLoading } = useGetStatsQuery();
+
+  if (isLoading) {
+    return <div>Loading stats...</div>;
+  }
+
+  if (error || !data) {
+    return <div>Failed to load stats.</div>;
+  }
+
+  // Map API fields to your stat array for UI
   const stats = [
-    {
-      count: 5,
-      label: 'Course Departments',
-    },
-    {
-      count: 10,
-      label: 'Categories',
-    },
-    {
-      count: 100,
-      label: 'Projects',
-    },
-    {
-      count: 10,
-      label: 'Batches',
-    },
+    { count: data.departments, label: 'Course Departments' },
+    { count: data.categories, label: 'Categories' },
+    { count: data.projects, label: 'Projects' },
+    { count: data.batches, label: 'Batches' },
   ];
 
   return (
