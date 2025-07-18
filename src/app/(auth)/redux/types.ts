@@ -11,3 +11,16 @@ export interface IAuthState {
 export interface ILoginFormDataType {
   email: string;
 }
+
+export interface IProfileResponse {
+  id: number;
+  uuid: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNo: string;
+  photo?: string | null;
+  dateJoined: string;
+  userRole: string;
+}

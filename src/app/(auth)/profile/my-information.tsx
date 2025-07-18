@@ -1,300 +1,340 @@
 'use client';
 
-import { useState } from 'react';
+import type React from 'react';
+
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Camera, Save, Edit } from 'lucide-react';
-import { batches, departments, levels } from '../../browse/data';
+import { Camera, Save, Edit, Loader2 } from 'lucide-react';
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from '../redux/auth.api';
+import { useSnackbar } from 'notistack';
+
+interface FormData {
+  fullName: string;
+  phoneNo: string;
+  photoFile: File | null;
+  photoUrl: string;
+}
 
 export default function MyInformation() {
+  const { data: profile, isLoading, isError, refetch } = useGetProfileQuery();
+  const [updateProfile, { isLoading: isSaving }] = useUpdateProfileMutation();
+  const { enqueueSnackbar: toast } = useSnackbar();
+
   const [isEditing, setIsEditing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: 'John Doe',
-    email: 'john.doe@university.edu',
-    rollNo: 'CS2024001',
-    batch: '2024',
-    department: 'Computer Science',
-    level: 'Undergraduate',
-    phone: '+1 (555) 123-4567',
-    bio: 'Passionate computer science student with interests in web development and machine learning.',
-    linkedin: 'https://linkedin.com/in/johndoe',
-    github: 'https://github.com/johndoe',
-    portfolio: 'https://johndoe.dev',
+  const [formData, setFormData] = useState<FormData>({
+    fullName: '',
+    phoneNo: '',
+    photoFile: null,
+    photoUrl: '',
   });
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {},
+  );
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        fullName: `${profile.firstName} ${profile.lastName}`.trim(),
+        phoneNo: profile.phoneNo || '',
+        photoFile: null,
+        photoUrl: profile.photo || '',
+      });
+    }
+  }, [profile]);
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Record<keyof FormData, string>> = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
+    }
+
+    if (formData.phoneNo && !/^\+?[\d\s\-]+$/.test(formData.phoneNo.trim())) {
+      newErrors.phoneNo = 'Please enter a valid phone number';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field: keyof FormData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast('Please select an image file', { variant: 'error' });
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast('Please select an image smaller than 5MB', { variant: 'error' });
+        return;
+      }
+
+      const photoUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({
+        ...prev,
+        photoFile: file,
+        photoUrl: photoUrl,
+      }));
+    }
+  };
 
   const handleSave = async () => {
-    setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    setIsEditing(false);
-    console.log('Profile updated:', formData);
+    if (!validateForm()) {
+      toast('Please fix the errors before saving', { variant: 'error' });
+      return;
+    }
+
+    try {
+      const [firstName, ...rest] = formData.fullName.trim().split(' ');
+      const lastName = rest.join(' ');
+
+      // Create FormData for file upload and normal fields
+      const body = new FormData();
+      body.append('first_name', firstName);
+      body.append('last_name', lastName);
+      if (formData.phoneNo.trim()) {
+        body.append('phone_no', formData.phoneNo.trim());
+      }
+      if (formData.photoFile) {
+        body.append('photo', formData.photoFile);
+      }
+      console.log(body, 'lksdjf');
+
+      await updateProfile(body).unwrap();
+
+      await refetch();
+
+      setIsEditing(false);
+
+      toast('Profile updated successfully', { variant: 'success' });
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      toast('Failed to update profile. Please try again.', {
+        variant: 'error',
+      });
+    }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleCancel = () => {
+    if (profile) {
+      setFormData({
+        fullName: `${profile.firstName} ${profile.lastName}`.trim(),
+        phoneNo: profile.phoneNo || '',
+        photoFile: null,
+        photoUrl: profile.photo || '',
+      });
+    }
+    setErrors({});
+    setIsEditing(false);
   };
+
+  const onPhotoButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  if (isLoading) {
+    return (
+      <div className='flex items-center justify-center p-8'>
+        <Loader2 className='h-8 w-8 animate-spin' />
+        <span className='ml-2'>Loading profile...</span>
+      </div>
+    );
+  }
+
+  if (isError || !profile) {
+    return (
+      <div className='flex items-center justify-center p-8'>
+        <div className='text-center'>
+          <p className='mb-4 text-red-500'>Failed to load profile</p>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-6'>
-      <div className='flex items-center justify-between'>
-        <h1 className='text-2xl font-bold'>My Information</h1>
-        {!isEditing ? (
-          <Button
-            onClick={() => setIsEditing(true)}
-            className='flex items-center gap-2'
-          >
-            <Edit className='h-4 w-4' />
-            Edit Profile
-          </Button>
-        ) : (
-          <div className='flex gap-2'>
-            <Button variant='outline' onClick={() => setIsEditing(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSave}
-              disabled={isSaving}
-              className='flex items-center gap-2'
-            >
-              <Save className='h-4 w-4' />
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </Button>
-          </div>
-        )}
-      </div>
-
-      <Card>
-        <CardHeader>
+      <Card className='border-none shadow-none'>
+        <CardHeader className='relative'>
           <CardTitle>Profile Information</CardTitle>
+          {!isEditing && (
+            <Button
+              onClick={() => setIsEditing(true)}
+              className='absolute top-4 right-4 flex cursor-pointer items-center gap-2 shadow-none'
+              variant='outline'
+            >
+              <Edit className='h-4 w-4' />
+              Edit Profile
+            </Button>
+          )}
+          {isEditing && (
+            <div className='absolute top-4 right-4 flex gap-2'>
+              <Button
+                variant='outline'
+                onClick={handleCancel}
+                disabled={isSaving}
+                className='cursor-pointer'
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
+                className='flex cursor-pointer items-center gap-2'
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className='h-4 w-4 animate-spin' />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className='h-4 w-4' />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
         </CardHeader>
+
         <CardContent className='space-y-6'>
-          {/* Profile Picture */}
+          {/* Profile Picture Section */}
           <div className='flex items-center gap-6'>
             <div className='relative'>
               <Avatar className='h-24 w-24'>
                 <AvatarImage
-                  src='/placeholder.svg?height=96&width=96'
+                  src={
+                    formData.photoUrl || '/placeholder.svg?height=96&width=96'
+                  }
                   alt='Profile'
                 />
-                <AvatarFallback className='text-xl'>JD</AvatarFallback>
+                <AvatarFallback className='text-xl'>
+                  {profile.firstName?.[0] || 'U'}
+                  {profile.lastName?.[0] || 'S'}
+                </AvatarFallback>
               </Avatar>
+
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept='image/*'
+                onChange={handlePhotoChange}
+                className='hidden'
+              />
+
               {isEditing && (
                 <Button
                   size='sm'
-                  className='absolute -right-2 -bottom-2 h-8 w-8 rounded-full p-0'
-                  onClick={() => console.log('Change photo')}
+                  className='absolute -right-2 -bottom-2 h-8 w-8 cursor-pointer rounded-full p-0'
+                  onClick={onPhotoButtonClick}
+                  type='button'
                 >
                   <Camera className='h-4 w-4' />
                 </Button>
               )}
             </div>
+
             <div>
-              <h3 className='text-lg font-semibold'>{formData.fullName}</h3>
-              <p className='text-gray-500'>{formData.department}</p>
-              <p className='text-gray-500'>Roll No: {formData.rollNo}</p>
+              <h3 className='text-lg font-semibold'>
+                {formData.fullName || 'Hello User'}
+              </h3>
+              <p className='text-gray-500'>Student at IOE Thapathali Campus</p>
             </div>
           </div>
 
-          {/* Basic Information */}
+          {/* Form Fields */}
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            {/* Full Name */}
             <div className='space-y-2'>
-              <Label htmlFor='fullName'>Full Name *</Label>
+              <Label htmlFor='fullName'>
+                Full Name <span className='text-red-500'>*</span>
+              </Label>
               <Input
                 id='fullName'
                 value={formData.fullName}
                 onChange={(e) => handleInputChange('fullName', e.target.value)}
                 disabled={!isEditing}
-                className='focus:ring-0 focus:ring-offset-0'
+                className={errors.fullName ? 'border-red-500' : ''}
               />
+              {errors.fullName && (
+                <p className='text-sm text-red-500'>{errors.fullName}</p>
+              )}
             </div>
 
+            {/* Email */}
             <div className='space-y-2'>
-              <Label htmlFor='email'>Email Address *</Label>
+              <Label htmlFor='email'>Email</Label>
               <Input
                 id='email'
-                type='email'
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                disabled={!isEditing}
-                className='focus:ring-0 focus:ring-offset-0'
+                value={profile.email}
+                disabled
+                className='bg-gray-50'
               />
             </div>
 
+            {/* Username */}
             <div className='space-y-2'>
-              <Label htmlFor='rollNo'>Roll Number *</Label>
+              <Label htmlFor='username'>Username</Label>
               <Input
-                id='rollNo'
-                value={formData.rollNo}
-                onChange={(e) => handleInputChange('rollNo', e.target.value)}
-                disabled={!isEditing}
-                className='focus:ring-0 focus:ring-offset-0'
+                id='username'
+                value={profile.username}
+                disabled
+                className='bg-gray-50'
               />
             </div>
 
+            {/* Phone Number */}
             <div className='space-y-2'>
-              <Label htmlFor='phone'>Phone Number</Label>
+              <Label htmlFor='phoneNo'>Phone Number</Label>
               <Input
-                id='phone'
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
+                id='phoneNo'
+                value={formData.phoneNo}
+                onChange={(e) => handleInputChange('phoneNo', e.target.value)}
                 disabled={!isEditing}
-                className='focus:ring-0 focus:ring-offset-0'
+                className={errors.phoneNo ? 'border-red-500' : ''}
+              />
+              {errors.phoneNo && (
+                <p className='text-sm text-red-500'>{errors.phoneNo}</p>
+              )}
+            </div>
+
+            {/* User Role */}
+            <div className='space-y-2'>
+              <Label htmlFor='userRole'>Role</Label>
+              <Input
+                id='userRole'
+                value={profile.userRole}
+                disabled
+                className='bg-gray-50'
               />
             </div>
 
+            {/* Date Joined */}
             <div className='space-y-2'>
-              <Label htmlFor='batch'>Batch Year *</Label>
-              {isEditing ? (
-                <Select
-                  value={formData.batch}
-                  onValueChange={(value) => handleInputChange('batch', value)}
-                >
-                  <SelectTrigger className='focus:ring-0 focus:ring-offset-0'>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {batches.map((batch) => (
-                      <SelectItem key={batch} value={batch}>
-                        {batch}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Input
-                  value={formData.batch}
-                  disabled
-                  className='focus:ring-0 focus:ring-offset-0'
-                />
-              )}
-            </div>
-
-            <div className='space-y-2'>
-              <Label htmlFor='department'>Department *</Label>
-              {isEditing ? (
-                <Select
-                  value={formData.department}
-                  onValueChange={(value) =>
-                    handleInputChange('department', value)
-                  }
-                >
-                  <SelectTrigger className='focus:ring-0 focus:ring-offset-0'>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {departments.map((dept) => (
-                      <SelectItem key={dept} value={dept}>
-                        {dept}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Input
-                  value={formData.department}
-                  disabled
-                  className='focus:ring-0 focus:ring-offset-0'
-                />
-              )}
-            </div>
-
-            <div className='space-y-2'>
-              <Label htmlFor='level'>Academic Level *</Label>
-              {isEditing ? (
-                <Select
-                  value={formData.level}
-                  onValueChange={(value) => handleInputChange('level', value)}
-                >
-                  <SelectTrigger className='focus:ring-0 focus:ring-offset-0'>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {levels.map((level) => (
-                      <SelectItem key={level} value={level}>
-                        {level}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              ) : (
-                <Input
-                  value={formData.level}
-                  disabled
-                  className='focus:ring-0 focus:ring-offset-0'
-                />
-              )}
-            </div>
-          </div>
-
-          {/* Bio */}
-          <div className='space-y-2'>
-            <Label htmlFor='bio'>Bio</Label>
-            <Textarea
-              id='bio'
-              value={formData.bio}
-              onChange={(e) => handleInputChange('bio', e.target.value)}
-              disabled={!isEditing}
-              className='min-h-[100px] resize-none focus:ring-0 focus:ring-offset-0'
-              placeholder='Tell us about yourself...'
-            />
-          </div>
-
-          {/* Social Links */}
-          <div className='space-y-4'>
-            <h4 className='text-lg font-medium'>Social Links</h4>
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-              <div className='space-y-2'>
-                <Label htmlFor='linkedin'>LinkedIn</Label>
-                <Input
-                  id='linkedin'
-                  value={formData.linkedin}
-                  onChange={(e) =>
-                    handleInputChange('linkedin', e.target.value)
-                  }
-                  disabled={!isEditing}
-                  className='focus:ring-0 focus:ring-offset-0'
-                  placeholder='https://linkedin.com/in/username'
-                />
-              </div>
-
-              <div className='space-y-2'>
-                <Label htmlFor='github'>GitHub</Label>
-                <Input
-                  id='github'
-                  value={formData.github}
-                  onChange={(e) => handleInputChange('github', e.target.value)}
-                  disabled={!isEditing}
-                  className='focus:ring-0 focus:ring-offset-0'
-                  placeholder='https://github.com/username'
-                />
-              </div>
-
-              <div className='space-y-2 md:col-span-2'>
-                <Label htmlFor='portfolio'>Portfolio Website</Label>
-                <Input
-                  id='portfolio'
-                  value={formData.portfolio}
-                  onChange={(e) =>
-                    handleInputChange('portfolio', e.target.value)
-                  }
-                  disabled={!isEditing}
-                  className='focus:ring-0 focus:ring-offset-0'
-                  placeholder='https://yourportfolio.com'
-                />
-              </div>
+              <Label htmlFor='dateJoined'>Joined On</Label>
+              <Input
+                id='dateJoined'
+                value={new Date(profile.dateJoined).toLocaleDateString()}
+                disabled
+                className='bg-gray-50'
+              />
             </div>
           </div>
         </CardContent>

@@ -37,14 +37,18 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
                 <span className='font-medium text-gray-800'>
                   {fullName?.trim() || 'Hello!'}
                 </span>
-                <Image
-                  src={photo || ProfileImage}
-                  alt='Profile'
-                  width={40}
-                  height={40}
+                <div
+                  className='h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-gray-300'
                   onClick={() => router.push('/profile')}
-                  className='cursor-pointer rounded-full border border-gray-300 object-cover'
-                />
+                >
+                  <Image
+                    src={photo || ProfileImage}
+                    alt='Profile'
+                    width={40}
+                    height={40}
+                    objectFit='cover'
+                  />
+                </div>
               </>
             ) : (
               <Button asChild variant='default' className='px-6'>

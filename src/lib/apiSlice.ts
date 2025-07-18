@@ -13,7 +13,7 @@ const axiosBaseQuery =
         data,
         params,
         headers,
-        cancelToken: signal
+        cancelToken: signal,
       });
       return { data: result.data };
     } catch (axiosError: any) {
@@ -25,8 +25,8 @@ const axiosBaseQuery =
       return {
         error: {
           status: axiosError?.response?.status,
-          data: axiosError?.response?.data || axiosError?.message
-        }
+          data: axiosError?.response?.data || axiosError?.message,
+        },
       };
     }
   };
@@ -34,10 +34,10 @@ const axiosBaseQuery =
 export const rootAPI = createApi({
   reducerPath: 'rootAPI',
   baseQuery: axiosBaseQuery({
-    URL: baseURL
+    URL: baseURL,
   }),
   endpoints: (builder) => ({
     // Define your endpoints here
   }),
-  tagTypes: []
+  tagTypes: [],
 });

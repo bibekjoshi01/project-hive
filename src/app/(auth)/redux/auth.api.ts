@@ -1,5 +1,5 @@
 import { rootAPI } from '@/lib/apiSlice';
-import { IAuthState, ILoginFormDataType } from './types';
+import { IAuthState, ILoginFormDataType, IProfileResponse } from './types';
 
 export const authAPI = 'public/auth-app';
 
@@ -28,8 +28,28 @@ export const authAPISlice = rootAPI.injectEndpoints({
         data,
       }),
     }),
+    getProfile: builder.query<IProfileResponse, void>({
+      query: () => ({
+        url: `${authAPI}/profile`,
+        method: 'GET',
+      }),
+    }),
+    updateProfile: builder.mutation<void, FormData>({
+      query: (data) => {
+        return {
+          url: `${authAPI}/profile/update`,
+          method: 'PATCH',
+          data,
+        };
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useVerifyOtpMutation, useOAuthMutation } =
-  authAPISlice;
+export const {
+  useLoginMutation,
+  useVerifyOtpMutation,
+  useOAuthMutation,
+  useUpdateProfileMutation,
+  useGetProfileQuery,
+} = authAPISlice;
