@@ -41,7 +41,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
           <div className='flex items-center gap-1 text-sm text-yellow-600'>
             <Star className='h-4 w-4 fill-current' />
-            {project?.ratingAverage}
+            {project?.ratingAverage ? project.ratingAverage.toFixed(1) : 'N/A'}
           </div>
         </div>
         <div className='mt-2 flex items-center gap-4 text-sm text-gray-500'>
@@ -80,8 +80,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
           <div className='mt-4 flex items-center justify-between text-sm text-gray-500'>
             <div className='flex items-center gap-1'>
-              <Eye className='h-4 w-4' />100
-              {/* {project?.views.toLocaleString() || 0} */}
+              <Eye className='h-4 w-4' />
+              {project?.views.toLocaleString() || 0}
             </div>
           </div>
         </div>

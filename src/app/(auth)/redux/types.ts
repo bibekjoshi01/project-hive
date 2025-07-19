@@ -24,3 +24,16 @@ export interface IProfileResponse {
   dateJoined: string;
   userRole: string;
 }
+
+export interface IProject {
+  id: number;
+  title: string;
+  status: string;
+  submittedAt: string;
+  categoryName: string;
+}
+
+export interface IProjectList {
+  count: number;
+  results: IProject[];
+}

@@ -44,6 +44,7 @@ export interface IProjectResponse {
   submittedByFullName: string;
   batchYear: IBatchYearOut;
   ratingAverage: number;
+  views: number;
 }
 
 export interface IProjectList {

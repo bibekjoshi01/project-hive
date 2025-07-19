@@ -1,5 +1,10 @@
 import { rootAPI } from '@/lib/apiSlice';
-import { IAuthState, ILoginFormDataType, IProfileResponse } from './types';
+import {
+  IAuthState,
+  ILoginFormDataType,
+  IProfileResponse,
+  IProjectList,
+} from './types';
 
 export const authAPI = 'public/auth-app';
 
@@ -43,6 +48,12 @@ export const authAPISlice = rootAPI.injectEndpoints({
         };
       },
     }),
+    getUserProject: builder.query<IProjectList, void>({
+      query: () => ({
+        url: `${authAPI}/my-projects`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -51,5 +62,6 @@ export const {
   useVerifyOtpMutation,
   useOAuthMutation,
   useUpdateProfileMutation,
+  useGetUserProjectQuery,
   useGetProfileQuery,
 } = authAPISlice;
