@@ -11,9 +11,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Search, Filter, SortAsc, SortDesc, X } from 'lucide-react';
-import { batches, levels, categories, departments, sortOptions } from './data';
 import { Button } from '@/components/ui/button';
-import type { FilterState } from './types';
+import { FilterState } from './redux/types';
+import {
+  useGetProjectBatchYearsQuery,
+  useGetProjectCategoriesQuery,
+  useGetProjectDepartmentsQuery,
+} from './redux/project.api';
 
 interface SearchAndFiltersProps {
   filters: FilterState;
@@ -25,6 +29,13 @@ interface SearchAndFiltersProps {
   clearFilters: () => void;
 }
 
+export const sortOptions = [
+  { value: 'submitted_at', label: 'Published Date' },
+  { value: 'title', label: 'Project Title' },
+  { value: 'avg_rating', label: 'Rating' },
+];
+export const levels = ['Undergraduate', 'Graduate', 'PhD', 'Diploma'];
+
 const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   filters,
   showFilters,
@@ -34,6 +45,10 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   toggleSortOrder,
   clearFilters,
 }) => {
+  const { data: categoryData } = useGetProjectCategoriesQuery();
+  const { data: departmentData } = useGetProjectDepartmentsQuery();
+  const { data: batchYearData } = useGetProjectBatchYearsQuery();
+
   return (
     <>
       {/* Search Bar and Controls Row */}
@@ -47,7 +62,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               placeholder='Search projects by title, description, author, or keywords...'
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className='h-12 rounded-lg border-2 border-gray-200 pr-4 pl-12 text-base focus:border-black focus:shadow-none focus:ring-0 focus:outline-none lg:focus:ring-0'
+              className='h-12 rounded-lg border-1 border-gray-200 pr-4 pl-12 text-base focus:border-black focus:shadow-none focus:ring-0 focus:outline-none lg:focus:ring-0'
             />
           </div>
 
@@ -57,7 +72,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
             <Button
               variant='outline'
               onClick={() => setShowFilters(!showFilters)}
-              className='flex h-12 items-center gap-2 rounded-lg border-2 border-gray-200 px-4 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+              className='flex h-12 items-center gap-2 rounded-lg border-1 border-gray-200 px-4 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
             >
               <Filter className='h-4 w-4' />
               Filters
@@ -80,7 +95,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 value={filters.sortBy}
                 onValueChange={(value) => handleFilterChange('sortBy', value)}
               >
-                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-gray-800 focus:shadow-none focus:ring-0 focus:outline-none'>
+                <SelectTrigger className='h-12 w-full rounded-lg border-1 border-gray-200 focus:border-gray-800 focus:shadow-none focus:ring-0 focus:outline-none'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -95,7 +110,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 variant='outline'
                 size='sm'
                 onClick={toggleSortOrder}
-                className='h-12 w-12 rounded-lg border-2 border-gray-200 bg-transparent p-0 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+                className='h-12 w-12 rounded-lg border-1 border-gray-200 bg-transparent p-0 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
               >
                 {filters.sortOrder === 'asc' ? (
                   <SortAsc className='h-4 w-4' />
@@ -110,7 +125,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               <Button
                 variant='ghost'
                 onClick={clearFilters}
-                className='h-12 rounded-lg border-2 border-transparent text-gray-500 hover:border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+                className='h-12 cursor-pointer rounded-lg border-1 border-transparent text-gray-500 hover:border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
               >
                 <X className='mr-1 h-4 w-4' />
                 Clear All
@@ -122,7 +137,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className='mb-6 rounded-lg border-2 border-gray-200 bg-gray-50/50 p-6'>
+        <div className='mb-6 rounded-lg border-1 border-gray-200 bg-gray-50/50 p-6'>
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
             {/* Batch Filter */}
             <div className='w-full'>
@@ -132,14 +147,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                   handleFilterChange('batch', value === 'all' ? '' : value)
                 }
               >
-                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                <SelectTrigger className='h-12 w-full rounded-lg border-1 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
                   <SelectValue placeholder='All Batches' />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='all'>All Batches</SelectItem>
-                  {batches.map((batch) => (
-                    <SelectItem key={batch} value={batch}>
-                      {batch}
+                  {batchYearData?.results?.map((batch) => (
+                    <SelectItem key={batch.id} value={String(batch.id)}>
+                      {batch.year}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -154,14 +169,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                   handleFilterChange('department', value === 'all' ? '' : value)
                 }
               >
-                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                <SelectTrigger className='h-12 w-full rounded-lg border-1 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
                   <SelectValue placeholder='All Departments' />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='all'>All Departments</SelectItem>
-                  {departments.map((dept) => (
-                    <SelectItem key={dept} value={dept}>
-                      {dept}
+                  {departmentData?.results.map((dept) => (
+                    <SelectItem key={dept.id} value={String(dept.id)}>
+                      {dept.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -176,14 +191,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                   handleFilterChange('category', value === 'all' ? '' : value)
                 }
               >
-                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                <SelectTrigger className='h-12 w-full rounded-lg border-1 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
                   <SelectValue placeholder='All Categories' />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value='all'>All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
+                  {categoryData?.results.map((cat) => (
+                    <SelectItem key={cat.id} value={String(cat.id)}>
+                      {cat.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -198,7 +213,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                   handleFilterChange('level', value === 'all' ? '' : value)
                 }
               >
-                <SelectTrigger className='h-12 w-full rounded-lg border-2 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
+                <SelectTrigger className='h-12 w-full rounded-lg border-1 border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'>
                   <SelectValue placeholder='All Levels' />
                 </SelectTrigger>
                 <SelectContent>

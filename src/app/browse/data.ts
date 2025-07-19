@@ -1,7 +1,5 @@
-import { Project } from './types';
-
 // Sample project data
-export const projects: Project[] = [
+export const projects = [
   {
     id: 1,
     title:
@@ -249,11 +247,3 @@ export const categories = [
   'Hardware Project',
 ];
 export const levels = ['Undergraduate', 'Graduate', 'PhD', 'Diploma'];
-export const sortOptions = [
-  { value: 'date', label: 'Date Created' },
-  { value: 'title', label: 'Project Title' },
-  { value: 'author', label: 'Author Name' },
-  { value: 'department', label: 'Department' },
-  { value: 'rating', label: 'Rating' },
-  { value: 'views', label: 'Views' },
-];
