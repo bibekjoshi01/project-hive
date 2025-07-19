@@ -54,7 +54,7 @@ export default function MyProjects() {
   return (
     <div className='space-y-6'>
       <div className='flex items-center justify-between'>
-        <h1 className='text-2xl font-bold'>My Projects</h1>
+        <h3 className='text-lg font-bold'>My Projects</h3>
         <Button
           className='cursor-pointer'
           onClick={() => (window.location.href = '/submit-project')}

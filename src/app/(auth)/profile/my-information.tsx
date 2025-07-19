@@ -170,7 +170,7 @@ export default function MyInformation() {
 
   return (
     <div className='space-y-6'>
-      <Card className='border-none shadow-none'>
+      <Card className='border-none px-0 shadow-none'>
         <CardHeader className='relative'>
           <CardTitle>Profile Information</CardTitle>
           {!isEditing && (
