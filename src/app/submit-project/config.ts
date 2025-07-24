@@ -39,10 +39,14 @@ export const basicInfoSchema = z.object({
     .refine((val) => val.trim().split(/\s+/).filter(Boolean).length <= 100, {
       message: 'Maximum 100 words are required.',
     }),
-  batch: z.object({id: z.number(), year: z.number()}),
-  department: z.object({id: z.number(), name: z.string()}),
-  level: z.object({...Object.create(ELevels)}),
-  category: z.object({id: z.number(), name: z.string(), projectCount: z.number()}),
+  batch: z.object({ id: z.number(), year: z.number() }),
+  department: z.object({ id: z.number(), name: z.string() }),
+  level: z.enum(Object.keys(ELevels) as [string, ...string[]]),
+  category: z.object({
+    id: z.number(),
+    name: z.string(),
+    projectCount: z.number(),
+  }),
   supervisor: z.string().optional(),
   teamMembers: z
     .array(teamMemberSchema)

@@ -21,14 +21,14 @@ export interface ICategory {
   projectCount: number;
 }
 
-interface Response<T>{
+interface Response<T> {
   count: number;
   results: T[];
 }
 
-export type IDepartmentsResponse = Response<IDepartment>
-export type ICategoriesResponse = Response<ICategory>
-export type IBatchesResponse = Response<IBatch>
+export type IDepartmentsResponse = Response<IDepartment>;
+export type ICategoriesResponse = Response<ICategory>;
+export type IBatchesResponse = Response<IBatch>;
 
 export interface TeamMember {
   id: string;
@@ -43,18 +43,13 @@ export interface IFile {
   file: string | null | File;
 }
 
-export interface ILevel {
-  id: string;
-  val: string;
-}
-
 export interface ProjectFormData {
   // Basic Info
   title: string;
   abstract: string;
   batch: IBatch;
   department: IDepartment;
-  level: ILevel;
+  level: ELevels;
   category: ICategory;
   supervisor: string;
   teamMembers: TeamMember[];
@@ -77,4 +72,3 @@ export interface ProjectFormData {
   isPublic: boolean;
   allowDownloads: boolean;
 }
-

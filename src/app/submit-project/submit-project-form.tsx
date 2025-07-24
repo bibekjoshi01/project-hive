@@ -27,6 +27,7 @@ import {
   technicalDetailsSchema,
 } from './config';
 import { useSubmitProjectMutation } from './redux/api.project';
+import { ELevels } from './types';
 
 type Step = (typeof STEPS)[number]['id'];
 
@@ -39,7 +40,7 @@ export default function SubmitProjectForm() {
       abstract: '',
       batch: {},
       department: {},
-      level: {},
+      level: ELevels.UNDERGRADUATE,
       category: {},
       supervisor: '',
       teamMembers: [

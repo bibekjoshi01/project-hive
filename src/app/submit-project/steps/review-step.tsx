@@ -42,7 +42,7 @@ export default function ReviewStep() {
             <Info label='Supervisor' value={data.supervisor || '—'} />
             <Info label='Batch' value={String(data.batch.year)} />
             <Info label='Department' value={data.department.name} />
-            <Info label='Level' value={data.level.val} />
+            <Info label='Level' value={data.level} />
           </div>
 
           <Info label='Category'>

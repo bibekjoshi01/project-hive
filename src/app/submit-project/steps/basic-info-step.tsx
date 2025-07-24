@@ -183,7 +183,7 @@ export default function BasicInfoStep() {
         <div className='space-y-2'>
           <Select
             onValueChange={(value) =>
-              setValue('level', JSON.parse(value) as ELevels, {
+              setValue('level', value as ELevels, {
                 shouldValidate: true,
                 shouldDirty: true,
               })
@@ -194,8 +194,8 @@ export default function BasicInfoStep() {
             </SelectTrigger>
             <SelectContent>
               {Object.entries(levels).map(([key, val]) => (
-                <SelectItem key={key} value={JSON.stringify({ key, val })}>
-                  {val}
+                <SelectItem key={key} value={key}>
+                  {val as string}
                 </SelectItem>
               ))}
             </SelectContent>
