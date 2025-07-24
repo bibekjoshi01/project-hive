@@ -18,11 +18,11 @@ export const homeAPISlice = rootAPI.injectEndpoints({
     getBatches: builder.query<IBatchesResponse, void>({
       query: () => ({ url: `${projectAPI}/batch-years` }),
     }),
-    submitProject: builder.mutation<void, void>({
+    submitProject: builder.mutation<void, SubmitProjectPayload>({
       query: (data) => ({
         url: `${projectAPI}/submit-project`,
         method: 'POST',
-        data
+        data,
       }),
     }),
   }),
@@ -34,3 +34,17 @@ export const {
   useSubmitProjectMutation,
   useGetBatchesQuery,
 } = homeAPISlice;
+
+export interface SubmitProjectPayload {
+  title: string;
+  abstract: string;
+  batch_year: number;
+  category: number;
+  department: number;
+  level: 'Masters' | 'Bachelors' | 'PHD';
+  supervisor?: string;
+  project_details: string;
+  technologies_used: string;
+  github_link?: string;
+  documentation_link?: string;
+}

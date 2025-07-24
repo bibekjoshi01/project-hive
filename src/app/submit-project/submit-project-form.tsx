@@ -28,6 +28,23 @@ import {
 } from './config';
 import { useSubmitProjectMutation } from './redux/api.project';
 import { ELevels } from './types';
+import { useSnackbar } from 'notistack';
+
+const preparePayload = (data: ProjectFormData) => {
+  return {
+    title: data.title,
+    abstract: data.abstract,
+    batch_year: data.batch?.id,
+    category: data.category?.id,
+    department: data.department?.id,
+    level: data.level,
+    supervisor: data.supervisor || 'Not Assigned',
+    project_details: data.description,
+    technologies_used: data.technologies,
+    github_link: data.githubUrl || null,
+    documentation_link: data.documentationUrl || null,
+  };
+};
 
 type Step = (typeof STEPS)[number]['id'];
 
@@ -61,6 +78,8 @@ export default function SubmitProjectForm() {
   });
 
   const [currentStep, setCurrentStep] = useState<Step>(1);
+  const { enqueueSnackbar } = useSnackbar();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validateStep = async () => {
     let stepSchema: z.ZodTypeAny;
@@ -103,89 +122,101 @@ export default function SubmitProjectForm() {
   const [submitProject, { isLoading }] = useSubmitProjectMutation();
 
   const onSubmit: SubmitHandler<ProjectFormData> = async (data) => {
-    
+    try {
+      const payload = preparePayload(data);
+      await submitProject(payload).unwrap();
+      enqueueSnackbar('Project submitted successfully!', {
+        variant: 'success',
+      });
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Submission error:', error);
+      enqueueSnackbar('Failed to submit project. Please check your data.', {
+        variant: 'error',
+      });
+    }
   };
 
   const progress = (currentStep / STEPS.length) * 100;
 
-  // if (isSubmitted) return <SubmissionSuccess />;
+  if (isSubmitted) return <SubmissionSuccess />;
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className='space-y-6'>
-        {/* Progress Header */}
-        <Card>
-          <CardHeader className='pb-4'>
-            <div className='mb-4 flex items-center justify-between'>
-              <CardTitle className='text-lg'>
-                Step {currentStep} of {STEPS.length}
-              </CardTitle>
-              <span className='text-sm text-gray-500'>
-                {Math.round(progress)}% Complete
-              </span>
-            </div>
-            <Progress value={progress} className='mb-4' />
-            <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
-              {STEPS.map((step) => (
-                <div
-                  key={step.id}
-                  className={`rounded-lg border-2 p-3 text-center transition-colors ${
-                    step.id === currentStep
-                      ? 'border-black bg-black text-white'
-                      : step.id < currentStep
-                        ? 'border-green-500 bg-green-50 text-green-700'
-                        : 'border-gray-200 bg-gray-50 text-gray-500'
-                  }`}
-                >
-                  <div className='text-sm font-medium'>{step.title}</div>
-                </div>
-              ))}
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Form Content */}
-        <Card>
-          <CardContent className='px-6 py-2'>
-            {currentStep === 1 && <BasicInfoStep />}
-            {currentStep === 2 && <ProjectDetailsStep />}
-            {currentStep === 3 && <TechnicalDetailsStep />}
-            {currentStep === 4 && <ReviewStep />}
-          </CardContent>
-        </Card>
-
-        {/* Navigation */}
-        <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center justify-between'>
-              {currentStep !== 1 ? (
-                <Button
-                  variant='outline'
-                  onClick={prevStep}
-                  type='button'
-                  className='flex cursor-pointer items-center gap-2'
-                >
-                  <ChevronLeft className='h-4 w-4' />
-                  Previous
-                </Button>
-              ) : (
-                <div />
-              )}
-
-              <div className='text-sm text-gray-500'>
-                Step {currentStep} of {STEPS.length}
+      {/* Progress Header */}
+      <Card className='mb-4 shadow-none'>
+        <CardHeader className='pb-4'>
+          <div className='mb-4 flex items-center justify-between'>
+            <CardTitle className='text-lg'>
+              Step {currentStep} of {STEPS.length}
+            </CardTitle>
+            <span className='text-sm text-gray-500'>
+              {Math.round(progress)}% Complete
+            </span>
+          </div>
+          <Progress value={progress} className='mb-4' />
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+            {STEPS.map((step) => (
+              <div
+                key={step.id}
+                className={`rounded-lg border-2 p-3 text-center transition-colors ${
+                  step.id === currentStep
+                    ? 'border-black bg-black text-white'
+                    : step.id < currentStep
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-gray-200 bg-gray-50 text-gray-500'
+                }`}
+              >
+                <div className='text-sm font-medium'>{step.title}</div>
               </div>
+            ))}
+          </div>
+        </CardHeader>
+      </Card>
 
-              {currentStep < STEPS.length ? (
-                <Button
-                  onClick={nextStep}
-                  type='button'
-                  className='flex cursor-pointer items-center gap-2'
-                >
-                  Next
-                  <ChevronRight className='h-4 w-4' />
-                </Button>
-              ) : (
+      {/* Form Content */}
+      <Card className='mb-4 shadow-none'>
+        <CardContent className='px-6 py-2'>
+          {currentStep === 1 && <BasicInfoStep />}
+          {currentStep === 2 && <ProjectDetailsStep />}
+          {currentStep === 3 && <TechnicalDetailsStep />}
+          {currentStep === 4 && <ReviewStep />}
+        </CardContent>
+      </Card>
+
+      {/* Navigation */}
+      <Card className='mb-4 shadow-none'>
+        <CardContent className='p-4'>
+          <div className='flex items-center justify-between'>
+            {currentStep !== 1 ? (
+              <Button
+                variant='outline'
+                onClick={prevStep}
+                type='button'
+                className='flex cursor-pointer items-center gap-2'
+              >
+                <ChevronLeft className='h-4 w-4' />
+                Previous
+              </Button>
+            ) : (
+              <div />
+            )}
+
+            <div className='text-sm text-gray-500'>
+              Step {currentStep} of {STEPS.length}
+            </div>
+
+            {currentStep < STEPS.length ? (
+              <Button
+                onClick={nextStep}
+                type='button'
+                className='flex cursor-pointer items-center gap-2'
+              >
+                Next
+                <ChevronRight className='h-4 w-4' />
+              </Button>
+            ) : (
+              <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Button
                   type='submit'
                   disabled={isLoading}
@@ -193,11 +224,11 @@ export default function SubmitProjectForm() {
                 >
                   {isLoading ? 'Submitting...' : 'Submit Project'}
                 </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </form>
+              </form>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </FormProvider>
   );
 }

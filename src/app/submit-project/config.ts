@@ -30,15 +30,15 @@ export const projectFileSchema = z.object({
 });
 
 export const basicInfoSchema = z.object({
-  title: z.string().min(3, 'Title is required'),
+  title: z
+    .string()
+    .min(3, 'Title is required')
+    .max(255, 'Title cannot exceed 255 characters'),
+
   abstract: z
     .string()
-    .refine((val) => val.trim().split(/\s+/).filter(Boolean).length >= 50, {
-      message: 'Minimum 50 words are required.',
-    })
-    .refine((val) => val.trim().split(/\s+/).filter(Boolean).length <= 100, {
-      message: 'Maximum 100 words are required.',
-    }),
+    .min(100, { message: 'Minimum 100 characters are required.' })
+    .max(500, { message: 'Maximum 500 characters are allowed.' }),
   batch: z.object({ id: z.number(), year: z.number() }),
   department: z.object({ id: z.number(), name: z.string() }),
   level: z.enum(Object.keys(ELevels) as [string, ...string[]]),

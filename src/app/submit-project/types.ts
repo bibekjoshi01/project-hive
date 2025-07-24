@@ -9,10 +9,9 @@ export interface IDepartment {
 }
 
 export enum ELevels {
-  UNDERGRADUATE = 'Undergraduate',
-  GRADUATE = 'Graduate',
-  PHD = 'Phd',
-  DIPLOMA = 'Diploma',
+  Masters = 'Masters',
+  Bachelors = 'Bachelors',
+  PHD = 'PHD',
 }
 
 export interface ICategory {

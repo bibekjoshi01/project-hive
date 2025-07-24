@@ -42,10 +42,7 @@ export default function BasicInfoStep() {
   });
 
   const watchedAbstract = watch('abstract', '');
-  const wordCount = watchedAbstract
-    .trim()
-    .split(/\s+/)
-    .filter((word) => word.length > 0).length;
+  const charCount = watchedAbstract.length;
 
   const addTeamMember = () => {
     append({
@@ -90,15 +87,15 @@ export default function BasicInfoStep() {
           id='abstract'
           placeholder='Provide a brief description of your project.'
           className='min-h-[120px] resize-none'
-          maxLength={1000}
+          maxLength={500} // enforce max 500 chars
           {...register('abstract')}
         />
         <div className='flex justify-between text-sm text-gray-500'>
           {errors.abstract && (
             <p className='text-xs text-red-400'>{errors.abstract.message}</p>
           )}
-          <span className={wordCount > 300 ? 'text-red-500' : ''}>
-            {wordCount}/100 words
+          <span className={charCount > 500 ? 'text-red-500' : ''}>
+            {charCount}/500 Characters
           </span>
         </div>
       </div>

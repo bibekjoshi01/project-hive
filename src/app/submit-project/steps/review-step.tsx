@@ -14,7 +14,7 @@ export default function ReviewStep() {
   const { getValues } = useFormContext<ProjectFormData>();
   const data = getValues() as FormDataWithTech;
 
-  console.log(data)
+  console.log(data);
 
   const technologies =
     typeof data.technologies === 'string'
@@ -29,7 +29,7 @@ export default function ReviewStep() {
       <h2 className='mb-8 text-xl font-semibold'>Review &amp; Submit</h2>
 
       {/* ---------- Basic Info ---------- */}
-      <Card>
+      <Card className='mb-4 shadow-none'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2 text-lg'>
             <CheckCircle className='h-5 w-5 text-green-500' />
@@ -65,7 +65,7 @@ export default function ReviewStep() {
       </Card>
 
       {/* ---------- Technical Details ---------- */}
-      <Card>
+      <Card className='shadow-none'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2 text-lg'>
             <CheckCircle className='h-5 w-5 text-green-500' />
