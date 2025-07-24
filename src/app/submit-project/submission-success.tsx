@@ -17,7 +17,7 @@ const SubmissionSuccess = () => {
         </p>
         <div className='flex gap-4'>
           <Button
-            onClick={() => (window.location.href = '/browse-projects')}
+            onClick={() => (window.location.href = '/browse')}
             className='flex-1 cursor-pointer'
           >
             Browse Projects

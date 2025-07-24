@@ -8,7 +8,12 @@ import {
   PUBLIC_ACCESS_TOKEN,
   PUBLIC_REFRESH_TOKEN,
 } from '../constants/public/tokens';
-import { HOME, PROFILE, LOGIN } from '@/constants/public/routes';
+import {
+  HOME,
+  PROFILE,
+  LOGIN,
+  PROJECT_SUBMIT,
+} from '@/constants/public/routes';
 
 export function publicMiddleware(middleware: NextMiddleware) {
   return async (request: NextRequest, event: NextFetchEvent) => {
@@ -27,13 +32,13 @@ export function publicMiddleware(middleware: NextMiddleware) {
     response.cookies.set('CONTEXT_TYPE', 'public');
 
     // Protected Route Handling
-    const protectedRoutes = [PROFILE];
+    const protectedRoutes = [PROFILE, PROJECT_SUBMIT];
     const isProtectedPath = protectedRoutes.some((pathname) =>
       path.startsWith(pathname),
     );
 
     if (isProtectedPath && !accessToken) {
-      const redirectResp = NextResponse.redirect(new URL(HOME, request.url));
+      const redirectResp = NextResponse.redirect(new URL(LOGIN, request.url));
       redirectResp.cookies.delete(PUBLIC_REFRESH_TOKEN);
       return redirectResp;
     }

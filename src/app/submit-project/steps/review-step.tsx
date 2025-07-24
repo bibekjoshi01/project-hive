@@ -14,6 +14,8 @@ export default function ReviewStep() {
   const { getValues } = useFormContext<ProjectFormData>();
   const data = getValues() as FormDataWithTech;
 
+  console.log(data)
+
   const technologies =
     typeof data.technologies === 'string'
       ? data.technologies
@@ -38,14 +40,14 @@ export default function ReviewStep() {
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <Info label='Project Title' value={data.title} />
             <Info label='Supervisor' value={data.supervisor || '—'} />
-            <Info label='Batch' value={data.batch} />
-            <Info label='Department' value={data.department} />
-            <Info label='Level' value={data.level} />
+            <Info label='Batch' value={String(data.batch.year)} />
+            <Info label='Department' value={data.department.name} />
+            <Info label='Level' value={data.level.val} />
           </div>
 
           <Info label='Category'>
             <Badge variant='outline' className='mt-1'>
-              {data.category}
+              {data.category.name}
             </Badge>
           </Info>
 

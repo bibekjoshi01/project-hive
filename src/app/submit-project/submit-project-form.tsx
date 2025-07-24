@@ -26,6 +26,7 @@ import {
   STEPS,
   technicalDetailsSchema,
 } from './config';
+import { useSubmitProjectMutation } from './redux/api.project';
 
 type Step = (typeof STEPS)[number]['id'];
 
@@ -36,10 +37,10 @@ export default function SubmitProjectForm() {
       // Basic Info
       title: '',
       abstract: '',
-      batch: '',
-      department: '',
-      level: '',
-      category: '',
+      batch: {},
+      department: {},
+      level: {},
+      category: {},
       supervisor: '',
       teamMembers: [
         { id: Date.now().toString(), fullName: '', rollNo: '', photo: null },
@@ -59,8 +60,6 @@ export default function SubmitProjectForm() {
   });
 
   const [currentStep, setCurrentStep] = useState<Step>(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const validateStep = async () => {
     let stepSchema: z.ZodTypeAny;
@@ -100,18 +99,15 @@ export default function SubmitProjectForm() {
   const prevStep = () =>
     setCurrentStep((s): Step => (s > 1 ? ((s - 1) as Step) : s));
 
+  const [submitProject, { isLoading }] = useSubmitProjectMutation();
+
   const onSubmit: SubmitHandler<ProjectFormData> = async (data) => {
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 2000));
-    console.log('🚀 ~ SubmitProjectForm ~ data:', data);
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+    
   };
 
   const progress = (currentStep / STEPS.length) * 100;
 
-  if (isSubmitted) return <SubmissionSuccess />;
+  // if (isSubmitted) return <SubmissionSuccess />;
 
   return (
     <FormProvider {...methods}>
@@ -191,10 +187,10 @@ export default function SubmitProjectForm() {
               ) : (
                 <Button
                   type='submit'
-                  disabled={isSubmitting || !methods.formState.isValid}
+                  disabled={isLoading}
                   className='flex cursor-pointer items-center gap-2'
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit Project'}
+                  {isLoading ? 'Submitting...' : 'Submit Project'}
                 </Button>
               )}
             </div>

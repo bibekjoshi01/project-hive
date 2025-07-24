@@ -43,6 +43,7 @@ export const projectAPISlice = rootAPI.injectEndpoints({
       query: () => ({ url: `${projectAPI}/batch-years` }),
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {

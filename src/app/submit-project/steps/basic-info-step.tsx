@@ -8,15 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { batches, departments, levels, categories } from '../../browse/data';
-import type { ProjectFormData } from '../types';
+import type {
+  ELevels,
+  IBatch,
+  ICategory,
+  IDepartment,
+  ProjectFormData,
+} from '../types';
 import { Button } from '@/components/ui/button';
 import { Camera, Plus, Upload, X } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Image from 'next/image';
+import { useData } from '../hooks/useData';
 
 export default function BasicInfoStep() {
+  const { batches, departments, levels, categories, loading } = useData();
+
   const {
     register,
     control,
@@ -99,9 +107,8 @@ export default function BasicInfoStep() {
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <div className='space-y-2'>
           <Select
-            value={watch('batch') || ''}
             onValueChange={(value) =>
-              setValue('batch', value, {
+              setValue('batch', JSON.parse(value) as IBatch, {
                 shouldValidate: true,
                 shouldDirty: true,
               })
@@ -112,8 +119,8 @@ export default function BasicInfoStep() {
             </SelectTrigger>
             <SelectContent>
               {batches.map((batch) => (
-                <SelectItem key={batch} value={batch}>
-                  {batch}
+                <SelectItem key={batch.id} value={JSON.stringify(batch)}>
+                  {batch.year}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -125,9 +132,8 @@ export default function BasicInfoStep() {
 
         <div className='space-y-2'>
           <Select
-            value={watch('category') || ''}
             onValueChange={(value) =>
-              setValue('category', value, {
+              setValue('category', JSON.parse(value) as ICategory, {
                 shouldValidate: true,
                 shouldDirty: true,
               })
@@ -138,8 +144,8 @@ export default function BasicInfoStep() {
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
+                <SelectItem key={category.id} value={JSON.stringify(category)}>
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -151,9 +157,8 @@ export default function BasicInfoStep() {
 
         <div className='space-y-2'>
           <Select
-            value={watch('department') || ''}
             onValueChange={(value) =>
-              setValue('department', value, {
+              setValue('department', JSON.parse(value) as IDepartment, {
                 shouldValidate: true,
                 shouldDirty: true,
               })
@@ -164,8 +169,8 @@ export default function BasicInfoStep() {
             </SelectTrigger>
             <SelectContent>
               {departments.map((dept) => (
-                <SelectItem key={dept} value={dept}>
-                  {dept}
+                <SelectItem key={dept.id} value={JSON.stringify(dept)}>
+                  {dept.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -177,9 +182,8 @@ export default function BasicInfoStep() {
 
         <div className='space-y-2'>
           <Select
-            value={watch('level') || ''}
             onValueChange={(value) =>
-              setValue('level', value, {
+              setValue('level', JSON.parse(value) as ELevels, {
                 shouldValidate: true,
                 shouldDirty: true,
               })
@@ -189,9 +193,9 @@ export default function BasicInfoStep() {
               <SelectValue placeholder='Select academic level' />
             </SelectTrigger>
             <SelectContent>
-              {levels.map((level) => (
-                <SelectItem key={level} value={level}>
-                  {level}
+              {Object.entries(levels).map(([key, val]) => (
+                <SelectItem key={key} value={JSON.stringify({ key, val })}>
+                  {val}
                 </SelectItem>
               ))}
             </SelectContent>

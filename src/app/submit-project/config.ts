@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ELevels } from './types';
 
 export const teamMemberSchema = z.object({
   id: z.string(),
@@ -38,10 +39,10 @@ export const basicInfoSchema = z.object({
     .refine((val) => val.trim().split(/\s+/).filter(Boolean).length <= 100, {
       message: 'Maximum 100 words are required.',
     }),
-  batch: z.string().min(1, 'Batch is required'),
-  department: z.string().min(1, 'Department is required'),
-  level: z.string().min(1, 'Level is required'),
-  category: z.string().min(1, 'Category is required'),
+  batch: z.object({id: z.number(), year: z.number()}),
+  department: z.object({id: z.number(), name: z.string()}),
+  level: z.object({...Object.create(ELevels)}),
+  category: z.object({id: z.number(), name: z.string(), projectCount: z.number()}),
   supervisor: z.string().optional(),
   teamMembers: z
     .array(teamMemberSchema)
