@@ -57,7 +57,7 @@ export default function SubmitProjectForm() {
       abstract: '',
       batch: {},
       department: {},
-      level: ELevels.UNDERGRADUATE,
+      level: ELevels.Bachelors,
       category: {},
       supervisor: '',
       teamMembers: [
