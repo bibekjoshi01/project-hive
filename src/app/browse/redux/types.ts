@@ -63,3 +63,38 @@ export interface FilterState {
   limit: number;
   offset: number;
 }
+
+export interface ITeamMember {
+  id: number;
+  fullName: string;
+  rollNo: string;
+  photo?: string;
+}
+
+export interface IProjectFile {
+  id: number;
+  type: string;
+  file: string;
+}
+
+export interface IProjectDetail {
+  id: number;
+  title: string;
+  abstract: string;
+  description: string; 
+  batch: string; 
+  department: string;
+  level: string;
+  category: string; 
+  supervisor: string;
+  teamMembers: ITeamMember[];
+  submittedBy: string;
+  technologies: string[]; 
+  githubLinks: string[]; 
+  documentationUrl?: string; 
+  files: IProjectFile[];
+  submittedDate: string; 
+  views: number;
+  rating: number; 
+  totalRatings: number; 
+}

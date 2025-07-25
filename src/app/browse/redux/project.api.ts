@@ -1,9 +1,9 @@
 import { rootAPI } from '@/lib/apiSlice';
 import {
-  FilterState,
   IBatchYearList,
   ICategoryList,
   IDepartmentList,
+  IProjectDetail,
   IProjectList,
 } from './types';
 
@@ -42,6 +42,11 @@ export const projectAPISlice = rootAPI.injectEndpoints({
     getProjectBatchYears: builder.query<IBatchYearList, void>({
       query: () => ({ url: `${projectAPI}/batch-years` }),
     }),
+    getProjectDetail: builder.query<IProjectDetail, string>({
+      query: (projectId) => ({
+        url: `${projectAPI}/projects/${projectId}`,
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -50,5 +55,6 @@ export const {
   useGetProjectsQuery,
   useGetProjectCategoriesQuery,
   useGetProjectBatchYearsQuery,
+  useGetProjectDetailQuery,
   useGetProjectDepartmentsQuery,
 } = projectAPISlice;

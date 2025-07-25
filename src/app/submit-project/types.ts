@@ -55,15 +55,10 @@ export interface ProjectFormData {
 
   // Project Details
   description: string;
-  objectives: string;
-  features: string[];
-  challenges: string;
-  outcomes: string;
 
   // Technical Details
   technologies: string[];
   githubUrl: string;
-  liveUrl: string;
   documentationUrl: string;
   files: IFile[];
 

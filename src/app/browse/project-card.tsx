@@ -6,12 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { IProjectResponse } from './redux/types';
+import { useRouter } from 'next/navigation';
 
 type ProjectCardProps = {
   project: IProjectResponse;
 };
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  const router = useRouter();
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -27,7 +30,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   };
 
   return (
-    <Card className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'>
+    <Card
+      onClick={() => router.push(`/browse/${project.id}`)}
+      className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'
+    >
       <CardHeader className='p-0 pb-1'>
         <div className='flex items-start justify-between'>
           <Link
