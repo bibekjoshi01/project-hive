@@ -55,10 +55,10 @@ export default function SubmitProjectForm() {
       // Basic Info
       title: '',
       abstract: '',
-      batch: {},
-      department: {},
+      batch: null,
+      department: null,
       level: ELevels.Bachelors,
-      category: {},
+      category: null,
       supervisor: '',
       teamMembers: [
         { id: Date.now().toString(), fullName: '', rollNo: '', photo: null },
@@ -70,9 +70,6 @@ export default function SubmitProjectForm() {
       githubUrl: '',
       documentationUrl: '',
       files: [{ id: Date.now().toString(), type: 'Other Info', file: null }],
-      // Additional
-      isPublic: true,
-      allowDownloads: true,
     },
     mode: 'onBlur',
   });

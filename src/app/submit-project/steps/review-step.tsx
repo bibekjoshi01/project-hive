@@ -14,8 +14,6 @@ export default function ReviewStep() {
   const { getValues } = useFormContext<ProjectFormData>();
   const data = getValues() as FormDataWithTech;
 
-  console.log(data);
-
   const technologies =
     typeof data.technologies === 'string'
       ? data.technologies
@@ -87,25 +85,19 @@ export default function ReviewStep() {
           )}
 
           <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
-            <LinkRow icon={Github} url={data.githubUrl} label='GitHub' />
-            <LinkRow icon={Globe} url={data.liveUrl} label='Live Demo' />
+            {data.githubUrl?.split(',').map((url: string, index: number) => (
+              <LinkRow
+                key={index}
+                icon={Github}
+                url={url.trim()}
+                label={`GitHub ${index + 1}`}
+              />
+            ))}
             <LinkRow
               icon={ExternalLink}
               url={data.documentationUrl}
               label='Documentation'
             />
-          </div>
-
-          <div className='space-y-2'>
-            <p className='text-sm text-gray-500'>Project Settings</p>
-            <div className='flex gap-4'>
-              <Badge variant={data.isPublic ? 'default' : 'secondary'}>
-                {data.isPublic ? 'Public' : 'Private'}
-              </Badge>
-              <Badge variant={data.allowDownloads ? 'default' : 'secondary'}>
-                {data.allowDownloads ? 'Downloads Allowed' : 'No Downloads'}
-              </Badge>
-            </div>
           </div>
         </CardContent>
       </Card>

@@ -14,12 +14,12 @@ export const projectAPISlice = rootAPI.injectEndpoints({
     getProjects: builder.query<IProjectList, any>({
       query: (params) => {
         const queryString = new URLSearchParams();
-        console.log('API Params:', params);
 
         if (params.department)
           queryString.set('department_id', params.department);
         if (params.batch) queryString.set('batch_year_id', params.batch);
         if (params.category) queryString.set('category_id', params.category);
+        if (params.level) queryString.set('level', params.level);
         if (params.search) queryString.set('search', params.search);
         if (params.ordering) queryString.set('ordering', params.ordering);
         if (params.limit !== undefined)

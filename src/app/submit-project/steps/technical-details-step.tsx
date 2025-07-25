@@ -117,7 +117,7 @@ export default function TechnicalDetailsStep() {
                 className='max-w-xs text-xs leading-snug'
               >
                 If you have several repositories, separate the URLs with commas
-                (e.g. <code>repo1, repo2, repo3</code>).
+                (e.g. <code>repo1, repo2, repo3</code>).
               </TooltipContent>
             </Tooltip>
           </div>
@@ -263,45 +263,6 @@ export default function TechnicalDetailsStep() {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Project Settings */}
-      <div className='space-y-4'>
-        <Label>Project Settings</Label>
-
-        <Controller
-          control={control}
-          name='isPublic'
-          render={({ field }) => (
-            <div className='flex items-center space-x-2'>
-              <Checkbox
-                id='isPublic'
-                checked={field.value}
-                onCheckedChange={(v) => field.onChange(v as boolean)}
-              />
-              <Label htmlFor='isPublic' className='text-sm font-normal'>
-                Make this project publicly visible
-              </Label>
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name='allowDownloads'
-          render={({ field }) => (
-            <div className='flex items-center space-x-2'>
-              <Checkbox
-                id='allowDownloads'
-                checked={field.value}
-                onCheckedChange={(v) => field.onChange(v as boolean)}
-              />
-              <Label htmlFor='allowDownloads' className='text-sm font-normal'>
-                Allow others to download project files
-              </Label>
-            </div>
-          )}
-        />
       </div>
     </div>
   );

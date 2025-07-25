@@ -104,6 +104,7 @@ export default function BasicInfoStep() {
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <div className='space-y-2'>
           <Select
+            value={watch('batch') ? JSON.stringify(watch('batch')) : ''}
             onValueChange={(value) =>
               setValue('batch', JSON.parse(value) as IBatch, {
                 shouldValidate: true,
@@ -123,12 +124,13 @@ export default function BasicInfoStep() {
             </SelectContent>
           </Select>
           {errors.batch && (
-            <p className='text-xs text-red-400'>{errors.batch.message}</p>
+            <p className='text-xs text-red-400'>{errors.batch?.id?.message}</p>
           )}
         </div>
 
         <div className='space-y-2'>
           <Select
+            value={watch('category') ? JSON.stringify(watch('category')) : ''}
             onValueChange={(value) =>
               setValue('category', JSON.parse(value) as ICategory, {
                 shouldValidate: true,
@@ -148,12 +150,17 @@ export default function BasicInfoStep() {
             </SelectContent>
           </Select>
           {errors.category && (
-            <p className='text-xs text-red-400'>{errors.category.message}</p>
+            <p className='text-xs text-red-400'>
+              {errors.category?.id?.message}
+            </p>
           )}
         </div>
 
         <div className='space-y-2'>
           <Select
+            value={
+              watch('department') ? JSON.stringify(watch('department')) : ''
+            }
             onValueChange={(value) =>
               setValue('department', JSON.parse(value) as IDepartment, {
                 shouldValidate: true,
@@ -173,12 +180,15 @@ export default function BasicInfoStep() {
             </SelectContent>
           </Select>
           {errors.department && (
-            <p className='text-xs text-red-400'>{errors.department.message}</p>
+            <p className='text-xs text-red-400'>
+              {errors.department?.id?.message}
+            </p>
           )}
         </div>
 
         <div className='space-y-2'>
           <Select
+            value={watch('level') || ''}
             onValueChange={(value) =>
               setValue('level', value as ELevels, {
                 shouldValidate: true,

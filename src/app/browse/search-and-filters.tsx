@@ -34,7 +34,8 @@ export const sortOptions = [
   { value: 'title', label: 'Project Title' },
   { value: 'avg_rating', label: 'Rating' },
 ];
-export const levels = ['Undergraduate', 'Graduate', 'PhD', 'Diploma'];
+
+export const levels = ['Bachelors', 'Masters', 'PHD'];
 
 const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   filters,

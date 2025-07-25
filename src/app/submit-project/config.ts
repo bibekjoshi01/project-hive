@@ -39,14 +39,18 @@ export const basicInfoSchema = z.object({
     .string()
     .min(100, { message: 'Minimum 100 characters are required.' })
     .max(500, { message: 'Maximum 500 characters are allowed.' }),
-  batch: z.object({ id: z.number(), year: z.number() }),
-  department: z.object({ id: z.number(), name: z.string() }),
   level: z.enum(Object.keys(ELevels) as [string, ...string[]]),
-  category: z.object({
-    id: z.number(),
-    name: z.string(),
-    projectCount: z.number(),
-  }),
+
+  batch: z.object({ id: z.number(), year: z.number() }).nullable(),
+  department: z.object({ id: z.number(), name: z.string() }).nullable(),
+  category: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+      projectCount: z.number(),
+    })
+    .nullable(),
+
   supervisor: z.string().optional(),
   teamMembers: z
     .array(teamMemberSchema)
@@ -63,7 +67,11 @@ export const projectDetailsSchema = z.object({
 
 export const technicalDetailsSchema = z.object({
   technologies: z.string().min(1, 'At least one technology'),
-  githubUrl: z.string().url('Enter a valid GitHub URL'),
+  githubUrl: z
+    .string()
+    .url('Enter a valid GitHub URL')
+    .optional()
+    .or(z.literal('')),
   documentationUrl: z
     .string()
     .url('Enter a valid Documentation URL')
@@ -72,15 +80,9 @@ export const technicalDetailsSchema = z.object({
   files: z.array(projectFileSchema).optional(),
 });
 
-export const additionalSchema = z.object({
-  isPublic: z.boolean(),
-  allowDownloads: z.boolean(),
-});
-
 export const formSchema = basicInfoSchema
   .merge(projectDetailsSchema)
-  .merge(technicalDetailsSchema)
-  .merge(additionalSchema);
+  .merge(technicalDetailsSchema);
 
 export type TeamMember = z.infer<typeof teamMemberSchema>;
 export type ProjectFormData = z.infer<typeof formSchema>;

@@ -78,9 +78,10 @@ export default function BrowseProjects() {
   };
 
   const showMoreProjects = () => {
-    const newOffset = filters.offset + filters.limit / 2;
-    const newFilters = { ...filters, offset: newOffset };
-    setFilters(newFilters);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      limit: prevFilters.limit + 10,
+    }));
   };
 
   const activeFiltersCount = Object.values(filters).filter(
@@ -154,8 +155,7 @@ export default function BrowseProjects() {
             Show More Projects
           </Button>
           <p className='mt-2 text-sm text-gray-500'>
-            Showing {filters.offset + filters.limit} of {projectList.count}{' '}
-            projects
+            Showing {filters.limit} of {projectList.count} projects
           </p>
         </div>
       )}

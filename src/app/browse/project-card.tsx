@@ -1,12 +1,13 @@
 'use client';
 
-import { Calendar, Eye, Star, User } from 'lucide-react';
+import { Calendar, ExternalLink, Eye, Star, User } from 'lucide-react';
 import type React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { IProjectResponse } from './redux/types';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 type ProjectCardProps = {
   project: IProjectResponse;
@@ -30,10 +31,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   };
 
   return (
-    <Card
-      onClick={() => router.push(`/browse/${project.id}`)}
-      className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'
-    >
+    <Card className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'>
       <CardHeader className='p-0 pb-1'>
         <div className='flex items-start justify-between'>
           <Link
@@ -88,6 +86,17 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             <div className='flex items-center gap-1'>
               <Eye className='h-4 w-4' />
               {project?.views.toLocaleString() || 0}
+            </div>
+            <div className='flex items-center gap-1'>
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => router.push(`/browse/${project.id}`)}
+                className='flex cursor-pointer items-center gap-2 shadow-none'
+              >
+                <ExternalLink className='h-4 w-4' />
+                View
+              </Button>
             </div>
           </div>
         </div>
