@@ -1,33 +1,33 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Github, Linkedin, Twitter, Mail, ExternalLink } from 'lucide-react';
-import DevImage from '@/assets/images/developer.png';
+import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
+import DevImage from '@/assets/images/developer.jpeg';
 import Image from 'next/image';
 
 const developerData = {
   name: 'Bibek Joshi',
-  title: 'Computer Science Student',
-  batch: 'Batch 2024 • University Name',
+  title: 'Electronics, Communication and Information Engineering',
+  batch: '2079 • Thapathali Engineering Campus',
   photo: DevImage,
   bio: [
-    'Passionate computer science student with a love for web development and modern technologies. I enjoy building user-friendly applications and learning new programming languages.',
-    'Currently focusing on React, Node.js, and full-stack development. Always excited to work on innovative projects and collaborate with fellow developers.',
+    'A curious and enthusiastic individual who loves exploring new ideas and experiences. I enjoy connecting with people, sharing stories, and learning from different perspectives.',
+    'In my free time, I like reading, traveling, and discovering creative ways to express myself. Always striving to grow personally and make meaningful memories along the way.',
   ],
   socialLinks: [
     {
       name: 'GitHub',
-      url: 'https://github.com/johndoe',
+      url: 'https://github.com/bibekjoshi01',
       icon: Github,
     },
     {
       name: 'LinkedIn',
-      url: 'https://linkedin.com/in/johndoe',
+      url: 'https://www.linkedin.com/in/bibek-joshi-69458b231/',
       icon: Linkedin,
     },
     {
       name: 'Email',
-      url: 'mailto:john.doe@example.com',
+      url: 'mailto:bibekjoshi34@gmail.com',
       icon: Mail,
     },
   ],
@@ -36,17 +36,17 @@ const developerData = {
 export default function DeveloperInfo() {
   return (
     <div className='flex min-h-screen items-center justify-center bg-white p-8'>
-      <div className='w-full max-w-6xl'>
-        <div className='grid grid-cols-1 items-center gap-12 lg:grid-cols-2'>
+      <div className='w-full max-w-6xl rounded-lg border p-16'>
+        <div className='grid h-full grid-cols-1 items-center gap-16 lg:grid-cols-2'>
           {/* Photo Side */}
-          <div className='flex justify-center lg:justify-end'>
-            <div className='relative'>
+          <div className='flex h-full justify-center lg:justify-end'>
+            <div className='relative h-full'>
               <Image
                 width={1000}
-                height={1000}
+                height={1200}
                 src={developerData.photo}
                 alt={developerData.name}
-                className='h-100 w-80 rounded-2xl object-cover shadow-lg lg:h-96 lg:w-96'
+                className='h-full w-80 rounded-2xl object-cover shadow-lg lg:w-96'
               />
             </div>
           </div>
@@ -89,11 +89,11 @@ export default function DeveloperInfo() {
                     <Button
                       variant='outline'
                       size='lg'
-                      className='flex items-center gap-2 bg-transparent px-6 py-3 transition-colors hover:bg-gray-50'
+                      className='flex cursor-pointer items-center gap-2 bg-transparent px-6 py-3 transition-colors hover:bg-gray-50'
                     >
                       <Icon className='h-5 w-5' />
                       {link.name}
-                      <ExternalLink className='h-4 w-4 opacity-0 transition-opacity group-hover:opacity-100' />
+                      <ExternalLink className='h-4 w-4' />
                     </Button>
                   </a>
                 );

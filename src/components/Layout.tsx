@@ -8,18 +8,18 @@ import { useAppSelector } from '@/lib/hooks';
 import Image from 'next/image';
 import { authState } from '@/app/(auth)/redux/selector';
 import ProfileImage from '@/assets/images/logo.png';
-import { useRouter } from 'next/navigation'; // ✅ Correct import
+import { useRouter } from 'next/navigation'; 
 
 export default function WebsiteLayout({ children }: { children: ReactNode }) {
   const [isClient, setIsClient] = useState(false);
   const { isAuthenticated, fullName, photo } = useAppSelector(authState);
-  const router = useRouter(); // ✅ Hook always called, never conditionally
+  const router = useRouter(); 
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null; // ✅ Still safe, but hook was already called
+  if (!isClient) return null; 
 
   return (
     <div className='flex min-h-screen w-full flex-col bg-white text-gray-900'>
@@ -88,6 +88,12 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
                 className='text-sm text-gray-400 transition-colors hover:text-white'
               >
                 Contact Us
+              </Link>
+              <Link
+                href='/developer'
+                className='text-sm text-gray-400 transition-colors hover:text-white'
+              >
+                Developer Info
               </Link>
             </div>
           </div>
