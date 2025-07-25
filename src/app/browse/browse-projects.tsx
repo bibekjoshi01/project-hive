@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
@@ -12,9 +11,6 @@ import { useGetProjectsQuery } from './redux/project.api';
 import { FilterState } from './redux/types';
 
 export default function BrowseProjects() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     limit: 10,
@@ -41,53 +37,6 @@ export default function BrowseProjects() {
   // --- Fetch projects from API with filters ---
   const { data: projectList, isLoading } = useGetProjectsQuery(apiQueryParams);
 
-  // --- Sync URL parameters to state ---
-  useEffect(() => {
-    const rawSortOrder = searchParams.get('sortOrder');
-    const validSortOrder =
-      rawSortOrder === 'asc' || rawSortOrder === 'desc' ? rawSortOrder : 'desc';
-
-    const urlFilters: FilterState = {
-      search: searchParams.get('search') || '',
-      limit: parseInt(searchParams.get('limit') || '10', 10),
-      offset: parseInt(searchParams.get('offset') || '0', 10),
-      sortBy: searchParams.get('sortBy') || 'submitted_at',
-      sortOrder: validSortOrder,
-    };
-
-    setFilters(urlFilters);
-
-    const hasActiveFilters = Object.values(urlFilters).some(
-      (value) => value !== '' && value !== 'submitted_at' && value !== 'desc',
-    );
-    setShowFilters(hasActiveFilters);
-  }, [searchParams]);
-
-  // --- Update URL query string ---
-  const updateURL = useCallback(
-    (newFilters: FilterState) => {
-      const params = new URLSearchParams();
-
-      Object.entries(newFilters).forEach(([key, value]) => {
-        if (
-          value &&
-          value !== '' &&
-          !(key === 'sortBy' && value === 'submitted_at') &&
-          !(key === 'sortOrder' && value === 'desc')
-        ) {
-          params.set(key, String(value));
-        }
-      });
-
-      const newURL = params.toString()
-        ? `?${params.toString()}`
-        : window.location.pathname;
-
-      router.replace(newURL, { scroll: false });
-    },
-    [router],
-  );
-
   // --- Filter change handler ---
   const handleFilterChange = (
     key: keyof FilterState,
@@ -95,7 +44,6 @@ export default function BrowseProjects() {
   ) => {
     const newFilters = { ...filters, [key]: value, offset: 0 };
     setFilters(newFilters);
-    updateURL(newFilters);
   };
 
   const clearFilters = () => {
@@ -111,14 +59,12 @@ export default function BrowseProjects() {
       sortOrder: 'desc',
     };
     setFilters(defaultFilters);
-    updateURL(defaultFilters);
   };
 
   const toggleSortOrder = () => {
     const newSortOrder = filters.sortOrder === 'asc' ? 'desc' : 'asc';
     const newFilters = { ...filters, sortOrder: newSortOrder, offset: 0 };
     setFilters(newFilters);
-    updateURL(newFilters);
   };
 
   const handleRemoveFilter = (key: keyof FilterState) => {
@@ -129,14 +75,12 @@ export default function BrowseProjects() {
       offset: 0,
     };
     setFilters(newFilters);
-    updateURL(newFilters);
   };
 
   const showMoreProjects = () => {
     const newOffset = filters.offset + filters.limit / 2;
     const newFilters = { ...filters, offset: newOffset };
     setFilters(newFilters);
-    updateURL(newFilters);
   };
 
   const activeFiltersCount = Object.values(filters).filter(
