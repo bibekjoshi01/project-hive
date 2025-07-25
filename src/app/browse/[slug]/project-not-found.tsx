@@ -9,7 +9,7 @@ const ProjectNotFound = () => {
           Project Not Found
         </h2>
         <p className='mb-4 text-gray-600'>
-          The project you're looking for doesn't exist or has been removed.
+          The project you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
         <Button
           className='cursor-pointer'
