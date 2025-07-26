@@ -77,7 +77,7 @@ export const technicalDetailsSchema = z.object({
     .url('Enter a valid Documentation URL')
     .optional()
     .or(z.literal('')),
-  files: z.array(projectFileSchema).optional(),
+  files: z.array(projectFileSchema),
 });
 
 export const formSchema = basicInfoSchema

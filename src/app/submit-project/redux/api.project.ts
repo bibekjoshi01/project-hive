@@ -1,5 +1,6 @@
 import { rootAPI } from '@/lib/apiSlice';
 import {
+  ELevels,
   IBatchesResponse,
   ICategoriesResponse,
   IDepartmentsResponse,
@@ -26,6 +27,7 @@ export const homeAPISlice = rootAPI.injectEndpoints({
       }),
     }),
   }),
+  overrideExisting: true,
 });
 
 export const {
@@ -38,13 +40,22 @@ export const {
 export interface SubmitProjectPayload {
   title: string;
   abstract: string;
-  batch_year: number;
+  batchYear: number;
   category: number;
   department: number;
-  level: 'Masters' | 'Bachelors' | 'PHD';
+  level: ELevels;
   supervisor?: string;
-  project_details: string;
-  technologies_used: string;
-  github_link?: string;
-  documentation_link?: string;
+  projectDetails: string;
+  technologiesUsed: string;
+  githubLink?: string;
+  documentationLink?: string;
+  teamMembers: {
+    fullName: string;
+    rollNo: string;
+    photo: string | null;
+  }[];
+  files: {
+    fileType: string;
+    file: string;
+  }[];
 }

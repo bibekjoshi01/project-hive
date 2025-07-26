@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import AvatarI from '@/assets/images/avatar.png';
 import {
   Eye,
-  Download,
   Star,
   Github,
   FileText,
@@ -21,11 +21,30 @@ import {
 } from 'lucide-react';
 import ProjectNotFound from './project-not-found';
 import { IProjectDetail } from '../redux/types';
-import { useGetProjectDetailQuery } from '../redux/project.api';
+import {
+  useGetProjectDetailQuery,
+  useIncreaseProjectViewMutation,
+} from '../redux/project.api';
 import { useSnackbar } from 'notistack';
+import Link from 'next/link';
+import ProgrammaticDownload from './download';
+import ProjectRating from './rate-project';
 
 interface ProjectDetailViewProps {
   projectId: string;
+}
+
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with dashes
+    .replace(/[^a-z0-9-]/g, ''); // Remove special characters
+}
+
+export function getFileExtension(url: string): string {
+  const cleanUrl = url.split('?')[0]; // Remove query params
+  const ext = cleanUrl.split('.').pop();
+  return ext || 'file';
 }
 
 const transformProjectDetail = (data: any): IProjectDetail => ({
@@ -40,8 +59,8 @@ const transformProjectDetail = (data: any): IProjectDetail => ({
   supervisor: data.supervisor,
   teamMembers: data.teamMembers.map((m: any) => ({
     id: m.id,
-    fullName: m.full_name,
-    rollNo: m.roll_no,
+    fullName: m.fullName,
+    rollNo: m.rollNo,
     photo: m.photo,
   })),
   technologies: data.technologiesUsed,
@@ -49,14 +68,14 @@ const transformProjectDetail = (data: any): IProjectDetail => ({
   documentationUrl: data.documentationLink,
   files: data.files.map((f: any) => ({
     id: f.id,
-    type: f.file_type,
+    fileType: f.fileType,
     file: f.file,
   })),
   submittedDate: data.submittedAt,
   submittedBy: data?.submittedByFullName,
   views: data.views,
   rating: data.ratingAverage,
-  totalRatings: data.total_ratings || 0,
+  totalRatings: data.totalRatings || 0,
 });
 
 export default function ProjectDetailView({
@@ -65,6 +84,17 @@ export default function ProjectDetailView({
   const [project, setProject] = useState<IProjectDetail | null>(null);
   const { enqueueSnackbar } = useSnackbar();
   const { data, isLoading } = useGetProjectDetailQuery(projectId);
+  const hasIncreasedView = useRef(false);
+
+  const [increaseView] = useIncreaseProjectViewMutation();
+
+  // Increase project views
+  useEffect(() => {
+    if (!projectId || hasIncreasedView.current) return;
+    hasIncreasedView.current = true;
+
+    increaseView(parseInt(projectId)).catch(() => {});
+  }, [projectId, increaseView]);
 
   useEffect(() => {
     if (data) {
@@ -190,22 +220,6 @@ export default function ProjectDetailView({
         <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
           {/* Main Content */}
           <div className='space-y-8 lg:col-span-2'>
-            {/* Project Description */}
-            <Card className='shadow-none'>
-              <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <BookOpen className='h-5 w-5' />
-                  Project Description
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div
-                  className='prose max-w-none'
-                  dangerouslySetInnerHTML={{ __html: project.description }}
-                />
-              </CardContent>
-            </Card>
-
             {/* Technologies Used */}
             <Card className='shadow-none'>
               <CardHeader>
@@ -228,6 +242,22 @@ export default function ProjectDetailView({
                 </div>
               </CardContent>
             </Card>
+
+            {/* Project Description */}
+            <Card className='shadow-none'>
+              <CardHeader>
+                <CardTitle className='flex items-center gap-2'>
+                  <BookOpen className='h-5 w-5' />
+                  Project Description
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div
+                  className='prose max-w-none'
+                  dangerouslySetInnerHTML={{ __html: project.description }}
+                />
+              </CardContent>
+            </Card>
           </div>
 
           {/* Sidebar */}
@@ -241,26 +271,20 @@ export default function ProjectDetailView({
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
-                {project.teamMembers.map((member) => (
-                  <div key={member.id} className='flex items-center gap-3'>
-                    <Avatar className='h-12 w-12'>
-                      <AvatarImage
-                        src={member.photo || '/placeholder.svg'}
-                        alt={member.fullName}
-                      />
-                      <AvatarFallback>
-                        {member.fullName
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className='font-medium'>{member.fullName}</p>
-                      <p className='text-sm text-gray-500'>{member.rollNo}</p>
+                {project.teamMembers?.map((member) => {
+                  return (
+                    <div key={member.id} className='flex items-center gap-3'>
+                      <Avatar className='h-12 w-12'>
+                        <AvatarImage src={member.photo || AvatarI.src} />
+                        <AvatarFallback>{member.fullName}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className='font-medium'>{member.fullName}</p>
+                        <p className='text-sm text-gray-500'>{member.rollNo}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {project.supervisor && (
                   <>
                     <Separator />
@@ -318,34 +342,35 @@ export default function ProjectDetailView({
             </Card>
 
             {/* Project Files */}
-            {/* {project.files.length > 0 && (
+            {project.files.length > 0 && (
               <Card className='shadow-none'>
                 <CardHeader>
                   <CardTitle>Project Files</CardTitle>
                 </CardHeader>
                 <CardContent className='space-y-3'>
-                  {project.files.map((file) => (
+                  {project.files.map((file, index) => (
                     <div
-                      key={file.id}
+                      key={index}
                       className='flex items-center justify-between rounded-lg border p-3'
                     >
                       <div className='flex items-center gap-2'>
                         <FileText className='h-4 w-4 text-gray-500' />
                         <div>
-                          <p className='text-sm font-medium'>{file.name}</p>
-                          <p className='text-xs text-gray-500'>
-                            {file.type} • {file.size}
+                          <p className='text-sm font-medium'>
+                            {file.fileType ?? `Project file ${index + 1}`}
                           </p>
                         </div>
                       </div>
-                      <Button size='sm' variant='outline'>
-                        <Download className='h-4 w-4' />
-                      </Button>
+                      <ProgrammaticDownload
+                        fileUrl={file.file}
+                        fileName={`${slugify(project.title)}_${slugify(file.fileType)}.${getFileExtension(file.file)}`}
+                      />
                     </div>
                   ))}
                 </CardContent>
               </Card>
-            )} */}
+            )}
+            <ProjectRating projectId={project.id} />
           </div>
         </div>
       </div>

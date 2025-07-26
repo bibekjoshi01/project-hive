@@ -29,22 +29,7 @@ import {
 import { useSubmitProjectMutation } from './redux/api.project';
 import { ELevels } from './types';
 import { useSnackbar } from 'notistack';
-
-const preparePayload = (data: ProjectFormData) => {
-  return {
-    title: data.title,
-    abstract: data.abstract,
-    batch_year: data.batch?.id,
-    category: data.category?.id,
-    department: data.department?.id,
-    level: data.level,
-    supervisor: data.supervisor || 'Not Assigned',
-    project_details: data.description,
-    technologies_used: data.technologies,
-    github_link: data.githubUrl || null,
-    documentation_link: data.documentationUrl || null,
-  };
-};
+import { preparePayload } from './preparePayload';
 
 type Step = (typeof STEPS)[number]['id'];
 
@@ -77,6 +62,7 @@ export default function SubmitProjectForm() {
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const { enqueueSnackbar } = useSnackbar();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateStep = async () => {
     let stepSchema: z.ZodTypeAny;
@@ -116,21 +102,25 @@ export default function SubmitProjectForm() {
   const prevStep = () =>
     setCurrentStep((s): Step => (s > 1 ? ((s - 1) as Step) : s));
 
-  const [submitProject, { isLoading }] = useSubmitProjectMutation();
+  const [submitProject] = useSubmitProjectMutation();
 
   const onSubmit: SubmitHandler<ProjectFormData> = async (data) => {
+    setIsLoading(true);
     try {
-      const payload = preparePayload(data);
+      const payload = await preparePayload(data);
       await submitProject(payload).unwrap();
       enqueueSnackbar('Project submitted successfully!', {
         variant: 'success',
       });
+      setIsLoading(false);
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission error:', error);
       enqueueSnackbar('Failed to submit project. Please check your data.', {
         variant: 'error',
       });
+    } finally {
+      setIsLoading(false); 
     }
   };
 

@@ -73,7 +73,7 @@ export interface ITeamMember {
 
 export interface IProjectFile {
   id: number;
-  type: string;
+  fileType: string;
   file: string;
 }
 
@@ -81,20 +81,20 @@ export interface IProjectDetail {
   id: number;
   title: string;
   abstract: string;
-  description: string; 
-  batch: string; 
+  description: string;
+  batch: string;
   department: string;
   level: string;
-  category: string; 
+  category: string;
   supervisor: string;
   teamMembers: ITeamMember[];
   submittedBy: string;
-  technologies: string[]; 
-  githubLinks: string[]; 
-  documentationUrl?: string; 
+  technologies: string[];
+  githubLinks: string[];
+  documentationUrl?: string;
   files: IProjectFile[];
-  submittedDate: string; 
+  submittedDate: string;
   views: number;
-  rating: number; 
-  totalRatings: number; 
+  rating: number;
+  totalRatings: number;
 }

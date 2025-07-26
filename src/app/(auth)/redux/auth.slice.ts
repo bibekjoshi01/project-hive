@@ -24,8 +24,6 @@ export const authSlice = createSlice({
         payload: { fullName, photo, accessToken, refreshToken, role },
       } = action;
 
-      console.log("action.py", action.payload);
-
       state.fullName = fullName;
       state.photo = photo;
       state.role = role;

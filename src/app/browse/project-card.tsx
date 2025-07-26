@@ -31,13 +31,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   };
 
   return (
-    <Card className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'>
+    <Card
+      onClick={() => router.push(`/browse/${project.id}`)}
+      className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'
+    >
       <CardHeader className='p-0 pb-1'>
         <div className='flex items-start justify-between'>
-          <Link
-            href={`/projects/${project.title ?? project.id}`}
-            className='group cursor-pointer'
-          >
+          <Link href={`/browse/${project.id}`} className='group cursor-pointer'>
             <CardTitle className='text-lg leading-normal font-semibold text-black transition-colors'>
               {project?.title}
             </CardTitle>

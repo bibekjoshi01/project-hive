@@ -47,6 +47,22 @@ export const projectAPISlice = rootAPI.injectEndpoints({
         url: `${projectAPI}/projects/${projectId}`,
       }),
     }),
+    increaseProjectView: builder.mutation<{ views: number }, number>({
+      query: (projectId) => ({
+        url: `${projectAPI}/projects/${projectId}/increase-view`,
+        method: 'POST',
+      }),
+    }),
+    rateProject: builder.mutation<
+      { message: string; rating: number },
+      { projectId: number; rating: number }
+    >({
+      query: ({ projectId, rating }) => ({
+        url: `${projectAPI}/projects/${projectId}/rate`,
+        method: 'PATCH',
+        data: { rating },
+      }),
+    }),
   }),
   overrideExisting: true,
 });
@@ -54,7 +70,9 @@ export const projectAPISlice = rootAPI.injectEndpoints({
 export const {
   useGetProjectsQuery,
   useGetProjectCategoriesQuery,
+  useRateProjectMutation,
   useGetProjectBatchYearsQuery,
+  useIncreaseProjectViewMutation,
   useGetProjectDetailQuery,
   useGetProjectDepartmentsQuery,
 } = projectAPISlice;

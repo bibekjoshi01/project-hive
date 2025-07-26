@@ -8,18 +8,18 @@ import { useAppSelector } from '@/lib/hooks';
 import Image from 'next/image';
 import { authState } from '@/app/(auth)/redux/selector';
 import ProfileImage from '@/assets/images/logo.png';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 
 export default function WebsiteLayout({ children }: { children: ReactNode }) {
   const [isClient, setIsClient] = useState(false);
   const { isAuthenticated, fullName, photo } = useAppSelector(authState);
-  const router = useRouter(); 
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  if (!isClient) return null; 
+  if (!isClient) return null;
 
   return (
     <div className='flex min-h-screen w-full flex-col bg-white text-gray-900'>
@@ -46,7 +46,6 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
                     alt='Profile'
                     width={40}
                     height={40}
-                    objectFit='cover'
                   />
                 </div>
               </>

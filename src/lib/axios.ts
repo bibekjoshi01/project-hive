@@ -29,7 +29,7 @@ axiosInstance.interceptors.request.use(
     config.headers = config.headers || {};
 
     const accessToken = Cookies.get('publicAccessToken');
-    console.log("Access token:", accessToken);
+    console.log('Access token:', accessToken);
 
     // Check if the route is exempt from authentication
     const isExemptRoute = noAuthRoutes.some((path) =>
@@ -74,6 +74,9 @@ axiosInstance.interceptors.response.use(
     }
     // Handle 401 Unauthorized errors
     else if (error.response?.status === 401) {
+      const { store } = await import('./store');
+      const { logoutSuccess } = await import('@/app/(auth)/redux/auth.slice');
+      store.dispatch(logoutSuccess());
       showErrorToast('Unauthorized.');
     }
     // Handle other error statuses
