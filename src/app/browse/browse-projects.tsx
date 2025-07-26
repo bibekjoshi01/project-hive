@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
@@ -9,6 +9,7 @@ import ProjectCard from './project-card';
 import SearchAndFilters from './search-and-filters';
 import { useGetProjectsQuery } from './redux/project.api';
 import { FilterState } from './redux/types';
+import { useSearchParams } from 'next/navigation';
 
 export default function BrowseProjects() {
   const [filters, setFilters] = useState<FilterState>({
@@ -18,8 +19,36 @@ export default function BrowseProjects() {
     sortBy: 'submitted_at',
     sortOrder: 'desc',
   });
+  const searchParams = useSearchParams();
 
   const [showFilters, setShowFilters] = useState(false);
+
+  // Sync filters state with URL query params on mount and on URL change
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category') || '';
+    const departmentFromUrl = searchParams.get('department') || '';
+    const batchFromUrl = searchParams.get('batch') || '';
+
+    setFilters((prev) => {
+      const updated = { ...prev };
+      let changed = false;
+
+      if (categoryFromUrl !== prev.category) {
+        updated.category = categoryFromUrl;
+        changed = true;
+      }
+      if (departmentFromUrl !== prev.department) {
+        updated.department = departmentFromUrl;
+        changed = true;
+      }
+      if (batchFromUrl !== prev.batch) {
+        updated.batch = batchFromUrl;
+        changed = true;
+      }
+
+      return changed ? { ...updated, offset: 0 } : prev;
+    });
+  }, [searchParams]);
 
   const apiQueryParams = {
     search: filters.search || '',

@@ -30,6 +30,7 @@ export interface IProject {
   id: number;
   title: string;
   status: string;
+  slug: string;
   submittedAt: string;
   categoryName: string;
 }

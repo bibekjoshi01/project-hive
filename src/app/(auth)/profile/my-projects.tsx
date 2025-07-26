@@ -137,7 +137,7 @@ export default function MyProjects() {
                           variant='outline'
                           size='sm'
                           className='cursor-pointer'
-                          onClick={() => router.push(`browse/${project.id}`)}
+                          onClick={() => router.push(`browse/${project.slug}`)}
                         >
                           <Eye className='mr-1 h-4 w-4' />
                           View

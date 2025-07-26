@@ -31,6 +31,7 @@ export interface IBatchYearList {
 export interface IProjectResponse {
   id: number;
   title: string;
+  slug: string;
   abstract: string;
   level: string;
   supervisor: string;
@@ -80,6 +81,7 @@ export interface IProjectFile {
 export interface IProjectDetail {
   id: number;
   title: string;
+  slug: string;
   abstract: string;
   description: string;
   batch: string;

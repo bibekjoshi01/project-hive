@@ -32,12 +32,15 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
   return (
     <Card
-      onClick={() => router.push(`/browse/${project.id}`)}
+      onClick={() => router.push(`/browse/${project.slug}`)}
       className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'
     >
       <CardHeader className='p-0 pb-1'>
         <div className='flex items-start justify-between'>
-          <Link href={`/browse/${project.id}`} className='group cursor-pointer'>
+          <Link
+            href={`/browse/${project.slug}`}
+            className='group cursor-pointer'
+          >
             <CardTitle className='text-lg leading-normal font-semibold text-black transition-colors'>
               {project?.title}
             </CardTitle>
@@ -91,7 +94,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               <Button
                 variant='outline'
                 size='sm'
-                onClick={() => router.push(`/browse/${project.id}`)}
+                onClick={() => router.push(`/browse/${project.slug}`)}
                 className='flex cursor-pointer items-center gap-2 shadow-none'
               >
                 <ExternalLink className='h-4 w-4' />

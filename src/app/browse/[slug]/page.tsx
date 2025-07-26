@@ -7,7 +7,7 @@ interface ProjectDetailPageProps {
 export default async function ProjectDetailPage({
   params,
 }: ProjectDetailPageProps) {
-  const { slug } = await params; 
+  const { slug } = await params;
 
-  return <ProjectDetailView projectId={slug} />;
+  return <ProjectDetailView projectSlug={slug} />;
 }

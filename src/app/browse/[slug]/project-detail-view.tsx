@@ -26,12 +26,11 @@ import {
   useIncreaseProjectViewMutation,
 } from '../redux/project.api';
 import { useSnackbar } from 'notistack';
-import Link from 'next/link';
 import ProgrammaticDownload from './download';
 import ProjectRating from './rate-project';
 
 interface ProjectDetailViewProps {
-  projectId: string;
+  projectSlug: string;
 }
 
 export function slugify(text: string): string {
@@ -50,6 +49,7 @@ export function getFileExtension(url: string): string {
 const transformProjectDetail = (data: any): IProjectDetail => ({
   id: data.id,
   title: data.title,
+  slug: data?.slug,
   abstract: data.abstract,
   description: data.projectDetails || '',
   batch: data.batchYear.year.toString(),
@@ -79,22 +79,22 @@ const transformProjectDetail = (data: any): IProjectDetail => ({
 });
 
 export default function ProjectDetailView({
-  projectId,
+  projectSlug,
 }: ProjectDetailViewProps) {
   const [project, setProject] = useState<IProjectDetail | null>(null);
   const { enqueueSnackbar } = useSnackbar();
-  const { data, isLoading } = useGetProjectDetailQuery(projectId);
+  const { data, isLoading } = useGetProjectDetailQuery(projectSlug);
   const hasIncreasedView = useRef(false);
 
   const [increaseView] = useIncreaseProjectViewMutation();
 
   // Increase project views
   useEffect(() => {
-    if (!projectId || hasIncreasedView.current) return;
+    if (!projectSlug || hasIncreasedView.current || !data?.id) return;
     hasIncreasedView.current = true;
 
-    increaseView(parseInt(projectId)).catch(() => {});
-  }, [projectId, increaseView]);
+    increaseView(data.id).catch(() => {});
+  }, [data, increaseView, projectSlug]);
 
   useEffect(() => {
     if (data) {
