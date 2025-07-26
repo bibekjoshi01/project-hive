@@ -13,6 +13,7 @@ import {
 import { useGetUserProjectQuery } from '../redux/auth.api';
 import { Edit, Eye } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useRouter } from 'next/navigation';
 
 const statusConfig = [
   {
@@ -43,6 +44,7 @@ const formatDate = (dateString: string) => {
 
 export default function MyProjects() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const router = useRouter();
 
   const { data: projectData, isLoading } = useGetUserProjectQuery();
 
@@ -135,6 +137,7 @@ export default function MyProjects() {
                           variant='outline'
                           size='sm'
                           className='cursor-pointer'
+                          onClick={() => router.push(`browse/${project.id}`)}
                         >
                           <Eye className='mr-1 h-4 w-4' />
                           View

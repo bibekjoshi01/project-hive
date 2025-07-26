@@ -48,7 +48,7 @@ export default function ProjectRating({ projectId }: ProjectRatingProps) {
                 ? 'fill-yellow-400 text-yellow-400'
                 : 'text-gray-300'
             }`}
-            onClick={() => setRating(star)}
+            onClick={() => isAuthenticated && setRating(star)}
           />
         ))}
       </div>

@@ -1,10 +1,10 @@
 'use client';
 
 import { useFormContext, Controller } from 'react-hook-form';
-import { ProjectFormData } from '../types';
 import { Label } from '@/components/ui/label';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
+import { ProjectFormData } from '../config';
 
 const RichTextEditor = dynamic(() => import('@/components/rich-text-field'), {
   ssr: false,

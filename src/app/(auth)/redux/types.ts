@@ -23,6 +23,7 @@ export interface IProfileResponse {
   photo?: string | null;
   dateJoined: string;
   userRole: string;
+  bio: string;
 }
 
 export interface IProject {

@@ -3,8 +3,8 @@
 import { useFormContext } from 'react-hook-form';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, ExternalLink, Github, Globe } from 'lucide-react';
-import type { ProjectFormData, TeamMember } from '../types';
+import { CheckCircle, ExternalLink, Github } from 'lucide-react';
+import { ProjectFormData, TeamMember } from '../config';
 
 type FormDataWithTech = ProjectFormData & {
   technologies: string | string[];
@@ -38,14 +38,14 @@ export default function ReviewStep() {
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
             <Info label='Project Title' value={data.title} />
             <Info label='Supervisor' value={data.supervisor || '—'} />
-            <Info label='Batch' value={String(data.batch.year)} />
-            <Info label='Department' value={data.department.name} />
+            <Info label='Batch' value={String(data.batch?.year)} />
+            <Info label='Department' value={data.department?.name} />
             <Info label='Level' value={data.level} />
           </div>
 
           <Info label='Category'>
             <Badge variant='outline' className='mt-1'>
-              {data.category.name}
+              {data.category?.name}
             </Badge>
           </Info>
 

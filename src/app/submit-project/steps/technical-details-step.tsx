@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, Info, X, Plus } from 'lucide-react';
-import type { ProjectFormData } from '../types';
 import {
   Tooltip,
   TooltipContent,
@@ -25,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { FILE_TYPES } from '../config';
+import { FILE_TYPES, ProjectFormData } from '../config';
 
 export default function TechnicalDetailsStep() {
   const {
@@ -35,9 +34,6 @@ export default function TechnicalDetailsStep() {
     setValue,
     formState: { errors },
   } = useFormContext<ProjectFormData>();
-
-  console.log(errors, 'err');
-  console.log(watch(), 'values');
 
   const {
     fields: fileFields,
@@ -49,7 +45,7 @@ export default function TechnicalDetailsStep() {
   });
 
   const addFile = () => {
-    appendFile({ id: Date.now().toString(), file: null, type: '' });
+    appendFile({ id: Date.now().toString(), file: null, type: 'Report' });
   };
 
   const handleFileUpload = (
@@ -187,7 +183,7 @@ export default function TechnicalDetailsStep() {
                     <div className='relative'>
                       <Select
                         onValueChange={(value) =>
-                          setValue(`files.${index}.type`, value)
+                          setValue(`files.${index}.type`, value as any)
                         }
                         value={watch(`files.${index}.type`) || ''}
                       >

@@ -85,7 +85,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
           <div className='mt-4 flex items-center justify-between text-sm text-gray-500'>
             <div className='flex items-center gap-1'>
               <Eye className='h-4 w-4' />
-              {project?.views.toLocaleString() || 0}
+              {project?.views.toLocaleString() || 0} views
             </div>
             <div className='flex items-center gap-1'>
               <Button

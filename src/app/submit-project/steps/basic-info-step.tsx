@@ -8,19 +8,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type {
-  ELevels,
-  IBatch,
-  ICategory,
-  IDepartment,
-  ProjectFormData,
-} from '../types';
+import type { ELevels, IBatch, ICategory, IDepartment } from '../types';
 import { Button } from '@/components/ui/button';
 import { Camera, Plus, Upload, X } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import Image from 'next/image';
 import { useData } from '../hooks/useData';
+import { ProjectFormData } from '../config';
 
 export default function BasicInfoStep() {
   const { batches, departments, levels, categories, loading } = useData();
@@ -32,9 +27,6 @@ export default function BasicInfoStep() {
     watch,
     formState: { errors },
   } = useFormContext<ProjectFormData>();
-
-  console.log(errors, 'err');
-  console.log(watch(), 'values');
 
   const { fields, append, remove } = useFieldArray({
     control,

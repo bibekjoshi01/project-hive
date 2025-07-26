@@ -29,7 +29,6 @@ axiosInstance.interceptors.request.use(
     config.headers = config.headers || {};
 
     const accessToken = Cookies.get('publicAccessToken');
-    console.log('Access token:', accessToken);
 
     // Check if the route is exempt from authentication
     const isExemptRoute = noAuthRoutes.some((path) =>

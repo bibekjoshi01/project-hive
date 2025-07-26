@@ -20,6 +20,7 @@ interface FormData {
   phoneNo: string;
   photoFile: File | null;
   photoUrl: string;
+  bio: string;
 }
 
 export default function MyInformation() {
@@ -31,6 +32,7 @@ export default function MyInformation() {
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     phoneNo: '',
+    bio: '',
     photoFile: null,
     photoUrl: '',
   });
@@ -46,6 +48,7 @@ export default function MyInformation() {
         fullName: `${profile.firstName} ${profile.lastName}`.trim(),
         phoneNo: profile.phoneNo || '',
         photoFile: null,
+        bio: profile.bio || '',
         photoUrl: profile.photo || '',
       });
     }
@@ -106,15 +109,15 @@ export default function MyInformation() {
 
       // Create FormData for file upload and normal fields
       const body = new FormData();
-      body.append('first_name', firstName);
-      body.append('last_name', lastName);
+      body.append('firstName', firstName);
+      body.append('lastName', lastName);
+      body.append('bio', formData.bio);
       if (formData.phoneNo.trim()) {
-        body.append('phone_no', formData.phoneNo.trim());
+        body.append('phoneNo', formData.phoneNo.trim());
       }
       if (formData.photoFile) {
         body.append('photo', formData.photoFile);
       }
-      console.log(body, 'lksdjf');
 
       await updateProfile(body).unwrap();
 
@@ -124,7 +127,6 @@ export default function MyInformation() {
 
       toast('Profile updated successfully', { variant: 'success' });
     } catch (error) {
-      console.error('Failed to update profile:', error);
       toast('Failed to update profile. Please try again.', {
         variant: 'error',
       });
@@ -137,6 +139,7 @@ export default function MyInformation() {
         fullName: `${profile.firstName} ${profile.lastName}`.trim(),
         phoneNo: profile.phoneNo || '',
         photoFile: null,
+        bio: profile.bio || '',
         photoUrl: profile.photo || '',
       });
     }
@@ -162,7 +165,12 @@ export default function MyInformation() {
       <div className='flex items-center justify-center p-8'>
         <div className='text-center'>
           <p className='mb-4 text-red-500'>Failed to load profile</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+          <Button
+            className='cursor-pointer'
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </Button>
         </div>
       </div>
     );
@@ -255,7 +263,7 @@ export default function MyInformation() {
               <h3 className='text-lg font-semibold'>
                 {formData.fullName || 'Hello User'}
               </h3>
-              <p className='text-gray-500'>Student at IOE Thapathali Campus</p>
+              <p className='text-gray-500'>{profile?.bio}</p>
             </div>
           </div>
 
@@ -335,6 +343,23 @@ export default function MyInformation() {
                 disabled
                 className='bg-gray-50'
               />
+            </div>
+            {/* Bio */}
+            <div className='space-y-2 md:col-span-2'>
+              <Label htmlFor='bio'>Bio</Label>
+              <textarea
+                id='bio'
+                value={formData.bio}
+                onChange={(e) => handleInputChange('bio', e.target.value)}
+                disabled={!isEditing}
+                className={`w-full rounded-md border p-2 text-sm ${
+                  errors.bio ? 'border-red-500' : 'border-gray-300'
+                }`}
+                rows={3}
+              />
+              {errors.bio && (
+                <p className='text-sm text-red-500'>{errors.bio}</p>
+              )}
             </div>
           </div>
         </CardContent>
