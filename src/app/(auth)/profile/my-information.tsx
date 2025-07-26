@@ -14,6 +14,7 @@ import {
   useUpdateProfileMutation,
 } from '../redux/auth.api';
 import { useSnackbar } from 'notistack';
+import { uniqueName, uploadFileToSupabase } from '@/lib/storage';
 
 interface FormData {
   fullName: string;
@@ -97,6 +98,8 @@ export default function MyInformation() {
     }
   };
 
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+
   const handleSave = async () => {
     if (!validateForm()) {
       toast('Please fix the errors before saving', { variant: 'error' });
@@ -107,6 +110,21 @@ export default function MyInformation() {
       const [firstName, ...rest] = formData.fullName.trim().split(' ');
       const lastName = rest.join(' ');
 
+      let uploadedPhotoUrl = formData.photoUrl;
+
+      if (formData.photoFile) {
+        try {
+          setIsUploadingPhoto(true);
+          const path = `users/profile/${uniqueName(formData.photoFile.name)}`;
+          uploadedPhotoUrl = await uploadFileToSupabase(
+            formData.photoFile,
+            path,
+          );
+        } finally {
+          setIsUploadingPhoto(false);
+        }
+      }
+
       // Create FormData for file upload and normal fields
       const body = new FormData();
       body.append('firstName', firstName);
@@ -116,7 +134,7 @@ export default function MyInformation() {
         body.append('phoneNo', formData.phoneNo.trim());
       }
       if (formData.photoFile) {
-        body.append('photo', formData.photoFile);
+        body.append('photo', uploadedPhotoUrl);
       }
 
       await updateProfile(body).unwrap();
@@ -206,7 +224,7 @@ export default function MyInformation() {
                 disabled={isSaving}
                 className='flex cursor-pointer items-center gap-2'
               >
-                {isSaving ? (
+                {isSaving || isUploadingPhoto ? (
                   <>
                     <Loader2 className='h-4 w-4 animate-spin' />
                     Saving...

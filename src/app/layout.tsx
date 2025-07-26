@@ -19,7 +19,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: 'ProjectHive',
-  description: 'College Project Archive Platform',
+  description: 'Thapathali Campus Project Archive Platform',
 };
 
 export default function RootLayout({

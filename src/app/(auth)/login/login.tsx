@@ -69,6 +69,14 @@ export default function LoginPage() {
     },
   });
 
+  const handleGithubLogin = () => {
+    const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID!;
+    const GITHUB_REDIRECT_URI = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI!;
+
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user:email&redirect_uri=${encodeURIComponent(GITHUB_REDIRECT_URI)}`;
+    window.location.href = githubAuthUrl;
+  };
+
   return (
     <div className='flex min-h-screen items-center justify-center bg-white'>
       <div className='w-full max-w-lg'>
@@ -134,11 +142,12 @@ export default function LoginPage() {
                 <GoogleLogo />
                 {loadingOAuthLogin ? 'Signing in...' : 'Continue with Google'}
               </Button>
+
               {/* Github Login Button */}
               <Button
                 variant='outline'
                 className='flex h-12 w-full cursor-pointer items-center justify-center gap-2 border border-gray-300 bg-transparent text-base font-medium transition-colors duration-200 hover:bg-gray-100'
-                onClick={() => googleLogin()}
+                onClick={handleGithubLogin}
                 disabled={loadingOAuthLogin}
               >
                 <GithubLogo />
