@@ -2,14 +2,9 @@
 
 ## Getting Started
 
-First, run the development server:
+1. yarn install
 
-```bash
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. yarn dev
 
+
+**Note** Make sure to keep .env from .env.example with proper credentials
