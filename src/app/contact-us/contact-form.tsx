@@ -99,7 +99,7 @@ export default function ContactUs() {
             <h1 className='mb-4 text-4xl font-bold text-gray-900'>
               Contact Us
             </h1>
-            <p className='text-lg text-gray-600'>
+            <p className='text-sm text-gray-600 md:text-lg'>
               Have a question or need assistance? We&apos;re here to help. Get
               in touch with us and we&apos;ll respond as soon as possible.
             </p>
@@ -107,7 +107,7 @@ export default function ContactUs() {
 
           <div className='grid'>
             {/* Contact Form */}
-            <div className='rounded-2xl bg-gray-50 p-8'>
+            <div className='rounded-2xl bg-gray-50 p-4 py-6 lg:p-8'>
               <h2 className='mb-6 text-2xl font-semibold text-gray-900'>
                 Send us a Message
               </h2>

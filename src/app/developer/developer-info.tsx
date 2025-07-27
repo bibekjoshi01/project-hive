@@ -35,9 +35,9 @@ const developerData = {
 
 export default function DeveloperInfo() {
   return (
-    <div className='flex min-h-screen items-center justify-center bg-white p-8'>
-      <div className='w-full max-w-6xl rounded-lg border p-16'>
-        <div className='grid h-full grid-cols-1 items-center gap-16 lg:grid-cols-2'>
+    <div className='flex min-h-screen items-center justify-center bg-white p-4 py-6 md:p-8'>
+      <div className='w-full max-w-6xl rounded-lg border p-4 lg:p-16'>
+        <div className='grid h-full grid-cols-1 items-center gap-8 md:gap-16 lg:grid-cols-2'>
           {/* Photo Side */}
           <div className='flex h-full justify-center lg:justify-end'>
             <div className='relative h-full'>
@@ -57,17 +57,19 @@ export default function DeveloperInfo() {
               <h1 className='mb-2 text-4xl font-bold text-gray-900 lg:text-5xl'>
                 {developerData.name}
               </h1>
-              <p className='mb-4 text-xl text-gray-600'>
+              <p className='mb-4 text-sm text-gray-600 md:text-xl'>
                 {developerData.title}
               </p>
-              <p className='text-lg text-gray-500'>{developerData.batch}</p>
+              <p className='text-sm text-gray-500 md:text-lg'>
+                {developerData.batch}
+              </p>
             </div>
 
             <div className='space-y-4'>
               {developerData.bio.map((paragraph, index) => (
                 <p
                   key={index}
-                  className='text-lg leading-relaxed text-gray-700'
+                  className='text-sm leading-relaxed text-gray-700 md:text-lg'
                 >
                   {paragraph}
                 </p>
@@ -92,8 +94,8 @@ export default function DeveloperInfo() {
                       className='flex cursor-pointer items-center gap-2 bg-transparent px-6 py-3 transition-colors hover:bg-gray-50'
                     >
                       <Icon className='h-5 w-5' />
-                      {link.name}
-                      <ExternalLink className='h-4 w-4' />
+                      <span className='hidden md:inline'>{link.name}</span>
+                      <ExternalLink className='hidden h-4 w-4 md:inline' />
                     </Button>
                   </a>
                 );

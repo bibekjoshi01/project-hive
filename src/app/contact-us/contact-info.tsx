@@ -9,7 +9,7 @@ const contactInformation = {
 
 const ContactInfo = () => {
   return (
-    <div className='mt-12 mb-12 grid grid-cols-3 gap-4'>
+    <div className='mt-12 mb-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
       {/* Email */}
       <div className='flex items-start gap-4 rounded-lg border border-gray-200 p-6'>
         <div className='flex h-12 w-12 items-center justify-center rounded-full bg-gray-100'>
