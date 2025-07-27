@@ -36,7 +36,7 @@ export default function ProjectDetailsStep() {
   }, [descriptionValue]);
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-6 p-0 md:p-2'>
       <h2 className='mb-8 text-xl font-semibold'>Project Details</h2>
 
       <div className='space-y-6'>

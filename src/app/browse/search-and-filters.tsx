@@ -53,34 +53,34 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
   return (
     <>
       {/* Search Bar and Controls Row */}
-      <div className='mb-6'>
-        <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6'>
+      <div className='mb-4 sm:mb-6'>
+        <div className='flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:gap-6'>
           {/* Search Bar */}
           <div className='relative flex-1'>
-            <Search className='absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-gray-400' />
+            <Search className='absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400 sm:left-4 sm:h-5 sm:w-5' />
             <Input
               type='text'
-              placeholder='Search projects by title, description, author, or keywords...'
+              placeholder='Search projects...'
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              className='h-12 rounded-lg border-1 border-gray-200 pr-4 pl-12 text-base focus:border-black focus:shadow-none focus:ring-0 focus:outline-none lg:focus:ring-0'
+              className='h-10 rounded-lg border-1 border-gray-200 pr-3 pl-10 text-sm focus:border-black focus:shadow-none focus:ring-0 focus:outline-none sm:h-12 sm:pr-4 sm:pl-12 sm:text-base'
             />
           </div>
 
           {/* Controls */}
-          <div className='flex h-12 flex-wrap items-center gap-3'>
+          <div className='flex flex-wrap items-center gap-2 sm:gap-3'>
             {/* Filter Toggle */}
             <Button
               variant='outline'
               onClick={() => setShowFilters(!showFilters)}
-              className='flex h-12 items-center gap-2 rounded-lg border-1 border-gray-200 px-4 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+              className='flex h-10 cursor-pointer items-center gap-2 rounded-lg border-1 border-gray-200 px-3 text-sm focus:border-black focus:shadow-none focus:ring-0 focus:outline-none sm:h-12 sm:px-4 sm:text-base'
             >
               <Filter className='h-4 w-4' />
-              Filters
+              <span>Filters</span>
               {activeFiltersCount > 0 && (
                 <Badge
                   variant='default'
-                  className='ml-1 h-5 w-5 rounded-full p-0 text-xs'
+                  className='ml-1 h-4 w-4 rounded-full p-0 text-xs sm:h-5 sm:w-5'
                 >
                   {activeFiltersCount}
                 </Badge>
@@ -89,14 +89,14 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
 
             {/* Sort Controls */}
             <div className='flex items-center gap-2'>
-              <span className='hidden text-sm text-gray-600 sm:inline'>
+              <span className='hidden text-xs text-gray-600 sm:text-sm lg:inline'>
                 Sort:
               </span>
               <Select
                 value={filters.sortBy}
                 onValueChange={(value) => handleFilterChange('sortBy', value)}
               >
-                <SelectTrigger className='h-12 w-full rounded-lg border-1 border-gray-200 focus:border-gray-800 focus:shadow-none focus:ring-0 focus:outline-none'>
+                <SelectTrigger className='h-10 w-full cursor-pointer rounded-lg border-1 border-gray-200 text-sm focus:border-gray-800 focus:shadow-none focus:ring-0 focus:outline-none'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -111,7 +111,7 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
                 variant='outline'
                 size='sm'
                 onClick={toggleSortOrder}
-                className='h-12 w-12 rounded-lg border-1 border-gray-200 bg-transparent p-0 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+                className='h-10 w-10 cursor-pointer rounded-lg border-1 border-gray-200 bg-transparent p-0 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none sm:h-12 sm:w-12'
               >
                 {filters.sortOrder === 'asc' ? (
                   <SortAsc className='h-4 w-4' />
@@ -126,10 +126,10 @@ const SearchAndFilters: React.FC<SearchAndFiltersProps> = ({
               <Button
                 variant='ghost'
                 onClick={clearFilters}
-                className='h-12 cursor-pointer rounded-lg border-1 border-transparent text-gray-500 hover:border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none'
+                className='h-10 w-full cursor-pointer rounded-lg border-1 border-transparent px-2 text-gray-500 hover:border-gray-200 focus:border-black focus:shadow-none focus:ring-0 focus:outline-none sm:h-12 sm:w-auto sm:px-3'
               >
                 <X className='mr-1 h-4 w-4' />
-                Clear All
+                <span>Clear All</span>
               </Button>
             )}
           </div>

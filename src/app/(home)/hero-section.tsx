@@ -43,7 +43,7 @@ const HeroSection = () => {
         <p className='mx-auto mt-12 mb-12 max-w-5xl text-xl font-medium text-gray-600'>
           {heroData.description}
         </p>
-        <div className='flex flex-col justify-center gap-4 sm:flex-row'>
+        <div className='flex flex-col justify-center gap-4 px-2 sm:flex-row'>
           {heroData.actions.map((action, index) => (
             <Button
               key={index}

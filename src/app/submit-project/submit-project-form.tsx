@@ -120,7 +120,7 @@ export default function SubmitProjectForm() {
         variant: 'error',
       });
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
@@ -129,93 +129,107 @@ export default function SubmitProjectForm() {
   if (isSubmitted) return <SubmissionSuccess />;
 
   return (
-    <FormProvider {...methods}>
-      {/* Progress Header */}
-      <Card className='mb-4 shadow-none'>
-        <CardHeader className='pb-4'>
-          <div className='mb-4 flex items-center justify-between'>
-            <CardTitle className='text-lg'>
-              Step {currentStep} of {STEPS.length}
-            </CardTitle>
-            <span className='text-sm text-gray-500'>
-              {Math.round(progress)}% Complete
-            </span>
-          </div>
-          <Progress value={progress} className='mb-4' />
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
-            {STEPS.map((step) => (
-              <div
-                key={step.id}
-                className={`rounded-lg border-2 p-3 text-center transition-colors ${
-                  step.id === currentStep
-                    ? 'border-black bg-black text-white'
-                    : step.id < currentStep
-                      ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-gray-200 bg-gray-50 text-gray-500'
-                }`}
-              >
-                <div className='text-sm font-medium'>{step.title}</div>
-              </div>
-            ))}
-          </div>
-        </CardHeader>
-      </Card>
+    <>
+      {!isSubmitted && (
+        <div className='mb-8 text-center'>
+          <h1 className='text-3xl font-bold text-gray-900'>
+            Submit Your Project
+          </h1>
+          <p className='mt-2 text-gray-600'>
+            Share your amazing work with the community
+          </p>
+        </div>
+      )}
 
-      {/* Form Content */}
-      <Card className='mb-4 shadow-none'>
-        <CardContent className='px-6 py-2'>
-          {currentStep === 1 && <BasicInfoStep />}
-          {currentStep === 2 && <ProjectDetailsStep />}
-          {currentStep === 3 && <TechnicalDetailsStep />}
-          {currentStep === 4 && <ReviewStep />}
-        </CardContent>
-      </Card>
-
-      {/* Navigation */}
-      <Card className='mb-4 shadow-none'>
-        <CardContent className='p-4'>
-          <div className='flex items-center justify-between'>
-            {currentStep !== 1 ? (
-              <Button
-                variant='outline'
-                onClick={prevStep}
-                type='button'
-                className='flex cursor-pointer items-center gap-2'
-              >
-                <ChevronLeft className='h-4 w-4' />
-                Previous
-              </Button>
-            ) : (
-              <div />
-            )}
-
-            <div className='text-sm text-gray-500'>
-              Step {currentStep} of {STEPS.length}
+      <FormProvider {...methods}>
+        {/* Progress Header */}
+        <Card className='mb-4 shadow-none'>
+          <CardHeader className='pb-4'>
+            <div className='mb-4 flex items-center justify-between'>
+              <CardTitle className='text-lg'>
+                Step {currentStep} of {STEPS.length}
+              </CardTitle>
+              <span className='text-sm text-gray-500'>
+                {Math.round(progress)}% Complete
+              </span>
             </div>
+            <Progress value={progress} className='mb-4' />
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+              {STEPS.map((step) => (
+                <div
+                  key={step.id}
+                  className={`rounded-lg border-2 p-3 text-center transition-colors ${
+                    step.id === currentStep
+                      ? 'border-black bg-black text-white'
+                      : step.id < currentStep
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-gray-200 bg-gray-50 text-gray-500'
+                  }`}
+                >
+                  <div className='text-sm font-medium'>{step.title}</div>
+                </div>
+              ))}
+            </div>
+          </CardHeader>
+        </Card>
 
-            {currentStep < STEPS.length ? (
-              <Button
-                onClick={nextStep}
-                type='button'
-                className='flex cursor-pointer items-center gap-2'
-              >
-                Next
-                <ChevronRight className='h-4 w-4' />
-              </Button>
-            ) : (
-              <form onSubmit={methods.handleSubmit(onSubmit)}>
+        {/* Form Content */}
+        <Card className='mb-4 shadow-none'>
+          <CardContent className='px-6 py-2'>
+            {currentStep === 1 && <BasicInfoStep />}
+            {currentStep === 2 && <ProjectDetailsStep />}
+            {currentStep === 3 && <TechnicalDetailsStep />}
+            {currentStep === 4 && <ReviewStep />}
+          </CardContent>
+        </Card>
+
+        {/* Navigation */}
+        <Card className='mb-4 shadow-none'>
+          <CardContent className='p-4'>
+            <div className='flex items-center justify-between'>
+              {currentStep !== 1 ? (
                 <Button
-                  type='submit'
-                  disabled={isLoading}
+                  variant='outline'
+                  onClick={prevStep}
+                  type='button'
                   className='flex cursor-pointer items-center gap-2'
                 >
-                  {isLoading ? 'Submitting...' : 'Submit Project'}
+                  <ChevronLeft className='h-4 w-4' />
+                  <span className='sm:hidden'>Prev</span>
+                  <span className='hidden sm:inline'>Previous</span>
                 </Button>
-              </form>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-    </FormProvider>
+              ) : (
+                <div />
+              )}
+
+              <div className='text-sm text-gray-500'>
+                Step {currentStep} of {STEPS.length}
+              </div>
+
+              {currentStep < STEPS.length ? (
+                <Button
+                  onClick={nextStep}
+                  type='button'
+                  className='flex cursor-pointer items-center gap-2'
+                >
+                  Next
+                  <ChevronRight className='h-4 w-4' />
+                </Button>
+              ) : (
+                <form onSubmit={methods.handleSubmit(onSubmit)}>
+                  <Button
+                    type='submit'
+                    disabled={isLoading}
+                    className='flex cursor-pointer items-center gap-2'
+                  >
+                    {isLoading ? 'Submitting...' : 'Submit Project'}
+                  </Button>
+                </form>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </FormProvider>
+    </>
   );
 }

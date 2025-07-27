@@ -56,7 +56,7 @@ export default function BasicInfoStep() {
   };
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-8 p-0 md:p-2'>
       <h2 className='mb-8 text-xl font-semibold'>Basic Information</h2>
 
       {/* Project Title - Full Width */}
@@ -226,16 +226,23 @@ export default function BasicInfoStep() {
 
       {/* Team Members Section */}
       <div className='space-y-4'>
-        <div className='border-t pt-6'>
+        <div className='border-t pt-4 sm:pt-6'>
           <div className='mb-4 flex items-center justify-between'>
             <h3 className='text-lg font-medium'>Team Members</h3>
           </div>
         </div>
 
         {fields.length === 0 ? (
-          <div className='rounded-lg border-2 border-dashed border-gray-300 py-8 text-center'>
-            <p className='mb-4 text-gray-500'>No team members added yet</p>
-            <Button type='button' onClick={addTeamMember} variant='outline'>
+          <div className='rounded-lg border-2 border-dashed border-gray-300 px-4 py-6 text-center sm:py-8'>
+            <p className='mb-4 text-sm text-gray-500 sm:text-base'>
+              No team members added yet
+            </p>
+            <Button
+              type='button'
+              onClick={addTeamMember}
+              variant='outline'
+              className='w-full cursor-pointer bg-transparent sm:w-auto'
+            >
               <Plus className='mr-2 h-4 w-4' />
               Add First Team Member
             </Button>
@@ -243,104 +250,131 @@ export default function BasicInfoStep() {
         ) : (
           <div className='space-y-4'>
             {fields.map((member, index) => (
-              <div key={member.id} className='rounded-lg border bg-gray-50 p-4'>
-                <div className='flex items-center gap-4'>
-                  {/* Photo Upload */}
-                  <div className='group relative'>
-                    {(() => {
-                      const photo = watch(
-                        `teamMembers.${index}.photo`,
-                      ) as File | null;
-                      return photo ? (
-                        <div className='relative'>
-                          <Image
-                            width={200}
-                            height={200}
-                            src={
-                              URL.createObjectURL(photo) || '/placeholder.svg'
-                            }
-                            alt='Team member'
-                            className='h-16 w-16 rounded-full border-2 border-gray-300 object-cover'
-                          />
-                          <div className='bg-opacity-50 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100'>
-                            <Camera className='h-5 w-5 text-white' />
+              <div
+                key={member.id}
+                className='relative rounded-lg border bg-gray-50 p-3 sm:p-4'
+              >
+                {/* Mobile Remove Button (absolute top-right) */}
+                <Button
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  onClick={() => remove(index)}
+                  disabled={fields.length === 1}
+                  className='absolute top-2 right-2 h-8 w-8 cursor-pointer rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600 sm:hidden'
+                >
+                  <X className='h-3 w-3' />
+                </Button>
+
+                {/* Main content flex container */}
+                <div className='flex flex-col gap-4 pt-8 sm:flex-row sm:items-center sm:pt-0'>
+                  {/* Photo Upload - Full width on mobile, fixed width on desktop */}
+                  <div className='flex justify-center sm:justify-start'>
+                    <div className='group relative'>
+                      {(() => {
+                        const photo = watch(
+                          `teamMembers.${index}.photo`,
+                        ) as File | null;
+                        return photo ? (
+                          <div className='relative'>
+                            <Image
+                              width={200}
+                              height={200}
+                              src={
+                                URL.createObjectURL(photo) || '/placeholder.svg'
+                              }
+                              alt='Team member'
+                              className='h-16 w-16 rounded-full border-2 border-gray-300 object-cover sm:h-20 sm:w-20'
+                            />
+                            <div className='bg-opacity-50 absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black opacity-0 transition-opacity group-hover:opacity-100'>
+                              <Camera className='h-4 w-4 text-white sm:h-5 sm:w-5' />
+                            </div>
+                            <Button
+                              type='button'
+                              variant='outline'
+                              size='sm'
+                              onClick={() =>
+                                setValue(`teamMembers.${index}.photo`, null)
+                              }
+                              className='absolute -top-1 -right-1 h-5 w-5 cursor-pointer rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600 sm:h-6 sm:w-6'
+                            >
+                              <X className='h-3 w-3 sm:h-4 sm:w-4' />
+                            </Button>
                           </div>
-                          <Button
-                            type='button'
-                            variant='outline'
-                            size='sm'
-                            onClick={() =>
-                              setValue(`teamMembers.${index}.photo`, null)
-                            }
-                            className='absolute -top-1 -right-1 h-5 w-5 rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600'
-                          >
-                            <X className='h-3 w-3' />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 bg-gray-100 transition-colors group-hover:border-gray-400 group-hover:bg-gray-200'>
-                          <Upload className='h-5 w-5 text-gray-400 group-hover:text-gray-600' />
-                        </div>
-                      );
-                    })()}
-                    <input
-                      type='file'
-                      accept='image/*'
-                      onChange={(e) => handlePhotoUpload(index, e)}
-                      className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
-                    />
+                        ) : (
+                          <div className='flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-gray-300 bg-gray-100 transition-colors group-hover:border-gray-400 group-hover:bg-gray-200 sm:h-20 sm:w-20'>
+                            <Upload className='h-4 w-4 text-gray-400 group-hover:text-gray-600 sm:h-5 sm:w-5' />
+                          </div>
+                        );
+                      })()}
+                      <input
+                        type='file'
+                        accept='image/*'
+                        onChange={(e) => handlePhotoUpload(index, e)}
+                        className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
+                      />
+                    </div>
                   </div>
 
-                  {/* Full Name */}
-                  <div className='flex-1'>
-                    <Input
-                      placeholder='Full Name *'
-                      className='h-12'
-                      {...register(`teamMembers.${index}.fullName`)}
-                    />
-                    {errors.teamMembers?.[index]?.fullName && (
-                      <p className='mt-1 text-xs text-red-400'>
-                        {errors.teamMembers[index]?.fullName?.message}
-                      </p>
-                    )}
+                  {/* Form Fields - Stack on mobile, side by side on desktop */}
+                  <div className='flex-1 space-y-3 sm:flex sm:gap-4 sm:space-y-0'>
+                    {/* Full Name */}
+                    <div className='flex-1'>
+                      <Input
+                        placeholder='Full Name *'
+                        className='h-10 text-sm sm:h-12 sm:text-base'
+                        {...register(`teamMembers.${index}.fullName`)}
+                      />
+                      {errors.teamMembers?.[index]?.fullName && (
+                        <p className='mt-1 text-xs text-red-400'>
+                          {errors.teamMembers[index]?.fullName?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Campus Roll No */}
+                    <div className='flex-1'>
+                      <Input
+                        placeholder='Campus Roll No *'
+                        className='h-10 text-sm sm:h-12 sm:text-base'
+                        {...register(`teamMembers.${index}.rollNo`)}
+                      />
+                      {errors.teamMembers?.[index]?.rollNo && (
+                        <p className='mt-1 text-xs text-red-400'>
+                          {errors.teamMembers[index]?.rollNo?.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Campus Roll No */}
-                  <div className='flex-1'>
-                    <Input
-                      placeholder='Campus Roll No *'
-                      className='h-12'
-                      {...register(`teamMembers.${index}.rollNo`)}
-                    />
-                    {errors.teamMembers?.[index]?.rollNo && (
-                      <p className='mt-1 text-xs text-red-400'>
-                        {errors.teamMembers[index]?.rollNo?.message}
-                      </p>
-                    )}
+                  {/* Desktop Remove Button (flex item) */}
+                  <div className='hidden justify-center sm:flex sm:justify-start'>
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='sm'
+                      onClick={() => remove(index)}
+                      disabled={fields.length === 1}
+                      className='h-10 w-10 cursor-pointer p-0 text-red-600 hover:bg-red-50 hover:text-red-700 sm:h-12 sm:w-12'
+                    >
+                      <X className='h-4 w-4' />
+                    </Button>
                   </div>
-                  {/* Remove Button */}
-                  <Button
-                    type='button'
-                    variant='outline'
-                    size='sm'
-                    onClick={() => remove(index)}
-                    className='h-12 w-12 cursor-pointer p-0 text-red-600 hover:bg-red-50 hover:text-red-700'
-                  >
-                    <X className='h-4 w-4' />
-                  </Button>
                 </div>
               </div>
             ))}
+
             {errors.teamMembers && (
               <p className='text-sm text-red-500'>
                 {errors.teamMembers.message}
               </p>
             )}
-            <div className='flex justify-end'>
+
+            <div className='flex justify-center pt-2 sm:justify-end'>
               <Button
                 type='button'
                 onClick={addTeamMember}
-                className='flex cursor-pointer items-center gap-2'
+                className='flex w-full cursor-pointer items-center gap-2 sm:w-auto'
               >
                 <Plus className='h-4 w-4' />
                 Add Member

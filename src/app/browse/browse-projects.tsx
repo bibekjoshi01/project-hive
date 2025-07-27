@@ -118,7 +118,7 @@ export default function BrowseProjects() {
   ).length;
 
   return (
-    <div className='mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8'>
+    <div className='mx-auto mt-8 max-w-7xl px-0 sm:px-6 lg:px-8'>
       <SearchAndFilters
         filters={filters}
         showFilters={showFilters}
@@ -128,31 +128,6 @@ export default function BrowseProjects() {
         toggleSortOrder={toggleSortOrder}
         clearFilters={clearFilters}
       />
-
-      {/* Active Filters Display */}
-      {activeFiltersCount > 0 && (
-        <div className='mb-6 flex flex-wrap items-center gap-2'>
-          <span className='text-sm text-gray-600'>Active filters:</span>
-          {['search', 'batch', 'department', 'category', 'level'].map((key) => {
-            const value = filters[key as keyof FilterState];
-            return (
-              value && (
-                <Badge
-                  key={key}
-                  variant='secondary'
-                  className='flex items-center gap-1'
-                >
-                  {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
-                  <X
-                    className='h-3 w-3 cursor-pointer'
-                    onClick={() => handleRemoveFilter(key as keyof FilterState)}
-                  />
-                </Badge>
-              )
-            );
-          })}
-        </div>
-      )}
 
       {/* Results Summary */}
       <div className='mb-6 flex items-center justify-between'>
@@ -166,7 +141,7 @@ export default function BrowseProjects() {
       </div>
 
       {/* Project Cards Grid */}
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+      <div className='grid grid-cols-1 gap-6 p-0 md:grid-cols-2'>
         {projectList?.results?.map((project) => (
           <ProjectCard project={project} key={project.id} />
         ))}

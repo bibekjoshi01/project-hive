@@ -33,7 +33,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <Card
       onClick={() => router.push(`/browse/${project.slug}`)}
-      className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-8 shadow-none transition-transform hover:-translate-y-2'
+      className='group flex cursor-pointer flex-col justify-between rounded-2xl bg-white p-4 shadow-none transition-transform hover:-translate-y-2 sm:p-8'
     >
       <CardHeader className='p-0 pb-1'>
         <div className='flex items-start justify-between'>

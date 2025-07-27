@@ -47,7 +47,10 @@ const NewsletterSection = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className='mx-auto max-w-lg'>
+          <form
+            onSubmit={handleSubmit}
+            className='mx-auto max-w-lg px-2 sm:px-0'
+          >
             <div className='flex flex-col gap-4 sm:flex-row'>
               <div className='relative flex-1'>
                 <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>

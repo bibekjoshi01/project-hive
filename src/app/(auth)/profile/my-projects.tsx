@@ -55,23 +55,24 @@ export default function MyProjects() {
 
   return (
     <div className='space-y-6'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
         <h3 className='text-lg font-bold'>My Projects</h3>
         <Button
-          className='cursor-pointer'
+          className='w-full cursor-pointer sm:w-auto'
           onClick={() => (window.location.href = '/submit-project')}
         >
-          Submit New Project
+          <span>Submit New Project</span>
         </Button>
       </div>
-
       {/* Status Filter */}
       <Card className='border-1 shadow-none'>
-        <CardContent className='p-4'>
-          <div className='flex flex-wrap items-center gap-4'>
-            <span className='text-sm font-medium'>Filter by status:</span>
+        <CardContent className='p-3 sm:p-4'>
+          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4'>
+            <span className='text-sm font-medium whitespace-nowrap'>
+              Filter by status:
+            </span>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className='w-48 focus:ring-0 focus:ring-offset-0'>
+              <SelectTrigger className='w-full focus:ring-0 focus:ring-offset-0 sm:w-48'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -85,7 +86,7 @@ export default function MyProjects() {
           </div>
         </CardContent>
       </Card>
-
+      
       {/* Loading */}
       {isLoading ? (
         <Card className='border-1 shadow-none'>

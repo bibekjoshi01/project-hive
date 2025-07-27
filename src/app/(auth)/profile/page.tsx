@@ -44,31 +44,35 @@ export default function ProfilePage() {
   return (
     <div className='min-h-screen bg-gray-50 py-12'>
       <div className='mx-auto w-full max-w-4xl space-y-6 px-4'>
-        {/* Header with Tabs and Logout */}
-        <div className='flex items-center justify-between'>
+        <div className='flex flex-wrap items-center justify-between gap-3'>
           {/* Left: Tabs */}
-          <div className='flex gap-4'>
+          <div className='flex flex-1 flex-wrap gap-2 sm:gap-4'>
             {tabs.map((tab) => (
               <Button
                 key={tab.id}
                 variant={activeTab === tab.id ? 'default' : 'outline'}
                 onClick={() => handleTabClick(tab.id)}
-                className={cn('cursor-pointer px-6 py-2')}
+                className={cn(
+                  'min-w-0 flex-1 cursor-pointer px-3 py-2 text-sm sm:flex-none sm:px-6 sm:text-base',
+                  'sm:min-w-[auto]',
+                )}
               >
-                {tab.label}
+                <span className='truncate'>{tab.label}</span>
               </Button>
             ))}
           </div>
 
           {/* Right: Logout */}
-          <Button
-            variant='outline'
-            onClick={handleLogout}
-            className='cursor-pointer border-none text-red-600 shadow-none hover:text-red-700'
-          >
-            <LogOut className='mr-2 h-5 w-5' />
-            Logout
-          </Button>
+          <div className='flex justify-end sm:justify-start'>
+            <Button
+              variant='outline'
+              onClick={handleLogout}
+              className='w-full cursor-pointer justify-center border-none bg-transparent px-3 text-red-600 shadow-none hover:text-red-700 sm:w-auto sm:justify-start sm:px-4'
+            >
+              <LogOut className='mr-1 h-4 w-4 sm:mr-2 sm:h-5 sm:w-5' />
+              <span className='xs:inline hidden sm:inline'>Logout</span>
+            </Button>
+          </div>
         </div>
 
         {/* Main Content */}

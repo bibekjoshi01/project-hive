@@ -196,51 +196,60 @@ export default function MyInformation() {
 
   return (
     <div className='space-y-6'>
-      <Card className='border-none px-0 shadow-none'>
-        <CardHeader className='relative'>
-          <CardTitle>Profile Information</CardTitle>
-          {!isEditing && (
-            <Button
-              onClick={() => setIsEditing(true)}
-              className='absolute top-4 right-4 flex cursor-pointer items-center gap-2 shadow-none'
-              variant='outline'
-            >
-              <Edit className='h-4 w-4' />
-              Edit Profile
-            </Button>
-          )}
-          {isEditing && (
-            <div className='absolute top-4 right-4 flex gap-2'>
-              <Button
-                variant='outline'
-                onClick={handleCancel}
-                disabled={isSaving}
-                className='cursor-pointer'
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSave}
-                disabled={isSaving}
-                className='flex cursor-pointer items-center gap-2'
-              >
-                {isSaving || isUploadingPhoto ? (
-                  <>
-                    <Loader2 className='h-4 w-4 animate-spin' />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className='h-4 w-4' />
-                    Save Changes
-                  </>
-                )}
-              </Button>
-            </div>
-          )}
-        </CardHeader>
+      <Card className='border-none px-0 py-0 shadow-none sm:py-2'>
+        <CardHeader className='px-0 sm:px-4'>
+          <div className='flex items-center justify-between'>
+            <CardTitle className='text-lg sm:text-xl'>
+              Profile Information
+            </CardTitle>
 
-        <CardContent className='space-y-6'>
+            {!isEditing && (
+              <Button
+                onClick={() => setIsEditing(true)}
+                className='flex h-8 cursor-pointer items-center gap-1 px-2 shadow-none sm:h-9 sm:gap-2 sm:px-4'
+                variant='outline'
+                size='sm'
+              >
+                <Edit className='h-4 w-4' />
+                <span className='hidden sm:inline'>Edit Profile</span>
+              </Button>
+            )}
+
+            {isEditing && (
+              <div className='flex gap-2'>
+                <Button
+                  variant='outline'
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className='h-8 cursor-pointer bg-transparent px-2 sm:h-9 sm:px-4'
+                  size='sm'
+                >
+                  <span className='hidden sm:inline'>Cancel</span>
+                  <span className='sm:hidden'>✕</span>
+                </Button>
+                <Button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className='flex h-8 cursor-pointer items-center gap-1 px-2 sm:h-9 sm:gap-2 sm:px-4'
+                  size='sm'
+                >
+                  {isSaving || isUploadingPhoto ? (
+                    <>
+                      <Loader2 className='h-4 w-4 animate-spin' />
+                      <span className='hidden sm:inline'>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className='h-4 w-4' />
+                      <span className='hidden sm:inline'>Save Changes</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className='space-y-6 px-0 sm:px-4'>
           {/* Profile Picture Section */}
           <div className='flex items-center gap-6'>
             <div className='relative'>

@@ -23,7 +23,7 @@ export default function ReviewStep() {
       : data.technologies;
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-8 p-0 md:p-2'>
       <h2 className='mb-8 text-xl font-semibold'>Review &amp; Submit</h2>
 
       {/* ---------- Basic Info ---------- */}

@@ -24,17 +24,17 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
   return (
     <div className='flex min-h-screen w-full flex-col bg-white text-gray-900'>
       {/* Header */}
-      <header className='sticky top-0 z-50 border-b bg-white py-0'>
+      <header className='sticky top-0 z-50 border-b bg-white px-6 py-0'>
         <div className='container mx-auto flex h-16 items-center justify-between px-0'>
           <Link href='/' className='flex items-center space-x-4'>
             <GraduationCap className='text-primary h-8 w-8' />
             <span className='text-xl font-bold text-gray-900'>ProjectHive</span>
           </Link>
 
-          <nav className='hidden items-center space-x-4 shadow-none md:flex'>
+          <nav className='items-center space-x-4 shadow-none md:flex'>
             {isAuthenticated ? (
-              <>
-                <span className='font-medium text-gray-800'>
+              <div className='flex items-center justify-center gap-2'>
+                <span className='xs:inline hidden font-medium text-gray-800 sm:inline'>
                   {fullName?.trim() || 'Hello!'}
                 </span>
                 <div
@@ -48,7 +48,7 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
                     height={40}
                   />
                 </div>
-              </>
+              </div>
             ) : (
               <Button asChild variant='default' className='px-6'>
                 <Link href='/login'>Login</Link>
@@ -69,28 +69,28 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
               © {new Date().getFullYear()} College Project Archive. All rights
               reserved.
             </p>
-            <div className='mt-4 flex space-x-6 md:mt-0'>
+            <div className='mt-4 flex space-x-6 text-center md:mt-0'>
               <Link
                 href='/privacy-policies'
-                className='text-sm text-gray-400 transition-colors hover:text-white'
+                className='text-xs text-gray-400 transition-colors hover:text-white sm:text-sm'
               >
                 Privacy Policy
               </Link>
               <Link
                 href='/terms-and-conditions'
-                className='text-sm text-gray-400 transition-colors hover:text-white'
+                className='text-xs text-gray-400 transition-colors hover:text-white sm:text-sm'
               >
                 Terms of Service
               </Link>
               <Link
                 href='/contact-us'
-                className='text-sm text-gray-400 transition-colors hover:text-white'
+                className='text-xs text-gray-400 transition-colors hover:text-white sm:text-sm'
               >
                 Contact Us
               </Link>
               <Link
                 href='/developer'
-                className='text-sm text-gray-400 transition-colors hover:text-white'
+                className='text-xs text-gray-400 transition-colors hover:text-white sm:text-sm'
               >
                 Developer Info
               </Link>

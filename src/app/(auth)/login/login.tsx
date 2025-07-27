@@ -78,12 +78,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-white'>
-      <div className='w-full max-w-lg'>
+    <div className='flex items-center justify-center bg-white sm:min-h-0 lg:min-h-screen'>
+      <div className='my-16 w-full max-w-lg lg:my-0'>
         {optStage ? (
           <OtpVerification email={formData?.email} />
         ) : (
-          <Card className='border-none px-6 py-12 shadow-none'>
+          <Card className='border-none px-0 py-12 shadow-none'>
             <CardHeader className='space-y-1 pb-2'>
               <CardTitle className='text-center text-2xl font-bold text-black'>
                 Sign In Your Account

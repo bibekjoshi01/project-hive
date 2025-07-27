@@ -34,7 +34,7 @@ const Categories = () => {
         <h2 className='mb-16 text-center text-4xl font-bold text-gray-900'>
           Explore Projects by Category
         </h2>
-        <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4'>
+        <div className='grid grid-cols-1 gap-8 px-2 sm:grid-cols-2 sm:px-0 lg:grid-cols-4'>
           {data.results.map((category: CategoryResponse) => {
             const IconComponent = iconMap[category.name] || Code; // fallback
             return (
