@@ -116,11 +116,7 @@ export default function ProjectDetailView({
   };
 
   if (isLoading) {
-    return (
-      <div className='flex min-h-screen items-center justify-center bg-gray-50'>
-        <div className='h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-black' />
-      </div>
-    );
+    return <ProjectDetailSkeleton />;
   }
 
   if (!project) {
@@ -371,6 +367,142 @@ export default function ProjectDetailView({
               </Card>
             )}
             <ProjectRating projectId={project.id} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ProjectDetailSkeleton() {
+  return (
+    <div className='min-h-screen animate-pulse bg-gray-50'>
+      <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8'>
+        {/* Back Button Skeleton */}
+        <div className='mb-6 h-10 w-40 rounded bg-gray-200'></div>
+
+        {/* Project Header Skeleton */}
+        <div className='mb-8 rounded-lg bg-white p-6 shadow-sm'>
+          <div className='flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between'>
+            <div className='flex-1'>
+              <div className='mb-3 h-6 w-24 rounded bg-gray-200'></div>{' '}
+              {/* Badge */}
+              <div className='mb-3 h-10 w-3/4 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='mb-2 h-6 w-full rounded bg-gray-200'></div>{' '}
+              {/* Abstract line 1 */}
+              <div className='h-6 w-11/12 rounded bg-gray-200'></div>{' '}
+              {/* Abstract line 2 */}
+            </div>
+            <div className='flex flex-col gap-3 lg:items-end'>
+              <div className='h-9 w-24 rounded bg-gray-200'></div>{' '}
+              {/* Share Button */}
+              <div className='flex items-center gap-4 text-sm text-gray-500'>
+                <div className='h-4 w-20 rounded bg-gray-200'></div>{' '}
+                {/* Views */}
+                <div className='h-4 w-24 rounded bg-gray-200'></div>{' '}
+                {/* Rating */}
+              </div>
+            </div>
+          </div>
+          <div className='mt-6 grid grid-cols-2 gap-4 text-sm md:grid-cols-5'>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i}>
+                <div className='mb-1 h-4 w-24 rounded bg-gray-200'></div>{' '}
+                {/* Label */}
+                <div className='h-6 w-32 rounded bg-gray-200'></div>{' '}
+                {/* Value */}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
+          {/* Main Content Skeleton */}
+          <div className='space-y-8 lg:col-span-2'>
+            {/* Technologies Used Card Skeleton */}
+            <div className='rounded-lg bg-white p-6 shadow-sm'>
+              <div className='mb-4 h-6 w-48 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='flex flex-wrap gap-2'>
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className='bg-gray-200\ h-8 w-20 rounded'></div>
+                ))}
+              </div>
+            </div>
+
+            {/* Project Description Card Skeleton */}
+            <div className='rounded-lg bg-white p-6 shadow-sm'>
+              <div className='mb-4 h-6 w-48 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='space-y-2'>
+                <div className='h-4 w-full rounded bg-gray-200'></div>
+                <div className='h-4 w-11/12 rounded bg-gray-200'></div>
+                <div className='h-4 w-full rounded bg-gray-200'></div>
+                <div className='h-4 w-10/12 rounded bg-gray-200'></div>
+                <div className='h-4 w-full rounded bg-gray-200'></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar Skeleton */}
+          <div className='space-y-6'>
+            {/* Team Members Card Skeleton */}
+            <div className='rounded-lg bg-white p-6 shadow-sm'>
+              <div className='mb-4 h-6 w-40 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='space-y-4'>
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className='flex items-center gap-3'>
+                    <div className='h-12 w-12 rounded-full bg-gray-200'></div>{' '}
+                    {/* Avatar */}
+                    <div>
+                      <div className='mb-1 h-5 w-32 rounded bg-gray-200'></div>{' '}
+                      {/* Name */}
+                      <div className='h-4 w-24 rounded bg-gray-200'></div>{' '}
+                      {/* Roll No */}
+                    </div>
+                  </div>
+                ))}
+                <div className='my-4 h-px bg-gray-200'></div> {/* Separator */}
+                <div className='mb-1 h-4 w-24 rounded bg-gray-200'></div>{' '}
+                {/* Supervisor Label */}
+                <div className='h-5 w-32 rounded bg-gray-200'></div>{' '}
+                {/* Supervisor Name */}
+              </div>
+            </div>
+
+            {/* Project Links Card Skeleton */}
+            <div className='rounded-lg bg-white p-6 shadow-sm'>
+              <div className='mb-4 h-6 w-32 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='space-y-3'>
+                <div className='h-12 w-full rounded bg-gray-200'></div>{' '}
+                {/* Link 1 */}
+                <div className='h-12 w-full rounded bg-gray-200'></div>{' '}
+                {/* Link 2 */}
+              </div>
+            </div>
+
+            {/* Project Files Card Skeleton */}
+            <div className='rounded-lg bg-white p-6 shadow-sm'>
+              <div className='mb-4 h-6 w-32 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='space-y-3'>
+                <div className='h-12 w-full rounded bg-gray-200'></div>{' '}
+                {/* File 1 */}
+                <div className='h-12 w-full rounded bg-gray-200'></div>{' '}
+                {/* File 2 */}
+              </div>
+            </div>
+
+            {/* Project Rating Card Skeleton (assuming it's a card) */}
+            <div className='rounded-lg bg-white p-6 shadow-sm'>
+              <div className='mb-4 h-6 w-32 rounded bg-gray-200'></div>{' '}
+              {/* Title */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Rating component placeholder */}
+            </div>
           </div>
         </div>
       </div>

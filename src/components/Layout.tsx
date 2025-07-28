@@ -1,6 +1,5 @@
 'use client';
-
-import { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,7 +29,6 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
             <GraduationCap className='text-primary h-8 w-8' />
             <span className='text-xl font-bold text-gray-900'>ProjectHive</span>
           </Link>
-
           <nav className='items-center space-x-4 shadow-none md:flex'>
             {isAuthenticated ? (
               <div className='flex items-center justify-center gap-2'>
@@ -58,8 +56,8 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      {/* Main content */}
-      <main>{children}</main>
+      {/* Main content - Added flex-grow here */}
+      <main className='flex-grow'>{children}</main>
 
       {/* Footer */}
       <footer className='bg-gray-900 text-white'>

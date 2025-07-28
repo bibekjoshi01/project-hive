@@ -3,8 +3,18 @@ import { ELevels } from './types';
 
 export const teamMemberSchema = z.object({
   id: z.string(),
-  fullName: z.string().min(1, 'Full name is required'),
-  rollNo: z.string().min(1, 'Roll number is required'),
+  fullName: z
+    .string()
+    .min(1, 'Full name is required')
+    .max(100, "Full name can't be more than 100 characters"),
+  rollNo: z
+    .string()
+    .min(12, 'Minimum 12 characters required')
+    .max(15, "Roll can't be more than 15 characters")
+    .regex(
+      /^THA\d{3}[A-Z]{3}\d{3}$/,
+      'Roll number must follow format: THAXXXYYYZZZ',
+    ),
   photo: z
     .custom<File | null>()
     .refine((file) => !file || file.size <= 2_000_000, 'Max 2MB')

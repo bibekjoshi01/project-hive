@@ -105,7 +105,7 @@ export default function BasicInfoStep() {
             }
           >
             <SelectTrigger className='h-12 w-full focus:border-gray-400'>
-              <SelectValue placeholder='Select batch year' />
+              <SelectValue placeholder='Select batch year *' />
             </SelectTrigger>
             <SelectContent>
               {batches.map((batch) => (
@@ -131,7 +131,7 @@ export default function BasicInfoStep() {
             }
           >
             <SelectTrigger className='h-12 w-full focus:border-gray-400'>
-              <SelectValue placeholder='Select project category' />
+              <SelectValue placeholder='Select project category *' />
             </SelectTrigger>
             <SelectContent>
               {categories.map((category) => (
@@ -161,7 +161,7 @@ export default function BasicInfoStep() {
             }
           >
             <SelectTrigger className='h-12 w-full focus:border-gray-400'>
-              <SelectValue placeholder='Select department' />
+              <SelectValue placeholder='Select department *' />
             </SelectTrigger>
             <SelectContent>
               {departments.map((dept) => (
@@ -189,7 +189,7 @@ export default function BasicInfoStep() {
             }
           >
             <SelectTrigger className='h-12 w-full focus:border-gray-400'>
-              <SelectValue placeholder='Select academic level' />
+              <SelectValue placeholder='Select academic level *' />
             </SelectTrigger>
             <SelectContent>
               {Object.entries(levels).map(([key, val]) => (
