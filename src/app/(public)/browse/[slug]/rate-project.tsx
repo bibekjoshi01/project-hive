@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRateProjectMutation } from '../redux/project.api';
 import { useSnackbar } from 'notistack';
 import { useAppSelector } from '@/lib/hooks';
-import { authState } from '@/app/(auth)/redux/selector';
+import { authState } from '@/app/(public)/(auth)/redux/selector';
 
 interface ProjectRatingProps {
   projectId: number;

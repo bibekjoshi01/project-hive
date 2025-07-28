@@ -5,7 +5,7 @@ import { GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppSelector } from '@/lib/hooks';
 import Image from 'next/image';
-import { authState } from '@/app/(auth)/redux/selector';
+import { authState } from '@/app/(public)/(auth)/redux/selector';
 import ProfileImage from '@/assets/images/avatar.png';
 import { useRouter } from 'next/navigation';
 

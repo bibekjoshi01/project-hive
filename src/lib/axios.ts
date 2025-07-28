@@ -74,7 +74,7 @@ axiosInstance.interceptors.response.use(
     // Handle 401 Unauthorized errors
     else if (error.response?.status === 401) {
       const { store } = await import('./store');
-      const { logoutSuccess } = await import('@/app/(auth)/redux/auth.slice');
+      const { logoutSuccess } = await import('@/app/(public)/(auth)/redux/auth.slice');
       store.dispatch(logoutSuccess());
       showErrorToast('Unauthorized.');
     }

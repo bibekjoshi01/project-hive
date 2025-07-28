@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
+import ClientLayoutWrapper from '@/lib/SnackBarProvider';
 import './globals.css';
-import WebsiteLayout from '../components/Layout';
 import { Montserrat, Poppins } from 'next/font/google';
 import StoreProvider from '@/lib/StoreProvider';
-import ClientLayoutWrapper from '@/lib/SnackBarProvider';
+import type { Metadata } from 'next';
 
 export const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -63,9 +62,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${montserrat.variable} ${poppins.variable} font-sans`}>
         <StoreProvider>
-          <ClientLayoutWrapper>
-            <WebsiteLayout>{children}</WebsiteLayout>
-          </ClientLayoutWrapper>
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
         </StoreProvider>
       </body>
     </html>
