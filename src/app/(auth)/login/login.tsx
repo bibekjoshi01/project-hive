@@ -25,6 +25,8 @@ export default function LoginPage() {
   });
   const [login, { isLoading: loadingLogin }] = useLoginMutation();
   const [OAuth, { isLoading: loadingOAuthLogin }] = useOAuthMutation();
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [githubLoading, setGithubLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useAppDispatch();
@@ -48,6 +50,8 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async ({ token }: { token: string }) => {
+    setGoogleLoading(true);
+
     const values = {
       thirdPartyApp: 'GOOGLE',
       authToken: token,
@@ -60,6 +64,8 @@ export default function LoginPage() {
       router.push('/login');
     } catch (e) {
       enqueueSnackbar('Error signin with google', { variant: 'error' });
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -70,6 +76,8 @@ export default function LoginPage() {
   });
 
   const handleGithubLogin = () => {
+    setGithubLoading(true);
+
     const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID!;
     const GITHUB_REDIRECT_URI = process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI!;
 
@@ -140,7 +148,9 @@ export default function LoginPage() {
                 disabled={loadingOAuthLogin}
               >
                 <GoogleLogo />
-                {loadingOAuthLogin ? 'Signing in...' : 'Continue with Google'}
+                {loadingOAuthLogin && googleLoading
+                  ? 'Signing in...'
+                  : 'Continue with Google'}
               </Button>
 
               {/* Github Login Button */}
@@ -151,7 +161,9 @@ export default function LoginPage() {
                 disabled={loadingOAuthLogin}
               >
                 <GithubLogo />
-                {loadingOAuthLogin ? 'Signing in...' : 'Continue with GitHub'}
+                {loadingOAuthLogin && githubLoading
+                  ? 'Signing in...'
+                  : 'Continue with GitHub'}
               </Button>
             </CardContent>
           </Card>

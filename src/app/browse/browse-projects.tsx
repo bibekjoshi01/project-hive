@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 import NoResultsFound from './no-results-found';
-import ProjectCard from './project-card';
+import ProjectCard, { ProjectCardSkeleton } from './project-card';
 import SearchAndFilters from './search-and-filters';
 import { useGetProjectsQuery } from './redux/project.api';
 import { FilterState } from './redux/types';
@@ -96,16 +96,6 @@ export default function BrowseProjects() {
     setFilters(newFilters);
   };
 
-  const handleRemoveFilter = (key: keyof FilterState) => {
-    const newFilters = {
-      ...filters,
-      [key]:
-        key === 'sortBy' ? 'submitted_at' : key === 'sortOrder' ? 'desc' : '',
-      offset: 0,
-    };
-    setFilters(newFilters);
-  };
-
   const showMoreProjects = () => {
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -142,9 +132,13 @@ export default function BrowseProjects() {
 
       {/* Project Cards Grid */}
       <div className='grid grid-cols-1 gap-6 p-0 md:grid-cols-2'>
-        {projectList?.results?.map((project) => (
-          <ProjectCard project={project} key={project.id} />
-        ))}
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <ProjectCardSkeleton key={index} />
+            ))
+          : projectList?.results?.map((project) => (
+              <ProjectCard project={project} key={project.id} />
+            ))}
       </div>
 
       {/* Show More Button */}

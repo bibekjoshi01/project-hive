@@ -86,14 +86,10 @@ export default function MyProjects() {
           </div>
         </CardContent>
       </Card>
-      
+
       {/* Loading */}
       {isLoading ? (
-        <Card className='border-1 shadow-none'>
-          <CardContent className='p-8 text-center text-gray-500'>
-            Loading your projects...
-          </CardContent>
-        </Card>
+        <MyProjectsSkeleton />
       ) : (
         <div className='space-y-4'>
           {filteredProjects?.length === 0 ? (
@@ -162,6 +158,21 @@ export default function MyProjects() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+export function MyProjectsSkeleton() {
+  return (
+    <div className='grid animate-pulse grid-cols-1 gap-4'>
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className='rounded-lg bg-white p-6 shadow-sm'>
+          <div className='mb-2 h-6 w-3/4 rounded bg-gray-200'></div>
+          <div className='mb-4 h-4 w-1/2 rounded bg-gray-200'></div>
+          <div className='mb-6 h-20 rounded bg-gray-200'></div>
+          <div className='ml-auto h-10 w-24 rounded bg-gray-200'></div>
+        </div>
+      ))}
     </div>
   );
 }

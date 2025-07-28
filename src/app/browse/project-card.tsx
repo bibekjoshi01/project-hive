@@ -109,3 +109,44 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 };
 
 export default ProjectCard;
+
+export const ProjectCardSkeleton = () => {
+  return (
+    <div className='flex animate-pulse flex-col justify-between rounded-2xl bg-white p-4 shadow-sm sm:p-8'>
+      {/* Title and Rating */}
+      <div className='mb-4 space-y-2'>
+        <div className='h-5 w-3/4 rounded bg-gray-200'></div>
+        <div className='flex items-center gap-2'>
+          <div className='h-4 w-16 rounded bg-gray-200'></div>
+          <div className='h-4 w-8 rounded bg-gray-200'></div>
+        </div>
+      </div>
+
+      {/* Meta Info */}
+      <div className='mb-4 flex items-center gap-4 text-sm text-gray-500'>
+        <div className='h-4 w-24 rounded bg-gray-200'></div>
+        <div className='h-4 w-20 rounded bg-gray-200'></div>
+      </div>
+
+      {/* Abstract */}
+      <div className='mb-4 space-y-2'>
+        <div className='h-4 w-full rounded bg-gray-200'></div>
+        <div className='h-4 w-5/6 rounded bg-gray-200'></div>
+        <div className='h-4 w-3/4 rounded bg-gray-200'></div>
+      </div>
+
+      {/* Badges */}
+      <div className='mb-4 flex flex-wrap gap-2'>
+        {Array.from({ length: 4 }).map((_, idx) => (
+          <div key={idx} className='h-6 w-20 rounded bg-gray-200'></div>
+        ))}
+      </div>
+
+      {/* Footer (Views + Button) */}
+      <div className='flex items-center justify-between'>
+        <div className='h-4 w-20 rounded bg-gray-200'></div>
+        <div className='h-8 w-16 rounded bg-gray-200'></div>
+      </div>
+    </div>
+  );
+};

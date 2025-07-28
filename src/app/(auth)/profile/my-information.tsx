@@ -138,10 +138,9 @@ export default function MyInformation() {
       }
 
       await updateProfile(body).unwrap();
+      setIsEditing(false);
 
       await refetch();
-
-      setIsEditing(false);
 
       toast('Profile updated successfully', { variant: 'success' });
     } catch (error) {
@@ -170,12 +169,7 @@ export default function MyInformation() {
   };
 
   if (isLoading) {
-    return (
-      <div className='flex items-center justify-center p-8'>
-        <Loader2 className='h-8 w-8 animate-spin' />
-        <span className='ml-2'>Loading profile...</span>
-      </div>
-    );
+    return <MyInformationSkeleton />;
   }
 
   if (isError || !profile) {
@@ -391,6 +385,85 @@ export default function MyInformation() {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+export function MyInformationSkeleton() {
+  return (
+    <div className='animate-pulse space-y-6'>
+      <div className='rounded-lg bg-white p-0 shadow-none sm:py-2'>
+        {/* CardHeader Skeleton */}
+        <div className='px-0 pb-4 sm:px-4'>
+          <div className='flex items-center justify-between'>
+            <div className='h-6 w-48 rounded bg-gray-200'></div>{' '}
+            {/* CardTitle */}
+            <div className='h-9 w-24 rounded bg-gray-200'></div>{' '}
+            {/* Edit/Save/Cancel Button */}
+          </div>
+        </div>
+
+        {/* CardContent Skeleton */}
+        <div className='space-y-6 px-0 pt-0 sm:px-4'>
+          {/* Profile Picture Section Skeleton */}
+          <div className='flex items-center gap-6'>
+            <div className='h-24 w-24 rounded-full bg-gray-200'></div>{' '}
+            {/* Avatar */}
+            <div>
+              <div className='mb-2 h-6 w-48 rounded bg-gray-200'></div>{' '}
+              {/* Name */}
+              <div className='h-4 w-32 rounded bg-gray-200'></div>{' '}
+              {/* Bio summary */}
+            </div>
+          </div>
+
+          {/* Form Fields Grid Skeleton */}
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            {/* Full Name */}
+            <div className='space-y-2'>
+              <div className='h-4 w-24 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Input */}
+            </div>
+            {/* Email */}
+            <div className='space-y-2'>
+              <div className='h-4 w-16 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Input */}
+            </div>
+            {/* Username */}
+            <div className='space-y-2'>
+              <div className='h-4 w-20 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Input */}
+            </div>
+            {/* Phone Number */}
+            <div className='space-y-2'>
+              <div className='h-4 w-28 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Input */}
+            </div>
+            {/* User Role */}
+            <div className='space-y-2'>
+              <div className='h-4 w-16 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Input */}
+            </div>
+            {/* Date Joined */}
+            <div className='space-y-2'>
+              <div className='h-4 w-24 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-10 w-full rounded bg-gray-200'></div>{' '}
+              {/* Input */}
+            </div>
+            {/* Bio */}
+            <div className='space-y-2 md:col-span-2'>
+              <div className='h-4 w-12 rounded bg-gray-200'></div> {/* Label */}
+              <div className='h-24 w-full rounded bg-gray-200'></div>{' '}
+              {/* Textarea */}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

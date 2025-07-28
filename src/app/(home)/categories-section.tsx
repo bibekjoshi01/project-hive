@@ -9,6 +9,8 @@ import {
   BookOpen,
   GraduationCap,
   type LucideIcon,
+  Brain,
+  Search,
 } from 'lucide-react';
 
 const iconMap: Record<string, LucideIcon> = {
@@ -20,13 +22,46 @@ const iconMap: Record<string, LucideIcon> = {
   'Computer Networks': Cpu,
   Minor: BookOpen,
   Major: GraduationCap,
+  AI: Brain,
+  'Data Mining': Search,
 };
 
 const Categories = () => {
   const { data, error, isLoading } = useGetCategoriesQuery();
 
-  if (isLoading) return <div>Loading categories...</div>;
-  if (error || !data) return <div>Error loading categories.</div>;
+  if (isLoading) {
+    return (
+      <section className='bg-gray-50 py-16'>
+        <div className='container mx-auto px-4 py-12 lg:px-6'>
+          <h2 className='mb-16 text-center text-4xl font-bold text-gray-900'>
+            Explore Projects by Category
+          </h2>
+          <div className='grid grid-cols-1 gap-8 px-2 sm:grid-cols-2 sm:px-0 lg:grid-cols-4'>
+            {Array.from({ length: 8 }).map((_, index) => (
+              <CategorySkeleton key={index} />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !data?.results || data.results.length === 0) {
+    return (
+      <section className='bg-gray-50 py-16'>
+        <div className='container mx-auto px-4 py-12 lg:px-6'>
+          <h2 className='mb-16 text-center text-4xl font-bold text-gray-900'>
+            Explore Projects by Category
+          </h2>
+          <div className='flex h-48 items-center justify-center rounded-lg bg-white p-8 shadow-sm'>
+            <p className='text-center text-xl font-medium text-gray-600'>
+              No categories available.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className='bg-gray-50 py-16'>
@@ -64,3 +99,15 @@ const Categories = () => {
 };
 
 export default Categories;
+
+export const CategorySkeleton = () => {
+  return (
+    <div className='group flex flex-col justify-between rounded-2xl bg-white p-8 shadow-sm'>
+      <div className='mb-4 h-12 w-12 animate-pulse rounded-full bg-gray-200'></div>
+      <div>
+        <div className='mb-1 h-6 w-3/4 animate-pulse rounded bg-gray-200'></div>
+        <div className='h-4 w-1/2 animate-pulse rounded bg-gray-200'></div>
+      </div>
+    </div>
+  );
+};
