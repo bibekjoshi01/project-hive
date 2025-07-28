@@ -17,6 +17,7 @@ const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700', '800'],
 });
 
+// SEO Meta Information
 export const metadata: Metadata = {
   title: 'Project Archive | Thapathali Campus - IOE',
   description:

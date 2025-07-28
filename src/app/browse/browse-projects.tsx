@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
 import NoResultsFound from './no-results-found';
 import ProjectCard, { ProjectCardSkeleton } from './project-card';
 import SearchAndFilters from './search-and-filters';

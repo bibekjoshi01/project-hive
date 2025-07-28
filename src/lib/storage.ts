@@ -1,4 +1,3 @@
-// src/lib/storage.ts
 import { supabase } from './supabase';
 
 export function uniqueName(name: string) {
@@ -7,7 +6,6 @@ export function uniqueName(name: string) {
 
 /**
  * Upload a file to Supabase Storage and return a **public URL**.
- * Make sure your bucket is **public**, or switch to getSignedUrl() if private.
  */
 export async function uploadFileToSupabase(
   file: File,
@@ -18,7 +16,7 @@ export async function uploadFileToSupabase(
     .from(bucket)
     .upload(path, file, {
       cacheControl: '3600',
-      upsert: true, // set to false if you want to prevent overwrites
+      upsert: true,
       contentType: file.type || 'application/octet-stream',
     });
 
@@ -27,7 +25,6 @@ export async function uploadFileToSupabase(
     throw error;
   }
 
-  // If the bucket is public:
   const { data: publicUrlData } = supabase.storage
     .from(bucket)
     .getPublicUrl(path);

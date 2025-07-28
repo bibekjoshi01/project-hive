@@ -1,7 +1,6 @@
 'use client';
 
 import { SnackbarProvider } from 'notistack';
-// other imports
 
 export default function ClientLayoutWrapper({
   children,
