@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useAppSelector } from '@/lib/hooks';
 import Image from 'next/image';
 import { authState } from '@/app/(auth)/redux/selector';
-import ProfileImage from '@/assets/images/logo.png';
+import ProfileImage from '@/assets/images/avatar.png';
 import { useRouter } from 'next/navigation';
 
 export default function WebsiteLayout({ children }: { children: ReactNode }) {

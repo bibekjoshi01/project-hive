@@ -41,11 +41,12 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await login({ values: formData }).unwrap();
+      await login({ values: formData }).unwrap();
       // Proceed to OTP Verification Step
       setIsOtpStage(true);
     } catch (err: any) {
       console.error('Login failed:', err?.data || err?.message);
+      enqueueSnackbar('Error signin. Try again!', { variant: 'error' });
     }
   };
 
@@ -61,7 +62,7 @@ export default function LoginPage() {
       const response = await OAuth(values).unwrap();
       dispatch(loginSuccess(response));
       enqueueSnackbar('Login successful!', { variant: 'success' });
-      router.push('/login');
+      router.push('/profile');
     } catch (e) {
       enqueueSnackbar('Error signin with google', { variant: 'error' });
     } finally {

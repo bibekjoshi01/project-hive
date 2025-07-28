@@ -69,7 +69,7 @@ const OtpVerification = ({ email }: IOtpVerificationProps) => {
       const response = await verifyOtp({ email, otp: otpString }).unwrap();
       dispatch(loginSuccess(response));
       enqueueSnackbar('Login successful!', { variant: 'success' });
-      router.push('/login');
+      router.push('/profile');
     } catch (err: any) {
       enqueueSnackbar(err?.data?.detail || 'Invalid OTP', { variant: 'error' });
     }
