@@ -4,7 +4,7 @@ export const authAPI = 'admin/auth-app';
 
 export const authAPISlice = rootAPI.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
+    adminLogin: builder.mutation({
       query: ({ values }) => {
         return {
           url: `${authAPI}/login`,
@@ -13,7 +13,7 @@ export const authAPISlice = rootAPI.injectEndpoints({
         };
       },
     }),
-    getProfile: builder.query({
+    getAdminProfile: builder.query({
       query: () => ({
         url: `${authAPI}/profile`,
         method: 'GET',
@@ -22,4 +22,4 @@ export const authAPISlice = rootAPI.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useGetProfileQuery } = authAPISlice;
+export const { useAdminLoginMutation, useGetAdminProfileQuery } = authAPISlice;

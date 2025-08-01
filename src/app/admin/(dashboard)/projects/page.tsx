@@ -26,11 +26,11 @@ type ProjectStatus = 'Pending' | 'Accepted' | 'Rejected';
 interface Project {
   id: string;
   name: string;
-  description: string; // Added description for detail view
+  description: string;
   status: ProjectStatus;
   submittedAt: string;
-  submittedBy: string; // Added submittedBy for detail view
-  files: string[]; // Added files for detail view
+  submittedBy: string;
+  files: string[]; 
 }
 
 const initialProjects: Project[] = [
@@ -108,11 +108,6 @@ export default function DashboardPage() {
 
   const handleView = (id: string) => {
     router.push(`/dashboard/${id}`);
-  };
-
-  const handleLogout = () => {
-    // In a real app, you'd clear session/token here
-    router.push('/login');
   };
 
   return (

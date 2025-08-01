@@ -12,12 +12,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useLoginMutation } from './redux/api';
+import { useAdminLoginMutation } from './redux/api';
+import { useSnackbar } from 'notistack';
+import {
+  ADMIN_ACCESS_TOKEN,
+  ADMIN_REFRESH_TOKEN,
+} from '@/constants/admin/tokens';
 
 type FormData = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -27,26 +33,29 @@ export default function AdminLoginPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-  const [login, { isLoading }] = useLoginMutation();
+  const [adminLogin, { isLoading }] = useAdminLoginMutation();
+  const { enqueueSnackbar } = useSnackbar();
   const [error, setError] = useState('');
   const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
     setError('');
     try {
-      const res = await login(data).unwrap();
+      const res = await adminLogin({ values: data }).unwrap();
+      Cookies.set(ADMIN_ACCESS_TOKEN, res?.accessToken);
+      Cookies.set(ADMIN_REFRESH_TOKEN, res?.refreshToken);
+      Cookies.set('logout', 'false');
 
-      // Set cookies
-
-      router.push('/admin/dashboard');
+      enqueueSnackbar('Logged In Successfully.', { variant: 'success' });
+      router.push('/admin/projects');
     } catch (err: any) {
-      setError(err?.data?.message || 'Login failed');
+      setError(err?.data?.detail || 'Login failed');
     }
   };
 
   return (
     <div className='flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950'>
-      <Card className='w-full max-w-md'>
+      <Card className='w-full max-w-md shadow-none'>
         <CardHeader>
           <CardTitle className='text-2xl'>Admin Login</CardTitle>
           <CardDescription>
@@ -56,17 +65,14 @@ export default function AdminLoginPage() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className='space-y-4'>
             <div className='space-y-2'>
-              <Label htmlFor='username'>Username</Label>
+              <Label htmlFor='email'>Email</Label>
               <Input
-                id='username'
+                id='email'
                 type='text'
-                placeholder='admin'
-                {...register('username', { required: 'Username is required' })}
+                {...register('email', { required: 'Email is required' })}
               />
-              {errors.username && (
-                <p className='text-sm text-red-500'>
-                  {errors.username.message}
-                </p>
+              {errors.email && (
+                <p className='text-sm text-red-500'>{errors.email.message}</p>
               )}
             </div>
             <div className='space-y-2'>
@@ -85,7 +91,11 @@ export default function AdminLoginPage() {
             {error && <p className='text-sm text-red-500'>{error}</p>}
           </CardContent>
           <CardFooter className='mt-8'>
-            <Button type='submit' className='w-full' disabled={isLoading}>
+            <Button
+              type='submit'
+              className='w-full cursor-pointer'
+              disabled={isLoading}
+            >
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </CardFooter>

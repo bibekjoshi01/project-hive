@@ -1,2 +1,2 @@
 export const ADMIN_LOGIN = '/admin/login';
-export const ADMIN_DASHBOARD = '/admin/dashboard';
+export const ADMIN_DASHBOARD = '/admin/projects';
