@@ -1,11 +1,11 @@
 'use client';
-
-import type React from 'react';
-
 import { useState } from 'react';
 import { Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useContactMutation } from './redux/contact.api';
 import ContactInfo from './contact-info';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
 const subjects = [
   { value: '', label: 'Select a subject' },
@@ -17,72 +17,75 @@ const subjects = [
   { value: 'other', label: 'Other' },
 ];
 
+const contactFormSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, 'First Name is required')
+    .max(50, 'First Name cannot exceed 50 characters'),
+  middleName: z
+    .string()
+    .max(50, 'Middle Name cannot exceed 50 characters')
+    .optional(),
+  lastName: z
+    .string()
+    .min(1, 'Last Name is required')
+    .max(50, 'Last Name cannot exceed 50 characters'),
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  phone: z
+    .string()
+    .max(20, 'Phone Number cannot exceed 20 characters')
+    .optional(),
+  subject: z.string().optional(),
+  message: z
+    .string()
+    .min(1, 'Message is required')
+    .max(1000, 'Message cannot exceed 1000 characters'),
+});
+
+type ContactFormInputs = z.infer<typeof contactFormSchema>;
+
 export default function ContactUs() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: '',
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ContactFormInputs>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+    },
   });
+
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const [contact, { isLoading }] = useContactMutation();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.message
-    ) {
-      setStatus('error');
-      setMessage('Please fill in all required fields');
-      return;
-    }
+  const onSubmit = async (data: ContactFormInputs) => {
+    setStatus('idle'); // Reset status before new submission
+    setMessage(''); // Clear previous message
 
     const full_name =
-      `${formData.firstName} ${formData.middleName} ${formData.lastName}`.trim();
+      `${data.firstName} ${data.middleName || ''} ${data.lastName}`.trim();
 
     try {
       const response = await contact({
         full_name,
-        email: formData.email,
-        phone_no: formData.phone,
-        subject: formData.subject,
-        message: formData.message,
+        email: data.email,
+        phone_no: data.phone,
+        subject: data.subject,
+        message: data.message,
       }).unwrap();
-
       setStatus('success');
       setMessage(response.message);
-
-      // Reset form
-      setFormData({
-        firstName: '',
-        middleName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
-      });
+      reset(); // Reset form fields after successful submission
     } catch (error) {
       setStatus('error');
       setMessage('Something went wrong. Please try again.');
@@ -104,15 +107,13 @@ export default function ContactUs() {
               in touch with us and we&apos;ll respond as soon as possible.
             </p>
           </div>
-
           <div className='grid'>
             {/* Contact Form */}
             <div className='rounded-2xl bg-gray-50 p-4 py-6 lg:p-8'>
               <h2 className='mb-6 text-2xl font-semibold text-gray-900'>
                 Send us a Message
               </h2>
-
-              <form onSubmit={handleSubmit} className='space-y-6'>
+              <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
                 {/* Name Fields */}
                 <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
                   <div>
@@ -125,13 +126,15 @@ export default function ContactUs() {
                     <input
                       type='text'
                       id='firstName'
-                      name='firstName'
-                      value={formData.firstName}
-                      onChange={handleInputChange}
+                      {...register('firstName')}
                       className='w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                       disabled={isLoading}
-                      required
                     />
+                    {errors.firstName && (
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.firstName.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -143,12 +146,15 @@ export default function ContactUs() {
                     <input
                       type='text'
                       id='middleName'
-                      name='middleName'
-                      value={formData.middleName}
-                      onChange={handleInputChange}
+                      {...register('middleName')}
                       className='w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                       disabled={isLoading}
                     />
+                    {errors.middleName && (
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.middleName.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -160,16 +166,17 @@ export default function ContactUs() {
                     <input
                       type='text'
                       id='lastName'
-                      name='lastName'
-                      value={formData.lastName}
-                      onChange={handleInputChange}
+                      {...register('lastName')}
                       className='w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                       disabled={isLoading}
-                      required
                     />
+                    {errors.lastName && (
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.lastName.message}
+                      </p>
+                    )}
                   </div>
                 </div>
-
                 {/* Email, Phone, and Subject */}
                 <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
                   <div>
@@ -182,13 +189,15 @@ export default function ContactUs() {
                     <input
                       type='email'
                       id='email'
-                      name='email'
-                      value={formData.email}
-                      onChange={handleInputChange}
+                      {...register('email')}
                       className='w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 backdrop-blur-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                       disabled={isLoading}
-                      required
                     />
+                    {errors.email && (
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -200,12 +209,15 @@ export default function ContactUs() {
                     <input
                       type='tel'
                       id='phone'
-                      name='phone'
-                      value={formData.phone}
-                      onChange={handleInputChange}
+                      {...register('phone')}
                       className='w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 backdrop-blur-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                       disabled={isLoading}
                     />
+                    {errors.phone && (
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.phone.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label
@@ -216,9 +228,7 @@ export default function ContactUs() {
                     </label>
                     <select
                       id='subject'
-                      name='subject'
-                      value={formData.subject}
-                      onChange={handleInputChange}
+                      {...register('subject')}
                       className='w-full appearance-none rounded-lg border border-gray-300 bg-white/80 px-4 py-3 pr-10 text-gray-900 backdrop-blur-sm focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                       disabled={isLoading}
                     >
@@ -228,9 +238,13 @@ export default function ContactUs() {
                         </option>
                       ))}
                     </select>
+                    {errors.subject && (
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.subject.message}
+                      </p>
+                    )}
                   </div>
                 </div>
-
                 {/* Message */}
                 <div>
                   <label
@@ -241,17 +255,18 @@ export default function ContactUs() {
                   </label>
                   <textarea
                     id='message'
-                    name='message'
                     rows={6}
-                    value={formData.message}
-                    onChange={handleInputChange}
                     placeholder='Tell us how we can help you...'
+                    {...register('message')}
                     className='w-full rounded-lg border border-gray-300 bg-white/80 px-4 py-3 text-gray-900 focus:border-gray-500 focus:ring-2 focus:ring-gray-500/20 focus:outline-none'
                     disabled={isLoading}
-                    required
                   />
+                  {errors.message && (
+                    <p className='mt-1 text-sm text-red-600'>
+                      {errors.message.message}
+                    </p>
+                  )}
                 </div>
-
                 {/* Submit Button */}
                 <button
                   type='submit'
@@ -270,7 +285,6 @@ export default function ContactUs() {
                     </>
                   )}
                 </button>
-
                 {/* Status Message */}
                 {message && (
                   <div
@@ -291,8 +305,7 @@ export default function ContactUs() {
               </form>
             </div>
           </div>
-
-          {/* Contact Inforation */}
+          {/* Contact Information */}
           <ContactInfo />
         </div>
       </div>

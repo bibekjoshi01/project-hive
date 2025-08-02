@@ -2,61 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { useRouter } from 'next/navigation';
 import { MailIcon, FolderIcon, ClockIcon, TrendingUpIcon } from 'lucide-react';
-
-// Mock data for stats
-const statsData = {
-  contactRequests: {
-    total: 12,
-    new: 5,
-    read: 4,
-    replied: 3,
-  },
-  projects: {
-    total: 28,
-    pending: 8,
-    accepted: 15,
-    rejected: 5,
-  },
-};
+import { useGetDashboardStatsQuery } from './redux/api';
 
 export default function DashboardPage() {
-  const router = useRouter();
-
-  const handleViewAllProjects = () => {
-    router.push('/dashboard/projects');
-  };
-
-  const handleViewAllContacts = () => {
-    router.push('/dashboard/contact-requests');
-  };
-
-  const getContactStatusColor = (status: string) => {
-    switch (status) {
-      case 'New':
-        return 'default';
-      case 'Read':
-        return 'secondary';
-      case 'Replied':
-        return 'outline';
-      default:
-        return 'secondary';
-    }
-  };
-
-  const getProjectStatusColor = (status: string) => {
-    switch (status) {
-      case 'Accepted':
-        return 'default';
-      case 'Rejected':
-        return 'destructive';
-      case 'Pending':
-        return 'secondary';
-      default:
-        return 'secondary';
-    }
-  };
+  const { data: statsData } = useGetDashboardStatsQuery();
 
   return (
     <div className='flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6'>
@@ -79,11 +29,11 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold'>
-              {statsData.contactRequests.total}
+              {statsData?.contactRequests.total || 0}
             </div>
             <p className='text-muted-foreground text-xs'>
               <span className='text-green-600'>
-                {statsData.contactRequests.new} new
+                {statsData?.contactRequests.new || 0} new
               </span>{' '}
               this week
             </p>
@@ -100,7 +50,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold'>
-              {statsData.projects.pending}
+              {statsData?.projects.pending || 0}
             </div>
             <p className='text-muted-foreground text-xs'>Awaiting review</p>
           </CardContent>
@@ -115,14 +65,16 @@ export default function DashboardPage() {
             <FolderIcon className='text-muted-foreground h-4 w-4' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>{statsData.projects.total}</div>
+            <div className='text-2xl font-bold'>
+              {statsData?.projects.total || 0}
+            </div>
             <p className='text-muted-foreground text-xs'>
               <span className='text-green-600'>
-                {statsData.projects.accepted} accepted
+                {statsData?.projects.accepted || 0} accepted
               </span>
               ,{' '}
               <span className='text-red-600'>
-                {statsData.projects.rejected} rejected
+                {statsData?.projects.rejected || 0} rejected
               </span>
             </p>
           </CardContent>
@@ -136,12 +88,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className='text-2xl font-bold'>
-              {Math.round(
-                (statsData.projects.accepted /
-                  (statsData.projects.accepted + statsData.projects.rejected)) *
-                  100,
-              )}
-              %
+              {Math.round(statsData?.projects.successRate || 0)}%
             </div>
             <p className='text-muted-foreground text-xs'>
               Project approval rate

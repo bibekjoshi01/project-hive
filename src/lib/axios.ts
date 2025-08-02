@@ -5,6 +5,11 @@ import axios, {
 } from 'axios';
 import Cookies from 'js-cookie';
 import { showErrorToast } from '@/utils/notifier';
+import { isAdminRoute } from './utils';
+import {
+  ADMIN_ACCESS_TOKEN,
+  ADMIN_REFRESH_TOKEN,
+} from '@/constants/admin/tokens';
 
 const noAuthRoutes: string[] = [];
 
@@ -28,7 +33,9 @@ axiosInstance.interceptors.request.use(
 
     config.headers = config.headers || {};
 
-    const accessToken = Cookies.get('publicAccessToken');
+    const accessToken = Cookies.get(
+      isAdminRoute() ? 'adminAccessToken' : 'publicAccessToken',
+    );
 
     // Check if the route is exempt from authentication
     const isExemptRoute = noAuthRoutes.some((path) =>
@@ -73,9 +80,16 @@ axiosInstance.interceptors.response.use(
     }
     // Handle 401 Unauthorized errors
     else if (error.response?.status === 401) {
-      const { store } = await import('./store');
-      const { logoutSuccess } = await import('@/app/(public)/(auth)/redux/auth.slice');
-      store.dispatch(logoutSuccess());
+      if (!isAdminRoute()) {
+        const { store } = await import('./store');
+        const { logoutSuccess } = await import(
+          '@/app/(public)/(auth)/redux/auth.slice'
+        );
+        store.dispatch(logoutSuccess());
+      } else {
+        Cookies.remove(ADMIN_ACCESS_TOKEN, { path: '/' });
+        Cookies.remove(ADMIN_REFRESH_TOKEN, { path: '/' });
+      }
       showErrorToast('Unauthorized.');
     }
     // Handle other error statuses

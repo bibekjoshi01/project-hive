@@ -1,7 +1,13 @@
 import { rootAPI } from '@/lib/apiSlice';
-import { IProjectDetail, IProjectList } from './types';
+import {
+  DashboardSummaryResponse,
+  IContactList,
+  IProjectDetail,
+  IProjectList,
+} from './types';
 
-export const projectAPI = 'public/project-app';
+export const projectAPI = 'admin/project-app';
+export const websiteAPI = 'admin/website-app';
 
 export const projectAPISlice = rootAPI.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,9 +32,37 @@ export const projectAPISlice = rootAPI.injectEndpoints({
         url: `${projectAPI}/projects/${projectId}`,
       }),
     }),
+    getContacts: builder.query<
+      IContactList,
+      { search?: string; limit: number; offset: number }
+    >({
+      query: ({ search, limit, offset }) => {
+        const params = new URLSearchParams();
+
+        if (search) params.set('search', search);
+        params.set('limit', limit.toString());
+        params.set('offset', offset.toString());
+
+        return {
+          url: `${websiteAPI}/contacts?${params.toString()}`,
+        };
+      },
+    }),
+
+    getDashboardStats: builder.query<DashboardSummaryResponse, void>({
+      query: () => {
+        return {
+          url: `${websiteAPI}/dashboard-summary`,
+        };
+      },
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useGetProjectsQuery, useGetProjectDetailQuery } =
-  projectAPISlice;
+export const {
+  useGetProjectsQuery,
+  useGetProjectDetailQuery,
+  useGetDashboardStatsQuery,
+  useGetContactsQuery,
+} = projectAPISlice;

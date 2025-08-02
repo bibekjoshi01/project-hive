@@ -13,7 +13,7 @@ export const authAPISlice = rootAPI.injectEndpoints({
         };
       },
     }),
-    getAdminProfile: builder.query({
+    getAdminProfile: builder.query<any, void>({
       query: () => ({
         url: `${authAPI}/profile`,
         method: 'GET',

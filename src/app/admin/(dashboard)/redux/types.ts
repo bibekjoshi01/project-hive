@@ -100,3 +100,36 @@ export interface IProjectDetail {
   rating: number;
   totalRatings: number;
 }
+
+export interface IContactResponse {
+  id: number;
+  fullName: string;
+  email: string;
+  phoneNo: string;
+  subject: string;
+  message: string;
+  createdAt: string;
+}
+
+export interface IContactList {
+  count: number;
+  results: IContactResponse[];
+}
+
+export interface ContactSummary {
+  total: number;
+  new: number;
+}
+
+export interface ProjectSummary {
+  total: number;
+  pending: number;
+  accepted: number;
+  rejected: number;
+  successRate: number; 
+}
+
+export interface DashboardSummaryResponse {
+  contactRequests: ContactSummary;
+  projects: ProjectSummary;
+}

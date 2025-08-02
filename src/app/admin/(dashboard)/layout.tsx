@@ -9,6 +9,7 @@ import {
   ADMIN_REFRESH_TOKEN,
 } from '@/constants/admin/tokens';
 import { useSnackbar } from 'notistack';
+import { useGetAdminProfileQuery } from '../login/redux/api';
 
 export default function DashboardLayout({
   children,
@@ -17,6 +18,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  const { data: adminProfile } = useGetAdminProfileQuery();
 
   const handleLogout = () => {
     Cookies.remove(ADMIN_ACCESS_TOKEN);
@@ -55,7 +57,6 @@ export default function DashboardLayout({
             Projects
           </Button>
         </div>
-
         <div className='ml-auto'>
           <Button
             variant='outline'
