@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { rootAPI } from './apiSlice';
 
 // Project Imports
-import authReducer from "@/app/(auth)/redux/auth.slice"
+import authReducer from "@/app/(public)/(auth)/redux/auth.slice"
 
 export const rootReducer = combineReducers({
   auth: authReducer,

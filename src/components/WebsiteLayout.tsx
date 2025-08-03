@@ -1,13 +1,13 @@
 'use client';
 import { type ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppSelector } from '@/lib/hooks';
 import Image from 'next/image';
-import { authState } from '@/app/(auth)/redux/selector';
+import { authState } from '@/app/(public)/(auth)/redux/selector';
 import ProfileImage from '@/assets/images/avatar.png';
 import { useRouter } from 'next/navigation';
+import LogoMain from '@/assets/images/logoMain.png';
 
 export default function WebsiteLayout({ children }: { children: ReactNode }) {
   const [isClient, setIsClient] = useState(false);
@@ -26,8 +26,13 @@ export default function WebsiteLayout({ children }: { children: ReactNode }) {
       <header className='sticky top-0 z-50 border-b bg-white px-6 py-0'>
         <div className='container mx-auto flex h-16 items-center justify-between px-0'>
           <Link href='/' className='flex items-center space-x-4'>
-            <GraduationCap className='text-primary h-8 w-8' />
-            <span className='text-xl font-bold text-gray-900'>ProjectHive</span>
+            <Image
+              src={LogoMain || '/placeholder.svg'}
+              height={40}
+              width={160}
+              alt='TCIOE'
+              className='object-contain'
+            />
           </Link>
           <nav className='items-center space-x-4 shadow-none md:flex'>
             {isAuthenticated ? (

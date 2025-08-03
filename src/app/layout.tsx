@@ -1,11 +1,10 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import WebsiteLayout from '../components/Layout';
 import { Montserrat, Poppins } from 'next/font/google';
-import StoreProvider from '@/lib/StoreProvider';
+import './globals.css';
 import ClientLayoutWrapper from '@/lib/SnackBarProvider';
+import StoreProvider from '@/lib/StoreProvider';
+import type { Metadata } from 'next';
 
-export const montserrat = Montserrat({
+const montserrat = Montserrat({
   variable: '--font-montserrat',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800', '900'],
@@ -63,9 +62,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={`${montserrat.variable} ${poppins.variable} font-sans`}>
         <StoreProvider>
-          <ClientLayoutWrapper>
-            <WebsiteLayout>{children}</WebsiteLayout>
-          </ClientLayoutWrapper>
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
         </StoreProvider>
       </body>
     </html>

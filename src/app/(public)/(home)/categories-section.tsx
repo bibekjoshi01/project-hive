@@ -11,11 +11,12 @@ import {
   type LucideIcon,
   Brain,
   Search,
+  Image,
 } from 'lucide-react';
 
 const iconMap: Record<string, LucideIcon> = {
-  C: Code,
-  'C++': Code,
+  'C Programming': Code,
+  'C++ (OOP)': Code,
   DSA: Code,
   DBMS: Database,
   'Computer Graphics': Monitor,
@@ -24,6 +25,7 @@ const iconMap: Record<string, LucideIcon> = {
   Major: GraduationCap,
   AI: Brain,
   'Data Mining': Search,
+  'Image Processing': Image,
 };
 
 const Categories = () => {
