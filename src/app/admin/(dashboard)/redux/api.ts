@@ -56,7 +56,19 @@ export const projectAPISlice = rootAPI.injectEndpoints({
         };
       },
     }),
+    // Mutation to accept or reject project
+    reviewProject: builder.mutation<
+      { message: string },
+      { projectId: string; status: 'APPROVED' | 'REJECTED' }
+    >({
+      query: ({ projectId, status }) => ({
+        url: `${projectAPI}/review-project`,
+        method: 'POST',
+        data: { projectId, status },
+      }),
+    }),
   }),
+
   overrideExisting: true,
 });
 
@@ -64,5 +76,6 @@ export const {
   useGetProjectsQuery,
   useGetProjectDetailQuery,
   useGetDashboardStatsQuery,
+  useReviewProjectMutation,
   useGetContactsQuery,
 } = projectAPISlice;

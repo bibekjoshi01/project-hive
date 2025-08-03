@@ -29,7 +29,7 @@ export interface IBatchYearList {
 }
 
 export interface IProjectResponse {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   abstract: string;
@@ -126,7 +126,7 @@ export interface ProjectSummary {
   pending: number;
   accepted: number;
   rejected: number;
-  successRate: number; 
+  successRate: number;
 }
 
 export interface DashboardSummaryResponse {
