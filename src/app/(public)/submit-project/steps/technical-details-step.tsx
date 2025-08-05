@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Controller,
   FieldError,
   useFieldArray,
   useFormContext,
@@ -9,7 +8,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, Info, X, Plus } from 'lucide-react';
 import {
   Tooltip,
@@ -79,7 +77,7 @@ export default function TechnicalDetailsStep() {
                 className='max-w-xs text-xs leading-snug'
               >
                 If you have several technologies used, separate them with commas
-                (e.g. <code>tech1, tech2, te3h2</code>).
+                (e.g. <code>tech1, tech2, te3h2</code>).
               </TooltipContent>
             </Tooltip>
           </div>
@@ -132,7 +130,21 @@ export default function TechnicalDetailsStep() {
       </TooltipProvider>
 
       <div className='space-y-2'>
-        <Label htmlFor='documentationUrl'>Documentation Link</Label>
+        <Label htmlFor='documentationUrl'>
+          Documentation Link
+          {/* info icon */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className='h-4 w-4 cursor-pointer text-gray-400' />
+            </TooltipTrigger>
+            <TooltipContent
+              side='right'
+              className='max-w-xs text-xs leading-snug'
+            >
+              This can be your documentation website link or video link. 
+            </TooltipContent>
+          </Tooltip>
+        </Label>
         <Input
           id='documentationUrl'
           className='h-12'

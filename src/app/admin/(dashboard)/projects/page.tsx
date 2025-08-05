@@ -43,7 +43,7 @@ export default function ProjectsPage() {
   }, [search, page, refetch]);
 
   const handleView = (id: string) => {
-    router.push(`/projects/${id}`);
+    router.push(`/admin/projects/${id}`);
   };
 
   type ProjectStatus = 'APPROVED' | 'REJECTED';

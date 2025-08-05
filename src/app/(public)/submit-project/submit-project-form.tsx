@@ -176,9 +176,9 @@ export default function SubmitProjectForm() {
         {/* Form Content */}
         <Card className='mb-4 shadow-none'>
           <CardContent className='px-6 py-2'>
-            {currentStep === 1 && <BasicInfoStep />}
+            {currentStep === 2 && <BasicInfoStep />}
             {currentStep === 2 && <ProjectDetailsStep />}
-            {currentStep === 3 && <TechnicalDetailsStep />}
+            {currentStep === 1 && <TechnicalDetailsStep />}
             {currentStep === 4 && <ReviewStep />}
           </CardContent>
         </Card>

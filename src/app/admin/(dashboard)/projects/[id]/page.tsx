@@ -1,8 +1,13 @@
-import React from 'react';
-import ProjectDetailPage from './detail';
+import ProjectDetailView from './project-detail-view';
 
-const Page = () => {
-  return <ProjectDetailPage />;
-};
+interface ProjectDetailPageProps {
+  params: Promise<{ id: string }>;
+}
 
-export default Page;
+export default async function ProjectDetailPage({
+  params,
+}: ProjectDetailPageProps) {
+  const { id } = await params;
+
+  return <ProjectDetailView projectId={id} />;
+}
