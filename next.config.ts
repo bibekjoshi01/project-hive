@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'kpkuwqkjsfbfugfxxxnk.supabase.co'],
+    domains: ['localhost', 'gnzkfwrakhowpedriqjn.supabase.co'],
   },
   async headers() {
     return [
