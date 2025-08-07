@@ -10,7 +10,7 @@ export function uniqueName(name: string) {
 export async function uploadFileToSupabase(
   file: File,
   path: string,
-  bucket = 'project-hive',
+  bucket = 'tcioe-bucket',
 ): Promise<string> {
   const { data, error } = await supabase.storage
     .from(bucket)
