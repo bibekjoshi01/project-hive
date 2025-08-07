@@ -3,8 +3,8 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 
 const contactInformation = {
   email: 'help@tcioe.edu.np',
-  contactNo: '+977 9800000000',
-  address: 'Maitighar, Kathmandu, Nepal',
+  contactNo: '+977-1-5971474',
+  address: 'Thapathali, Kathmandu, Nepal',
 };
 
 const ContactInfo = () => {

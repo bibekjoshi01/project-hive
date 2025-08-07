@@ -119,12 +119,13 @@ export default function TermsAndConditions() {
                 6. Disclaimer
               </h2>
               <p className='mb-4 leading-relaxed text-gray-600'>
-                The materials on our website are provided on an &apos;as is&apos; basis.
-                We make no warranties, expressed or implied, and hereby disclaim
-                and negate all other warranties including without limitation,
-                implied warranties or conditions of merchantability, fitness for
-                a particular purpose, or non-infringement of intellectual
-                property or other violation of rights.
+                The materials on our website are provided on an &apos;as
+                is&apos; basis. We make no warranties, expressed or implied, and
+                hereby disclaim and negate all other warranties including
+                without limitation, implied warranties or conditions of
+                merchantability, fitness for a particular purpose, or
+                non-infringement of intellectual property or other violation of
+                rights.
               </p>
             </section>
 
@@ -174,11 +175,11 @@ export default function TermsAndConditions() {
               </p>
               <div className='rounded-lg bg-gray-50 p-4'>
                 <p className='text-gray-600'>
-                  <strong>Email:</strong> legal@yourcompany.com
+                  <strong>Email:</strong> help@tcioe.edu.np
                   <br />
-                  <strong>Address:</strong> Your Company Address
+                  <strong>Address:</strong> Thapthali, Kathmandu
                   <br />
-                  <strong>Phone:</strong> +1 (555) 123-4567
+                  <strong>Phone:</strong> +977-1-5971474
                 </p>
               </div>
             </section>

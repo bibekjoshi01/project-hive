@@ -14,6 +14,7 @@ const developerData = {
     'A curious and enthusiastic individual who loves exploring new ideas and experiences. I enjoy connecting with people, sharing stories, and learning from different perspectives.',
     'In my free time, I like reading, traveling, and discovering creative ways to express myself. Always striving to grow personally and make meaningful memories along the way.',
   ],
+  why: 'This website was part of my DBMS project and I planned to make it real and userful.',
   socialLinks: [
     {
       name: 'GitHub',
@@ -62,6 +63,12 @@ export default function DeveloperInfo() {
               </p>
               <p className='text-sm text-gray-500 md:text-lg'>
                 {developerData.batch}
+              </p>
+            </div>
+
+            <div className='space-y-4'>
+              <p className='text-sm leading-relaxed text-gray-700 md:text-lg'>
+                {developerData?.why}
               </p>
             </div>
 

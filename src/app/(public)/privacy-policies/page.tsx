@@ -223,13 +223,13 @@ export default function PrivacyPolicy() {
               </p>
               <div className='rounded-lg bg-gray-50 p-4'>
                 <p className='text-gray-600'>
-                  <strong>Email:</strong> privacy@yourcompany.com
+                  <strong>Email:</strong> help@tcioe.edu.np
                   <br />
-                  <strong>Address:</strong> Your Company Address
+                  <strong>Address:</strong> Thapathali, Kathmandu
                   <br />
-                  <strong>Phone:</strong> +1 (555) 123-4567
+                  <strong>Phone:</strong> +977-1-5971474
                   <br />
-                  <strong>Data Protection Officer:</strong> dpo@yourcompany.com
+                  <strong>Data Protection Officer:</strong> +977-1-5971474
                 </p>
               </div>
             </section>
