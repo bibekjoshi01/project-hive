@@ -177,7 +177,7 @@ export default function TermsAndConditions() {
                 <p className='text-gray-600'>
                   <strong>Email:</strong> help@tcioe.edu.np
                   <br />
-                  <strong>Address:</strong> Thapthali, Kathmandu
+                  <strong>Address:</strong> Thapathali, Kathmandu
                   <br />
                   <strong>Phone:</strong> +977-1-5971474
                 </p>
