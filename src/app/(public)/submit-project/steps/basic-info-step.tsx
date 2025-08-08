@@ -28,6 +28,8 @@ export default function BasicInfoStep() {
     formState: { errors },
   } = useFormContext<ProjectFormData>();
 
+  console.log('values', errors);
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'teamMembers',
@@ -296,7 +298,7 @@ export default function BasicInfoStep() {
                               onClick={() =>
                                 setValue(`teamMembers.${index}.photo`, null)
                               }
-                              className='absolute -top-1 -right-1 h-5 w-5 cursor-pointer rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600 sm:h-6 sm:w-6'
+                              className='absolute -top-1 -right-1 h-10 w-10 cursor-pointer rounded-full border-0 bg-red-500 p-0 text-white hover:bg-red-600 sm:h-6 sm:w-6'
                             >
                               <X className='h-3 w-3 sm:h-4 sm:w-4' />
                             </Button>
@@ -311,8 +313,14 @@ export default function BasicInfoStep() {
                         type='file'
                         accept='image/*'
                         onChange={(e) => handlePhotoUpload(index, e)}
-                        className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
+                        className='absolute inset-0 cursor-pointer opacity-0'
+                        style={{ width: '80%', height: '80%' }}
                       />
+                      {errors.teamMembers?.[index]?.photo && (
+                        <p className='mt-1 text-xs text-red-400'>
+                          {errors.teamMembers[index]?.photo?.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 

@@ -68,11 +68,25 @@ export const basicInfoSchema = z.object({
 });
 
 export const projectDetailsSchema = z.object({
-  description: z
-    .string()
-    .refine((val) => val.trim().split(/\s+/).filter(Boolean).length >= 200, {
+  description: z.string().refine(
+    (val) => {
+      if (!val) return false;
+
+      // Strip HTML tags and decode common entities (basic)
+      const text = val
+        .replace(/<[^>]*>?/gm, ' ') // remove HTML tags, keep spaces
+        .replace(/&nbsp;/g, ' ') // convert non-breaking spaces to normal spaces
+        .trim();
+
+      // Split by whitespace and filter empty strings
+      const words = text.split(/\s+/).filter(Boolean);
+
+      return words.length >= 200;
+    },
+    {
       message: 'Minimum 200 words are required.',
-    }),
+    },
+  ),
 });
 
 export const technicalDetailsSchema = z.object({
