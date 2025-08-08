@@ -20,6 +20,7 @@ import {
   $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
+  ListNode,
   REMOVE_LIST_COMMAND,
 } from '@lexical/list';
 import {
